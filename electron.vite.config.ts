@@ -7,7 +7,8 @@ export default defineConfig({
   main: {
     resolve: {
       alias: {
-        '@main': resolve(__dirname, 'src/main/src'),
+        '@': resolve(__dirname, 'src/main'),
+        '@preload': resolve(__dirname, 'src/preload'),
         '@shared': resolve(__dirname, 'src/shared')
       }
     }
@@ -15,7 +16,8 @@ export default defineConfig({
   preload: {
     resolve: {
       alias: {
-        '@preload': resolve(__dirname, 'src/preload/src'),
+        '@': resolve(__dirname, 'src/preload'),
+        '@main': resolve(__dirname, 'src/main'),
         '@shared': resolve(__dirname, 'src/shared')
       }
     }
@@ -29,6 +31,7 @@ export default defineConfig({
         '@hooks': resolve(__dirname, 'src/renderer/src/hooks'),
         '@pages': resolve(__dirname, 'src/renderer/src/pages'),
         '@utils': resolve(__dirname, 'src/renderer/src/utils'),
+        '@preload': resolve(__dirname, 'src/preload'),
         '@shared': resolve(__dirname, 'src/shared')
       }
     },
