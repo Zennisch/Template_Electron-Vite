@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+:root{
+  user-select: none;
+}
+
+input, textarea {
+  user-select: text;
+}
+
 * {
   font-family: "Inter", sans-serif;
 }
