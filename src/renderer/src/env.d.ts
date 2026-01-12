@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
 interface Window {
-    electron: import('@electron-toolkit/preload').ElectronAPI
-    api: typeof import('@preload/index').api
+  electron: import("@electron-toolkit/preload").ElectronAPI
+  api: typeof import("@preload/index").api
 }

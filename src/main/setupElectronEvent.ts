@@ -1,7 +1,7 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
-import { electronApp, optimizer } from '@electron-toolkit/utils'
-import { setupIpcEvent } from './setupIpcEvent'
-import { createWindow } from './createWindow'
+import { app, BrowserWindow, ipcMain } from "electron"
+import { electronApp, optimizer } from "@electron-toolkit/utils"
+import { setupIpcEvent } from "./setupIpcEvent"
+import { createWindow } from "./createWindow"
 
 const onBrowserWindowCreated = (_: Electron.Event, window: Electron.BrowserWindow) => {
   optimizer.watchWindowShortcuts(window)
@@ -12,19 +12,19 @@ const onActivate = () => {
 }
 
 export const onWindowAllClosed = () => {
-  if (process.platform !== 'darwin') {
+  if (process.platform !== "darwin") {
     app.quit()
   }
 }
 
 export const appReadyCallback = () => {
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId("com.electron")
 
-  app.on('browser-window-created', onBrowserWindowCreated)
+  app.on("browser-window-created", onBrowserWindowCreated)
 
   setupIpcEvent(ipcMain)
 
   createWindow()
 
-  app.on('activate', onActivate)
+  app.on("activate", onActivate)
 }

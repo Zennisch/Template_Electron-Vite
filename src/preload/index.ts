@@ -1,14 +1,14 @@
-import { contextBridge, ipcRenderer } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer } from "electron"
+import { electronAPI } from "@electron-toolkit/preload"
 
 export const api = {
-  ping: () => ipcRenderer.send('ping'),
+  ping: () => ipcRenderer.send("ping")
 }
 
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
+    contextBridge.exposeInMainWorld("electron", electronAPI)
+    contextBridge.exposeInMainWorld("api", api)
   } catch (error) {
     console.error(error)
   }

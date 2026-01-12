@@ -1,6 +1,6 @@
-import { app } from 'electron'
-import { appReadyCallback, onWindowAllClosed } from './setupElectronEvent'
+import { app } from "electron"
+import { appReadyCallback, onWindowAllClosed } from "./setupElectronEvent"
 
 app.whenReady().then(appReadyCallback)
 
-app.on('window-all-closed', onWindowAllClosed)
+app.on("window-all-closed", onWindowAllClosed)
