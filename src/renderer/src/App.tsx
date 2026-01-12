@@ -52,20 +52,7 @@ function App(): React.JSX.Element {
             className="group relative flex items-center justify-center gap-2 rounded-full bg-slate-100 px-6 py-2.5 text-sm font-bold text-slate-900 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)] transition-all hover:scale-105 hover:bg-white hover:shadow-[0_0_25px_-5px_rgba(255,255,255,0.5)]"
           >
             Documentation
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all"
-            >
-              <path d="M7 17l9.2-9.2M17 17V7H7" />
-            </svg>
+            <i className="fa-solid fa-up-right-from-square opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
           </a>
 
           <button
