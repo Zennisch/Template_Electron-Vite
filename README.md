@@ -1,4 +1,4 @@
-# template-electron-vite
+# \[Template\] Electron-Vite
 
 An Electron application with React and TypeScript
 
