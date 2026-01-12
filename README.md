@@ -13,15 +13,14 @@ This is a customized Electron application template with React, TypeScript, Tailw
 Instead of cloning the repository, use `degit` to download a copy of the template without the git history.
 
 ```bash
-# Replace <user>/<repo> with this repository's path
-npx degit <user>/<repo> my-electron-app
+npx degit Zennisch/Template_Electron-Vite my-electron-app
 cd my-electron-app
 ```
 
 ### 2. Install Dependencies
 
 ```bash
-pnpm install
+npm install
 ```
 
 ### 3. Configure Project Information
@@ -29,13 +28,13 @@ pnpm install
 Run the built-in script to update the project name, description, author, appId, and other configurations in `package.json`, `electron-builder.yml`, etc.
 
 ```bash
-pnpm update-info
+npm run update-info
 ```
 
 ## Development
 
 ```bash
-pnpm dev
+npm run dev
 ```
 
 ## Dependency Management
@@ -52,18 +51,18 @@ To easily update dependencies to their latest versions, use `npm-check-updates` 
 
     ```bash
     ncu -u
-    pnpm install
+    npm install
     ```
 
 ## Build
 
 ```bash
 # For windows
-pnpm build:win
+npm run build:win
 
 # For macOS
-pnpm build:mac
+npm run build:mac
 
 # For Linux
-pnpm build:linux
+npm run build:linux
 ```
