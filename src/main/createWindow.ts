@@ -1,4 +1,4 @@
-import { shell, BrowserWindow, WindowOpenHandlerResponse } from "electron"
+import { shell, BrowserWindow, WindowOpenHandlerResponse, Menu } from "electron"
 import { join } from "path"
 import { is } from "@electron-toolkit/utils"
 
@@ -36,6 +36,9 @@ export const createWindow = (): void => {
       sandbox: false
     }
   })
+
+  // Remove default menubar
+  Menu.setApplicationMenu(null)
 
   mainWindow.on("ready-to-show", () => onReadyToShow(mainWindow))
 
