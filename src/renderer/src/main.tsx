@@ -9,11 +9,12 @@ import "@fontsource/inter/900.css"
 import "@fortawesome/fontawesome-free/css/all.min.css"
 import "./assets/main.css"
 import { HashRouter } from "react-router-dom"
+import { Components } from "./Components"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <HashRouter>
-      <App />
+      <Components />
     </HashRouter>
   </StrictMode>
 )
