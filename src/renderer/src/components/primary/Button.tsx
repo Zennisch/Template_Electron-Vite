@@ -109,15 +109,16 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     long: "duration-300"
   }
 
-  let animationClass = ""
-  if (pressAnimationStyle === "scale" && !isDisabled) {
-    const strengthMap: Record<PressAnimationStrength, string> = {
+  const strengthMap: Record<PressAnimationStrength, string> = {
       light: "active:scale-[0.98]",
       medium: "active:scale-[0.96]",
       strong: "active:scale-[0.90]"
     }
-    animationClass = strengthMap[pressAnimationStrength]
-  }
+
+  const animationClass =
+    pressAnimationStyle === "scale" && !isDisabled
+      ? strengthMap[pressAnimationStrength]
+      : ""
 
   const classes = cn(
     baseClasses,
