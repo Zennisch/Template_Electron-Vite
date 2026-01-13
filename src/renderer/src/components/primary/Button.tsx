@@ -21,7 +21,6 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   shadow?: Shadow
 
   fullWidth?: boolean
-  preserveWidthOnLoading?: boolean
 
   iconOnly?: boolean
   iconStart?: ReactNode
@@ -49,7 +48,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     shadow = "none",
 
     fullWidth = false,
-    preserveWidthOnLoading = true,
 
     iconOnly = false,
     iconStart,
@@ -69,26 +67,18 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     onClick,
     ...rest
   } = props
+
   const isDisabled = disabled || loading
-
-  const showIconStart = !!iconStart && !(loading && !loadingText)
-  const showIconEnd = !!iconEnd && !(loading && !loadingText)
-
   const effectiveHref = isDisabled ? undefined : href
 
-  const baseClasses =
-    "inline-flex items-center justify-center whitespace-nowrap font-medium transition-all outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none ring-offset-white dark:ring-offset-slate-950"
+  const baseClasses = "relative inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-70 select-none ring-offset-white"
 
   const variantClasses: Record<Variant, string> = {
-    primary:
-      "bg-slate-900 text-slate-50 hover:bg-slate-900/90 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/90 focus-visible:ring-slate-900",
-    secondary:
-      "bg-slate-100 text-slate-900 hover:bg-slate-100/80 dark:bg-slate-800 dark:text-slate-50 dark:hover:bg-slate-800/80 focus-visible:ring-slate-500",
-    tertiary:
-      "border border-slate-200 bg-white hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50 focus-visible:ring-slate-500", // Outline style
-    danger: "bg-red-500 text-slate-50 hover:bg-red-500/90 focus-visible:ring-red-500",
-    ghost:
-      "hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50 text-slate-700 dark:text-slate-300 focus-visible:ring-slate-500"
+    primary: "bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:ring-indigo-600",
+    secondary: "bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-50 focus-visible:ring-indigo-600",
+    tertiary: "bg-indigo-100 text-indigo-900 hover:bg-indigo-200 focus-visible:ring-indigo-600",
+    danger: "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600",
+    ghost: "bg-transparent text-indigo-700 hover:bg-indigo-50 focus-visible:ring-indigo-600"
   }
 
   const sizeClasses: Record<Size, string> = {
@@ -142,49 +132,24 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   )
 
   const renderContent = () => {
-    // CASE 1: Loading without loadingText
-    if (loading && !loadingText) {
-      return (
-        <>
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            {loadingComponent || DefaultSpinner}
-          </span>
+    const Spinner = loadingComponent || DefaultSpinner
 
-          <span className={cn("flex items-center gap-2 opacity-0", preserveWidthOnLoading ? "invisible" : "hidden")}>
-            {iconStart}
-            {children}
-            {iconEnd}
-          </span>
-        </>
-      )
-    }
-
-    // CASE 2: Loading with loadingText
     if (loading && loadingText) {
       return (
         <span className="flex items-center gap-2">
-          {loadingComponent || DefaultSpinner}
+          {Spinner}
           {loadingText}
         </span>
       )
     }
 
-    // CASE 3: Not loading
     return (
       <span className="flex items-center gap-2">
-        {showIconStart && iconStart}
+        {loading ? Spinner : iconStart}
         {children}
-        {showIconEnd && iconEnd}
+        {iconEnd}
       </span>
     )
-  }
-
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (isDisabled) {
-      e.preventDefault()
-      return
-    }
-    onClick?.(e)
   }
 
   return (
@@ -193,7 +158,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       className={classes}
       disabled={isDisabled}
       aria-disabled={isDisabled}
-      onClick={handleClick}
+      onClick={isDisabled ? (e: any) => e.preventDefault() : onClick}
       type={Component === "button" ? type : undefined}
       href={effectiveHref}
       target={target}
