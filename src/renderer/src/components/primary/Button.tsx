@@ -146,12 +146,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     if (loading && !loadingText) {
       return (
         <>
-          {/* Spinner tuyệt đối ở giữa */}
           <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             {loadingComponent || DefaultSpinner}
           </span>
 
-          {/* Nội dung gốc bị ẩn đi (opacity-0) để giữ kích thước nút không đổi */}
           <span className={cn("flex items-center gap-2 opacity-0", preserveWidthOnLoading ? "invisible" : "hidden")}>
             {iconStart}
             {children}
