@@ -1,11 +1,62 @@
+import { useEffect, useState } from "react"
 import Button from "./components/primary/Button"
 import Checkbox from "./components/primary/Checkbox"
 import Radio from "./components/primary/Radio"
-import Select from "./components/primary/Select"
+import Select, { OptionItem } from "./components/primary/Select"
 import TextInput from "./components/primary/TextInput"
 
 // Simple icon placeholder
 const Icon = () => <span className="text-current">★</span>
+
+const AsyncSelectExample = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [options, setOptions] = useState<OptionItem[]>([])
+
+  const allData = [
+    { label: "Algorithms", value: "algo" },
+    { label: "Artificial Intelligence", value: "ai" },
+    { label: "Backend Development", value: "be" },
+    { label: "Cloud Computing", value: "cloud" },
+    { label: "Data Science", value: "ds" },
+    { label: "DevOps", value: "devops" },
+    { label: "Frontend Development", value: "fe" },
+    { label: "Machine Learning", value: "ml" },
+    { label: "Network Security", value: "netsec" },
+    { label: "Software Engineering", value: "se" },
+    { label: "Web Security", value: "websec" }
+  ]
+
+  const handleSearch = (query: string) => {
+    setIsLoading(true)
+    // Simulate API delay
+    setTimeout(() => {
+      if (!query) {
+        setOptions(allData)
+      } else {
+        const filtered = allData.filter((item) => item.label.toLowerCase().includes(query.toLowerCase()))
+        setOptions(filtered)
+      }
+      setIsLoading(false)
+    }, 800)
+  }
+
+  // Initial load
+  useEffect(() => {
+    handleSearch("")
+  }, [])
+
+  return (
+    <Select
+      label="Async API Search"
+      placeholder="Type to search capabilities..."
+      searchable
+      isLoading={isLoading}
+      onSearchChange={handleSearch}
+      options={options}
+      helpText="Simulates a server-side search with 800ms delay"
+    />
+  )
+}
 
 export const Components = () => {
   return (
@@ -489,6 +540,8 @@ export const Components = () => {
               { label: "Grape", value: "grape" }
             ]}
           />
+
+          <AsyncSelectExample />
         </div>
       </section>
     </div>

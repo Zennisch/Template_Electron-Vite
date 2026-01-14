@@ -1,6 +1,17 @@
 import { forwardRef, ReactNode, useEffect, useId, useImperativeHandle, useRef, useState } from "react"
 import { CheckIcon, ChevronDownIcon, cn, SearchIcon, XMarkIcon } from "./utils"
 
+const LoadingSpinner = ({ className }: { className?: string }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+    <path
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+    ></path>
+  </svg>
+)
+
 type Size = "sm" | "md" | "lg" | "xl"
 type Shadow = "none" | "sm" | "md" | "lg" | "xl"
 type LabelPlacement = "top" | "left"
@@ -33,6 +44,9 @@ export interface SelectProps {
   searchable?: boolean
   multiple?: boolean
 
+  onSearchChange?: (query: string) => void
+  isLoading?: boolean
+
   onChange?: (value: any) => void
 
   containerClassName?: string
@@ -57,6 +71,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
     fullWidth = false,
     searchable = false,
     multiple = false,
+    onSearchChange,
+    isLoading = false,
     onChange,
     containerClassName,
     className,
@@ -144,7 +160,9 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
     }
   }
 
-  const filteredOptions = options.filter((opt) => opt.label.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredOptions = onSearchChange
+    ? options
+    : options.filter((opt) => opt.label.toLowerCase().includes(searchQuery.toLowerCase()))
 
   const getLabel = (val: string | number) => {
     return options.find((o) => o.value === val)?.label || val
@@ -302,14 +320,22 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
                   className="w-full rounded border border-slate-300 py-1.5 pl-8 pr-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-900"
                   placeholder="Search..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value)
+                    onSearchChange?.(e.target.value)
+                  }}
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
             </li>
           )}
 
-          {filteredOptions.length === 0 ? (
+          {isLoading ? (
+            <div className="py-2 px-3 text-slate-500 text-sm text-center flex justify-center items-center gap-2">
+              <LoadingSpinner className="animate-spin h-4 w-4" />
+              <span>Loading...</span>
+            </div>
+          ) : filteredOptions.length === 0 ? (
             <div className="py-2 px-3 text-slate-500 text-sm text-center">No options found</div>
           ) : (
             filteredOptions.map((option) => {
