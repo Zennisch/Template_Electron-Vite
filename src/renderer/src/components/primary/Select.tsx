@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, useEffect, useId, useRef, useState } from "react"
+import { forwardRef, ReactNode, useEffect, useId, useImperativeHandle, useRef, useState } from "react"
 import { CheckIcon, ChevronDownIcon, cn } from "./utils"
 
 type Size = "sm" | "md" | "lg" | "xl"
@@ -30,7 +30,6 @@ export interface SelectProps {
   shadow?: Shadow
   fullWidth?: boolean
 
-  // Custom Select trả về value trực tiếp thay vì event
   onChange?: (value: string | number) => void
 
   containerClassName?: string
@@ -39,7 +38,7 @@ export interface SelectProps {
   id?: string
 }
 
-const Select = forwardRef<HTMLDivElement, SelectProps>((props, _) => {
+const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
   const {
     label,
     labelPlacement = "top",
@@ -67,7 +66,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, _) => {
 
   const [isOpen, setIsOpen] = useState(false)
 
-  // Logic xử lý Uncontrolled vs Controlled state
   const [internalValue, setInternalValue] = useState<string | number | undefined>(defaultValue)
   const isControlled = value !== undefined
   const currentValue = isControlled ? value : internalValue
@@ -76,7 +74,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, _) => {
 
   const isError = !!error
 
-  // Xử lý Click Outside để đóng dropdown
+  useImperativeHandle(ref, () => containerRef.current as HTMLDivElement)
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -97,9 +96,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, _) => {
 
   const selectedOption = options.find((opt) => opt.value === currentValue)
 
-  // --- Classes ---
   const containerClasses = cn(
-    "relative flex", // relative ở đây quan trọng để dropdown định vị theo
+    "relative flex",
     labelPlacement === "top" ? "flex-col gap-1.5" : "flex-row items-baseline gap-4",
     fullWidth ? "w-full" : "w-auto",
     containerClassName
@@ -112,11 +110,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, _) => {
     labelPlacement === "left" && "min-w-[120px]"
   )
 
-  const wrapperClasses = cn(
-    "relative", // wrapper của cái button trigger
-    fullWidth ? "w-full" : "w-64", // Default width nếu ko full
-    labelPlacement === "left" && "flex-1"
-  )
+  const wrapperClasses = cn("relative", fullWidth ? "w-full" : "w-64", labelPlacement === "left" && "flex-1")
 
   const sizeClasses: Record<Size, string> = {
     sm: "h-9 py-1 text-sm pl-3 pr-8",
@@ -137,13 +131,12 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, _) => {
 
   const triggerClasses = cn(
     "relative w-full cursor-default rounded-md border text-left transition-all",
-    "focus:outline-none focus:ring-2 focus:ring-offset-0", // Focus ring
+    "focus:outline-none focus:ring-2 focus:ring-offset-0",
     "bg-white",
     disabled ? "cursor-not-allowed bg-slate-50 text-slate-500 ring-slate-200 border-slate-200" : "cursor-pointer",
     isError
       ? "border-red-300 ring-red-300 focus:ring-red-500 text-red-900"
       : "border-slate-300 ring-slate-300 focus:ring-indigo-600 hover:border-slate-400",
-    // Open state
     isOpen && !isError && "ring-2 ring-indigo-600 border-indigo-600",
 
     sizeClasses[size],
@@ -161,7 +154,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, _) => {
       )}
 
       <div className={wrapperClasses}>
-        {/* Trigger Button (Giả lập Input) */}
         <button
           type="button"
           id={selectId}
@@ -189,7 +181,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, _) => {
           </span>
         </button>
 
-        {/* Dropdown Menu */}
         <ul
           className={cn(
             "absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm",
@@ -238,7 +229,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, _) => {
         </ul>
       </div>
 
-      {/* Error / Help Text */}
       {(isError || helpText) && (
         <div className={cn(labelPlacement === "left" && "ml-34")}>
           {isError && typeof error === "string" && (
