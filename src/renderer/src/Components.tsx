@@ -5,6 +5,7 @@ import Radio from "./components/primary/Radio"
 import Select, { OptionItem } from "./components/primary/Select"
 import Slider from "./components/primary/Slider"
 import TextInput from "./components/primary/TextInput"
+import Toggle from "./components/primary/Toggle"
 
 // Simple icon placeholder
 const Icon = () => <span className="text-current">★</span>
@@ -595,6 +596,55 @@ export const Components = () => {
         <h2 className="text-xl font-semibold">Layout</h2>
         <div className="w-full bg-slate-50 p-4 rounded border">
           <Slider label="Full Width" fullWidth defaultValue={50} showValue />
+        </div>
+      </section>
+
+      <div className="border-t my-8"></div>
+
+      <div className="space-y-2 unreset">
+        <h1 className="text-3xl font-bold border-b pb-2">Toggle Component</h1>
+        <p className="text-gray-500">Comprehensive display of all Toggle props.</p>
+      </div>
+
+      {/* Sizes */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Sizes</h2>
+        <div className="flex flex-col gap-4">
+          <Toggle label="Small (sm)" size="sm" defaultChecked />
+          <Toggle label="Medium (md)" size="md" defaultChecked />
+          <Toggle label="Large (lg)" size="lg" defaultChecked />
+        </div>
+      </section>
+
+      {/* States */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">States</h2>
+        <div className="flex flex-col gap-4">
+          <Toggle label="Unchecked" />
+          <Toggle label="Checked" defaultChecked />
+          <Toggle label="Disabled Unchecked" disabled />
+          <Toggle label="Disabled Checked" disabled defaultChecked />
+        </div>
+      </section>
+
+      {/* Validation */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Validation</h2>
+        <div className="flex flex-col gap-4">
+          <Toggle label="Error (Boolean)" error defaultChecked />
+          <Toggle label="Error (String)" error="Failed to sync" />
+          <div className="w-fit">
+            <Toggle label="Error with Label Left" labelPlacement="left" error="Connection failed" />
+          </div>
+        </div>
+      </section>
+
+      {/* Label Placement */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Label Placement</h2>
+        <div className="flex flex-col gap-4 items-start">
+          <Toggle label="Label on Right (Default)" />
+          <Toggle label="Label on Left" labelPlacement="left" />
         </div>
       </section>
     </div>
