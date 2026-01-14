@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, memo, ReactNode, TextareaHTMLAttributes, useId } from "react"
+import { forwardRef, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes, useId } from "react"
 import { cn } from "./utils"
 
 type Size = "sm" | "md" | "lg" | "xl"
@@ -177,4 +177,4 @@ const TextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputPr
 
 TextInput.displayName = "TextInput"
 
-export default memo(TextInput)
+export default TextInput

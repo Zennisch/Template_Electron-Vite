@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, memo, ReactNode, useId } from "react"
+import { forwardRef, InputHTMLAttributes, ReactNode, useId } from "react"
 import { cn } from "./utils"
 
 type LabelPlacement = "left" | "right"
@@ -131,4 +131,4 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
 
 Radio.displayName = "Radio"
 
-export default memo(Radio)
+export default Radio

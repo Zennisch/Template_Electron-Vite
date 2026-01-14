@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, forwardRef, memo, ReactNode } from "react"
+import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react"
 import { cn, DefaultSpinnerIcon } from "./utils"
 
 type Variant = "primary" | "secondary" | "tertiary" | "danger" | "ghost"
@@ -172,4 +172,4 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
 
 Button.displayName = "Button"
 
-export default memo(Button)
+export default Button

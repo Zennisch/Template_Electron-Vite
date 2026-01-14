@@ -1,5 +1,5 @@
-import { forwardRef, InputHTMLAttributes, memo, ReactNode, useEffect, useId, useRef } from "react"
-import { DefaultCheckIcon, cn, DefaultIndeterminateIcon } from "./utils"
+import { forwardRef, InputHTMLAttributes, ReactNode, useEffect, useId, useRef } from "react"
+import { cn, DefaultCheckIcon, DefaultIndeterminateIcon } from "./utils"
 
 type LabelPlacement = "left" | "right"
 type Size = "sm" | "md" | "lg"
@@ -155,4 +155,4 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
 
 Checkbox.displayName = "Checkbox"
 
-export default memo(Checkbox)
+export default Checkbox
