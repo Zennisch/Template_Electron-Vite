@@ -1,6 +1,7 @@
 import Button from "./components/primary/Button"
 import Checkbox from "./components/primary/Checkbox"
 import Radio from "./components/primary/Radio"
+import Select from "./components/primary/Select"
 import TextInput from "./components/primary/TextInput"
 
 // Simple icon placeholder
@@ -333,6 +334,134 @@ export const Components = () => {
           <Radio name="lp" label="Label on Right (Default)" />
           <Radio name="lp" label="Label on Left" labelPlacement="left" />
         </div>
+      </section>
+
+      <div className="border-t my-8"></div>
+
+      <div className="space-y-2 unreset">
+        <h1 className="text-3xl font-bold border-b pb-2">Select Component</h1>
+        <p className="text-gray-500">Comprehensive display of all Select props.</p>
+      </div>
+
+       {/* Sizes */}
+       <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Sizes</h2>
+        <div className="flex flex-col gap-4 max-w-xs">
+          <Select 
+            label="Small (sm)" 
+            size="sm" 
+            options={[{label: 'Small', value: 's'}]} 
+            placeholder="Select small..."
+          />
+           <Select 
+            label="Medium (md)" 
+            size="md" 
+            options={[{label: 'Medium', value: 'm'}]} 
+            placeholder="Select medium..."
+          />
+           <Select 
+            label="Large (lg)" 
+            size="lg" 
+            options={[{label: 'Large', value: 'l'}]} 
+            placeholder="Select large..."
+          />
+           <Select 
+            label="Extra Large (xl)" 
+            size="xl" 
+            options={[{label: 'Extra Large', value: 'xl'}]} 
+            placeholder="Select extra large..."
+          />
+        </div>
+      </section>
+
+      {/* States */}
+      <section className="space-y-4">
+         <h2 className="text-xl font-semibold">States & Validation</h2>
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Select 
+              label="Standard" 
+              options={[{label: 'Option 1', value: 1}, {label: 'Option 2', value: 2}]} 
+            />
+            <Select 
+              label="With Help Text" 
+              helpText="Please select the best option."
+              options={[]} 
+            />
+            <Select 
+              label="Error (String)" 
+              error="Selection is required" 
+              options={[]} 
+            />
+             <Select 
+              label="Error (Boolean)" 
+              error 
+              helpText="This field has an error."
+              options={[]} 
+            />
+            <Select 
+              label="Disabled" 
+              disabled 
+              placeholder="Cannot select"
+              options={[]} 
+            />
+             <Select 
+              label="With Default Value" 
+              defaultValue={2}
+              options={[{label: 'Option 1', value: 1}, {label: 'Option 2', value: 2}]} 
+            />
+         </div>
+      </section>
+
+      {/* Icons */}
+      <section className="space-y-4">
+         <h2 className="text-xl font-semibold">Icons</h2>
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Select 
+              label="Icon Start" 
+              iconStart={<Icon />}
+              options={[{label: 'Option 1', value: 1}]} 
+            />
+             <Select 
+              label="Options with Icons" 
+              options={[
+                {label: 'Star', value: 'star', icon: <Icon />},
+                {label: 'Heart', value: 'heart', icon: <span className="text-red-500">♥</span>},
+                {label: 'Disabled Option', value: 'dis', disabled: true}
+              ]} 
+              placeholder="Pick an icon..."
+            />
+         </div>
+      </section>
+
+      {/* Styles */}
+      <section className="space-y-4">
+         <h2 className="text-xl font-semibold">Styles & Layout</h2>
+         <div className="space-y-6">
+            <Select 
+              label="Label Placement Left" 
+              labelPlacement="left"
+              options={[{label: 'A', value: 'a'}]} 
+              className="w-48"
+            />
+            
+            <div className="bg-slate-50 p-4 rounded border space-y-4">
+               <h3 className="text-sm font-medium text-gray-500">Shadows</h3>
+               <div className="grid grid-cols-2 gap-4">
+                  <Select shadow="none" placeholder="No Shadow" options={[]} className="bg-white" />
+                  <Select shadow="md" placeholder="Medium Shadow" options={[]} className="bg-white" />
+                  <Select shadow="xl" placeholder="Extra Large Shadow" options={[]} className="bg-white" />
+               </div>
+            </div>
+
+            <div className="bg-slate-100 p-4 rounded border">
+                <Select 
+                  label="Full Width Select" 
+                  fullWidth 
+                  options={[{label: 'Wide Option', value: 1}]}
+                  placeholder="I span the whole container"
+                />
+            </div>
+         </div>
       </section>
 
     </div>
