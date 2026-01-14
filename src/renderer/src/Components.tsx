@@ -1,5 +1,6 @@
 import Button from "./components/primary/Button"
 import Checkbox from "./components/primary/Checkbox"
+import Radio from "./components/primary/Radio"
 import TextInput from "./components/primary/TextInput"
 
 // Simple icon placeholder
@@ -272,6 +273,65 @@ export const Components = () => {
         <div className="flex flex-col gap-4 items-start">
           <Checkbox label="Label on Right (Default)" />
           <Checkbox label="Label on Left" labelPlacement="left" />
+        </div>
+      </section>
+
+      <div className="border-t my-8"></div>
+
+      <div className="space-y-2 unreset">
+        <h1 className="text-3xl font-bold border-b pb-2">Radio Component</h1>
+        <p className="text-gray-500">Comprehensive display of all Radio props.</p>
+      </div>
+
+      {/* Basic Group */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Basic Group</h2>
+        <div className="flex flex-col gap-2">
+            <Radio name="fruit" value="apple" label="Apple" defaultChecked />
+            <Radio name="fruit" value="banana" label="Banana" />
+            <Radio name="fruit" value="orange" label="Orange" />
+        </div>
+      </section>
+
+      {/* Sizes */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Sizes</h2>
+        <div className="flex flex-col gap-4">
+          <Radio name="size-demo" value="sm" label="Small Radio (sm)" size="sm" defaultChecked />
+          <Radio name="size-demo" value="md" label="Medium Radio (md)" size="md" />
+          <Radio name="size-demo" value="lg" label="Large Radio (lg)" size="lg" />
+        </div>
+      </section>
+
+      {/* States */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">States</h2>
+        <div className="flex flex-col gap-4">
+          <Radio name="state-1" label="Unchecked" />
+          <Radio name="state-2" label="Checked" defaultChecked />
+          <Radio name="state-3" label="Disabled Unchecked" disabled />
+          <Radio name="state-4" label="Disabled Checked" disabled defaultChecked />
+        </div>
+      </section>
+
+      {/* Validation */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Validation</h2>
+        <div className="flex flex-col gap-4">
+          <Radio name="val-1" label="Error (Boolean)" error defaultChecked />
+          <Radio name="val-2" label="Error (String)" error="Invalid selection" />
+          <div className="w-fit">
+             <Radio name="val-3" label="Error with Label Left" labelPlacement="left" error="Required choice" />
+          </div>
+         </div>
+      </section>
+
+      {/* Label Placement */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Label Placement</h2>
+        <div className="flex flex-col gap-4 items-start">
+          <Radio name="lp" label="Label on Right (Default)" />
+          <Radio name="lp" label="Label on Left" labelPlacement="left" />
         </div>
       </section>
 
