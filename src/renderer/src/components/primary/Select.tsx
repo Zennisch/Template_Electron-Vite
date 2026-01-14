@@ -76,6 +76,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
 
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [focusedIndex, setFocusedIndex] = useState(-1)
 
   const [internalValue, setInternalValue] = useState<string | number | (string | number)[] | undefined>(
     defaultValue !== undefined ? defaultValue : multiple ? [] : undefined
@@ -85,6 +86,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
 
   const containerRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
 
   const isError = !!error
 
@@ -95,11 +97,32 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false)
         setSearchQuery("")
+        setFocusedIndex(-1)
       }
     }
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
+
+  useEffect(() => {
+    if (isOpen) {
+      setFocusedIndex(0)
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    if (!isOpen || focusedIndex < 0 || !listRef.current) return
+    const list = listRef.current
+    const optionsItems = list.querySelectorAll('li[role="option"]')
+    const activeItem = optionsItems[focusedIndex] as HTMLElement
+    if (activeItem) {
+      if (focusedIndex === 0) {
+        list.scrollTop = 0
+      } else {
+        activeItem.scrollIntoView({ block: "nearest" })
+      }
+    }
+  }, [focusedIndex, isOpen])
 
   useEffect(() => {
     if (isOpen && searchable && searchInputRef.current) {
@@ -152,6 +175,46 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
   const filteredOptions = onSearchChange
     ? options
     : options.filter((opt) => opt.label.toLowerCase().includes(searchQuery.toLowerCase()))
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (disabled) return
+
+    if (!isOpen) {
+      if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+        e.preventDefault()
+        setIsOpen(true)
+      }
+      return
+    }
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault()
+        if (filteredOptions.length > 0) {
+          setFocusedIndex((prev) => (prev + 1) % filteredOptions.length)
+        }
+        break
+      case "ArrowUp":
+        e.preventDefault()
+        if (filteredOptions.length > 0) {
+          setFocusedIndex((prev) => (prev - 1 + filteredOptions.length) % filteredOptions.length)
+        }
+        break
+      case "Enter":
+        e.preventDefault()
+        if (filteredOptions.length > 0 && focusedIndex >= 0 && !filteredOptions[focusedIndex].disabled) {
+          handleSelect(filteredOptions[focusedIndex].value)
+        }
+        break
+      case "Escape":
+        e.preventDefault()
+        setIsOpen(false)
+        break
+      case "Tab":
+        setIsOpen(false)
+        break
+    }
+  }
 
   const getLabel = (val: string | number) => {
     return options.find((o) => o.value === val)?.label || val
@@ -269,6 +332,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
           disabled={disabled}
           className={triggerClasses}
           onClick={() => setIsOpen(!isOpen)}
+          onKeyDown={handleKeyDown}
         >
           {iconStart && !multiple && (
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">
@@ -286,6 +350,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
         </button>
 
         <ul
+          ref={listRef}
           className={cn(
             "absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm",
             "transition-all duration-200 ease-in-out origin-top",
@@ -309,6 +374,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
                   className="w-full rounded border border-slate-300 py-1.5 pl-8 pr-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-900"
                   placeholder="Search..."
                   value={searchQuery}
+                  onKeyDown={handleKeyDown}
                   onChange={(e) => {
                     setSearchQuery(e.target.value)
                     onSearchChange?.(e.target.value)
@@ -327,8 +393,10 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
           ) : filteredOptions.length === 0 ? (
             <div className="py-2 px-3 text-slate-500 text-sm text-center">No options found</div>
           ) : (
-            filteredOptions.map((option) => {
+            filteredOptions.map((option, index) => {
               const checked = isSelected(option.value)
+              const isFocused = index === focusedIndex
+
               return (
                 <li
                   key={option.value}
@@ -338,7 +406,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
                       ? "opacity-50 cursor-not-allowed"
                       : "cursor-pointer hover:bg-indigo-50 hover:text-indigo-900",
                     checked && !multiple ? "bg-indigo-50 text-indigo-900 font-medium" : "text-slate-900",
-                    checked && multiple ? "bg-indigo-50/50" : ""
+                    checked && multiple ? "bg-indigo-50/50" : "",
+                    isFocused && !checked && !option.disabled ? "bg-indigo-50 text-indigo-900" : ""
                   )}
                   role="option"
                   aria-selected={checked}
