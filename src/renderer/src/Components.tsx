@@ -3,6 +3,7 @@ import Button from "./components/primary/Button"
 import Checkbox from "./components/primary/Checkbox"
 import Radio from "./components/primary/Radio"
 import Select, { OptionItem } from "./components/primary/Select"
+import Slider from "./components/primary/Slider"
 import TextInput from "./components/primary/TextInput"
 
 // Simple icon placeholder
@@ -542,6 +543,58 @@ export const Components = () => {
           />
 
           <AsyncSelectExample />
+        </div>
+      </section>
+
+      <div className="border-t my-8"></div>
+
+      <div className="space-y-2 unreset">
+        <h1 className="text-3xl font-bold border-b pb-2">Slider Component</h1>
+        <p className="text-gray-500">Comprehensive display of all Slider props.</p>
+      </div>
+
+      {/* Sizes */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Sizes</h2>
+        <div className="flex flex-col gap-8 max-w-md">
+          <Slider label="Small (sm)" size="sm" defaultValue={25} />
+          <Slider label="Medium (md)" size="md" defaultValue={50} />
+          <Slider label="Large (lg)" size="lg" defaultValue={75} />
+        </div>
+      </section>
+
+      {/* Configurations */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Configurations</h2>
+        <div className="flex flex-col gap-8 max-w-md">
+          <Slider label="Custom Range (0-10)" min={0} max={10} defaultValue={5} showValue />
+          <Slider label="Step (10)" min={0} max={100} step={10} defaultValue={30} showValue />
+          <Slider
+            label="Currency Formatter"
+            min={0}
+            max={1000}
+            defaultValue={450}
+            showValue
+            valueFormatter={(val) => `$${val}`}
+          />
+        </div>
+      </section>
+
+      {/* States */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">States & Validation</h2>
+        <div className="flex flex-col gap-8 max-w-md">
+          <Slider label="With Help Text" defaultValue={60} helpText="Adjust the volume level." />
+          <Slider label="Error State" defaultValue={0} error="Invalid configuration" />
+          <Slider label="Disabled" defaultValue={40} disabled />
+        </div>
+      </section>
+
+      {/* Layout */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Layout</h2>
+        <div className="w-full bg-slate-50 p-4 rounded border">
+          <Slider label="Full Width" fullWidth defaultValue={50} showValue />
         </div>
       </section>
     </div>
