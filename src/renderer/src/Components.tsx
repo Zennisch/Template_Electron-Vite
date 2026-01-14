@@ -14,7 +14,7 @@ export const Components = () => {
         <h1 className="text-3xl font-bold border-b pb-2">Button Component</h1>
         <p className="text-gray-500">Comprehensive display of all Button props.</p>
       </div>
-      
+
       {/* Variants */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Variants</h2>
@@ -49,15 +49,25 @@ export const Components = () => {
         </div>
       </section>
 
-       {/* Shadows */}
-       <section className="space-y-4">
+      {/* Shadows */}
+      <section className="space-y-4">
         <h2 className="text-xl font-semibold">Shadows</h2>
         <div className="flex flex-wrap gap-4 items-center bg-gray-50 p-4 rounded-lg border">
-          <Button shadow="none" variant="secondary">No Shadow</Button>
-          <Button shadow="sm" variant="secondary">Small</Button>
-          <Button shadow="md" variant="secondary">Medium</Button>
-          <Button shadow="lg" variant="secondary">Large</Button>
-          <Button shadow="xl" variant="secondary">Extra Large</Button>
+          <Button shadow="none" variant="secondary">
+            No Shadow
+          </Button>
+          <Button shadow="sm" variant="secondary">
+            Small
+          </Button>
+          <Button shadow="md" variant="secondary">
+            Medium
+          </Button>
+          <Button shadow="lg" variant="secondary">
+            Large
+          </Button>
+          <Button shadow="xl" variant="secondary">
+            Extra Large
+          </Button>
         </div>
       </section>
 
@@ -67,7 +77,9 @@ export const Components = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <Button iconStart={<Icon />}>Icon Start</Button>
           <Button iconEnd={<Icon />}>Icon End</Button>
-          <Button iconStart={<Icon />} iconEnd={<Icon />}>Both Icons</Button>
+          <Button iconStart={<Icon />} iconEnd={<Icon />}>
+            Both Icons
+          </Button>
           <div className="flex items-center gap-2 border-l pl-4">
             <span className="text-sm text-gray-500">Icon Only:</span>
             <Button iconOnly iconStart={<Icon />} aria-label="Star" />
@@ -83,10 +95,12 @@ export const Components = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <Button disabled>Disabled</Button>
           <Button loading>Loading</Button>
-          <Button loading loadingText="Saving...">Loading Text</Button>
-          <Button 
-            loading 
-            loadingComponent={<span className="animate-spin text-lg leading-none">↻</span>} 
+          <Button loading loadingText="Saving...">
+            Loading Text
+          </Button>
+          <Button
+            loading
+            loadingComponent={<span className="animate-spin text-lg leading-none">↻</span>}
             loadingText="Custom Spinner"
           >
             Custom
@@ -99,20 +113,26 @@ export const Components = () => {
         <h2 className="text-xl font-semibold">Press Animations</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-             <h3 className="font-medium text-sm text-gray-600">Strengths</h3>
-             <div className="flex gap-2">
-                <Button pressAnimationStyle="scale" pressAnimationStrength="light">Light</Button>
-                <Button pressAnimationStyle="scale" pressAnimationStrength="medium">Medium</Button>
-                <Button pressAnimationStyle="scale" pressAnimationStrength="strong">Strong</Button>
-             </div>
+            <h3 className="font-medium text-sm text-gray-600">Strengths</h3>
+            <div className="flex gap-2">
+              <Button pressAnimationStyle="scale" pressAnimationStrength="light">
+                Light
+              </Button>
+              <Button pressAnimationStyle="scale" pressAnimationStrength="medium">
+                Medium
+              </Button>
+              <Button pressAnimationStyle="scale" pressAnimationStrength="strong">
+                Strong
+              </Button>
+            </div>
           </div>
           <div className="space-y-2">
-             <h3 className="font-medium text-sm text-gray-600">Durations & Styles</h3>
-              <div className="flex gap-2">
-                <Button pressAnimationStyle="none">No Animation</Button>
-                <Button pressAnimationDuration="short">Short</Button>
-                <Button pressAnimationDuration="long">Long</Button>
-             </div>
+            <h3 className="font-medium text-sm text-gray-600">Durations & Styles</h3>
+            <div className="flex gap-2">
+              <Button pressAnimationStyle="none">No Animation</Button>
+              <Button pressAnimationDuration="short">Short</Button>
+              <Button pressAnimationDuration="long">Long</Button>
+            </div>
           </div>
         </div>
       </section>
@@ -123,12 +143,10 @@ export const Components = () => {
         <div className="space-y-4 max-w-md">
           <Button fullWidth>Full Width Button</Button>
           <div className="flex gap-4">
-             <Button className="bg-pink-500 hover:bg-pink-600 focus-visible:ring-pink-500">
-                Custom ClassName
-             </Button>
-             <Button as="a" href="#" target="_blank" variant="secondary">
-                Rendered as &lt;a&gt; tag
-             </Button>
+            <Button className="bg-pink-500 hover:bg-pink-600 focus-visible:ring-pink-500">Custom ClassName</Button>
+            <Button as="a" href="#" target="_blank" variant="secondary">
+              Rendered as &lt;a&gt; tag
+            </Button>
           </div>
         </div>
       </section>
@@ -144,10 +162,10 @@ export const Components = () => {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Sizes</h2>
         <div className="grid gap-4 max-w-md">
-           <TextInput label="Small Input (sm)" size="sm" placeholder="Type here..." />
-           <TextInput label="Medium Input (md)" size="md" placeholder="Type here..." />
-           <TextInput label="Large Input (lg)" size="lg" placeholder="Type here..." />
-           <TextInput label="Extra Large Input (xl)" size="xl" placeholder="Type here..." />
+          <TextInput label="Small Input (sm)" size="sm" placeholder="Type here..." />
+          <TextInput label="Medium Input (md)" size="md" placeholder="Type here..." />
+          <TextInput label="Large Input (lg)" size="lg" placeholder="Type here..." />
+          <TextInput label="Extra Large Input (xl)" size="xl" placeholder="Type here..." />
         </div>
       </section>
 
@@ -155,19 +173,15 @@ export const Components = () => {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Validation & States</h2>
         <div className="grid gap-4 max-w-md">
-           <TextInput label="With Helper Text" helpText="This is some helpful text explaining the input." />
-           <TextInput 
-             label="Error State (String)" 
-             error="This field is required" 
-             defaultValue="Invalid value" 
-           />
-           <TextInput 
-             label="Error State (Boolean)" 
-             error={true} 
-             helpText="Error prop is true, so this is red."
-             defaultValue="Invalid value" 
-           />
-           <TextInput label="Disabled Input" disabled defaultValue="You cannot edit this content" />
+          <TextInput label="With Helper Text" helpText="This is some helpful text explaining the input." />
+          <TextInput label="Error State (String)" error="This field is required" defaultValue="Invalid value" />
+          <TextInput
+            label="Error State (Boolean)"
+            error={true}
+            helpText="Error prop is true, so this is red."
+            defaultValue="Invalid value"
+          />
+          <TextInput label="Disabled Input" disabled defaultValue="You cannot edit this content" />
         </div>
       </section>
 
@@ -175,9 +189,9 @@ export const Components = () => {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Icons</h2>
         <div className="grid gap-4 max-w-md">
-           <TextInput label="Icon Start" iconStart={<Icon />} placeholder="Search..." />
-           <TextInput label="Icon End" iconEnd={<Icon />} placeholder="Search..." />
-           <TextInput label="Both Icons" iconStart={<Icon />} iconEnd={<Icon />} placeholder="Enter amount..." />
+          <TextInput label="Icon Start" iconStart={<Icon />} placeholder="Search..." />
+          <TextInput label="Icon End" iconEnd={<Icon />} placeholder="Search..." />
+          <TextInput label="Both Icons" iconStart={<Icon />} iconEnd={<Icon />} placeholder="Enter amount..." />
         </div>
       </section>
 
@@ -185,45 +199,45 @@ export const Components = () => {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Layout & Styles</h2>
         <div className="grid gap-6 max-w-2xl">
-           <TextInput 
-             label="Horizontal Layout (labelPlacement='left')" 
-             labelPlacement="left" 
-             placeholder="Labels are on the left" 
-           />
-           
-           <div className="p-4 bg-gray-50 rounded-lg space-y-4 border">
-              <h3 className="font-medium text-sm text-gray-600">Shadows</h3>
-              <TextInput label="Shadow SM" shadow="sm" placeholder="Small shadow" className="bg-white" />
-              <TextInput label="Shadow MD" shadow="md" placeholder="Medium shadow" className="bg-white" />
-              <TextInput label="Shadow LG" shadow="lg" placeholder="Large shadow" className="bg-white" />
-           </div>
+          <TextInput
+            label="Horizontal Layout (labelPlacement='left')"
+            labelPlacement="left"
+            placeholder="Labels are on the left"
+          />
+
+          <div className="p-4 bg-gray-50 rounded-lg space-y-4 border">
+            <h3 className="font-medium text-sm text-gray-600">Shadows</h3>
+            <TextInput label="Shadow SM" shadow="sm" placeholder="Small shadow" className="bg-white" />
+            <TextInput label="Shadow MD" shadow="md" placeholder="Medium shadow" className="bg-white" />
+            <TextInput label="Shadow LG" shadow="lg" placeholder="Large shadow" className="bg-white" />
+          </div>
         </div>
       </section>
 
       {/* Multiline */}
       <section className="space-y-4">
-         <h2 className="text-xl font-semibold">Multiline (Textarea)</h2>
-         <div className="max-w-md">
-            <TextInput 
-              label="Bio" 
-              multiline 
-              rows={4} 
-              placeholder="Tell us about yourself..." 
-              helpText="This uses the 'multiline' prop to render a textarea."
-            />
-         </div>
+        <h2 className="text-xl font-semibold">Multiline (Textarea)</h2>
+        <div className="max-w-md">
+          <TextInput
+            label="Bio"
+            multiline
+            rows={4}
+            placeholder="Tell us about yourself..."
+            helpText="This uses the 'multiline' prop to render a textarea."
+          />
+        </div>
       </section>
 
       {/* Full Width */}
       <section className="space-y-4">
-         <h2 className="text-xl font-semibold">Full Width Container</h2>
-         <div className="w-full bg-slate-100 p-4 rounded border">
-            <TextInput 
-              label="Full Width Input" 
-              fullWidth 
-              placeholder="This input spans the full width of its container using the 'fullWidth' prop." 
-            />
-         </div>
+        <h2 className="text-xl font-semibold">Full Width Container</h2>
+        <div className="w-full bg-slate-100 p-4 rounded border">
+          <TextInput
+            label="Full Width Input"
+            fullWidth
+            placeholder="This input spans the full width of its container using the 'fullWidth' prop."
+          />
+        </div>
       </section>
 
       <div className="border-t my-8"></div>
@@ -263,9 +277,9 @@ export const Components = () => {
           <Checkbox label="Error (Boolean)" error defaultChecked />
           <Checkbox label="Error (String)" error="You must agree to the terms" />
           <div className="w-fit">
-             <Checkbox label="Error with Label Left" labelPlacement="left" error="Required field" />
+            <Checkbox label="Error with Label Left" labelPlacement="left" error="Required field" />
           </div>
-         </div>
+        </div>
       </section>
 
       {/* Label Placement */}
@@ -288,9 +302,9 @@ export const Components = () => {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Basic Group</h2>
         <div className="flex flex-col gap-2">
-            <Radio name="fruit" value="apple" label="Apple" defaultChecked />
-            <Radio name="fruit" value="banana" label="Banana" />
-            <Radio name="fruit" value="orange" label="Orange" />
+          <Radio name="fruit" value="apple" label="Apple" defaultChecked />
+          <Radio name="fruit" value="banana" label="Banana" />
+          <Radio name="fruit" value="orange" label="Orange" />
         </div>
       </section>
 
@@ -322,9 +336,9 @@ export const Components = () => {
           <Radio name="val-1" label="Error (Boolean)" error defaultChecked />
           <Radio name="val-2" label="Error (String)" error="Invalid selection" />
           <div className="w-fit">
-             <Radio name="val-3" label="Error with Label Left" labelPlacement="left" error="Required choice" />
+            <Radio name="val-3" label="Error with Label Left" labelPlacement="left" error="Required choice" />
           </div>
-         </div>
+        </div>
       </section>
 
       {/* Label Placement */}
@@ -343,32 +357,17 @@ export const Components = () => {
         <p className="text-gray-500">Comprehensive display of all Select props.</p>
       </div>
 
-       {/* Sizes */}
-       <section className="space-y-4">
+      {/* Sizes */}
+      <section className="space-y-4">
         <h2 className="text-xl font-semibold">Sizes</h2>
         <div className="flex flex-col gap-4 max-w-xs">
-          <Select 
-            label="Small (sm)" 
-            size="sm" 
-            options={[{label: 'Small', value: 's'}]} 
-            placeholder="Select small..."
-          />
-           <Select 
-            label="Medium (md)" 
-            size="md" 
-            options={[{label: 'Medium', value: 'm'}]} 
-            placeholder="Select medium..."
-          />
-           <Select 
-            label="Large (lg)" 
-            size="lg" 
-            options={[{label: 'Large', value: 'l'}]} 
-            placeholder="Select large..."
-          />
-           <Select 
-            label="Extra Large (xl)" 
-            size="xl" 
-            options={[{label: 'Extra Large', value: 'xl'}]} 
+          <Select label="Small (sm)" size="sm" options={[{ label: "Small", value: "s" }]} placeholder="Select small..." />
+          <Select label="Medium (md)" size="md" options={[{ label: "Medium", value: "m" }]} placeholder="Select medium..." />
+          <Select label="Large (lg)" size="lg" options={[{ label: "Large", value: "l" }]} placeholder="Select large..." />
+          <Select
+            label="Extra Large (xl)"
+            size="xl"
+            options={[{ label: "Extra Large", value: "xl" }]}
             placeholder="Select extra large..."
           />
         </div>
@@ -376,94 +375,122 @@ export const Components = () => {
 
       {/* States */}
       <section className="space-y-4">
-         <h2 className="text-xl font-semibold">States & Validation</h2>
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Select 
-              label="Standard" 
-              options={[{label: 'Option 1', value: 1}, {label: 'Option 2', value: 2}]} 
-            />
-            <Select 
-              label="With Help Text" 
-              helpText="Please select the best option."
-              options={[]} 
-            />
-            <Select 
-              label="Error (String)" 
-              error="Selection is required" 
-              options={[]} 
-            />
-             <Select 
-              label="Error (Boolean)" 
-              error 
-              helpText="This field has an error."
-              options={[]} 
-            />
-            <Select 
-              label="Disabled" 
-              disabled 
-              placeholder="Cannot select"
-              options={[]} 
-            />
-             <Select 
-              label="With Default Value" 
-              defaultValue={2}
-              options={[{label: 'Option 1', value: 1}, {label: 'Option 2', value: 2}]} 
-            />
-         </div>
+        <h2 className="text-xl font-semibold">States & Validation</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Select
+            label="Standard"
+            options={[
+              { label: "Option 1", value: 1 },
+              { label: "Option 2", value: 2 }
+            ]}
+          />
+          <Select label="With Help Text" helpText="Please select the best option." options={[]} />
+          <Select label="Error (String)" error="Selection is required" options={[]} />
+          <Select label="Error (Boolean)" error helpText="This field has an error." options={[]} />
+          <Select label="Disabled" disabled placeholder="Cannot select" options={[]} />
+          <Select
+            label="With Default Value"
+            defaultValue={2}
+            options={[
+              { label: "Option 1", value: 1 },
+              { label: "Option 2", value: 2 }
+            ]}
+          />
+        </div>
       </section>
 
       {/* Icons */}
       <section className="space-y-4">
-         <h2 className="text-xl font-semibold">Icons</h2>
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Select 
-              label="Icon Start" 
-              iconStart={<Icon />}
-              options={[{label: 'Option 1', value: 1}]} 
-            />
-             <Select 
-              label="Options with Icons" 
-              options={[
-                {label: 'Star', value: 'star', icon: <Icon />},
-                {label: 'Heart', value: 'heart', icon: <span className="text-red-500">♥</span>},
-                {label: 'Disabled Option', value: 'dis', disabled: true}
-              ]} 
-              placeholder="Pick an icon..."
-            />
-         </div>
+        <h2 className="text-xl font-semibold">Icons</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Select label="Icon Start" iconStart={<Icon />} options={[{ label: "Option 1", value: 1 }]} />
+          <Select
+            label="Options with Icons"
+            options={[
+              { label: "Star", value: "star", icon: <Icon /> },
+              { label: "Heart", value: "heart", icon: <span className="text-red-500">♥</span> },
+              { label: "Disabled Option", value: "dis", disabled: true }
+            ]}
+            placeholder="Pick an icon..."
+          />
+        </div>
       </section>
 
       {/* Styles */}
       <section className="space-y-4">
-         <h2 className="text-xl font-semibold">Styles & Layout</h2>
-         <div className="space-y-6">
-            <Select 
-              label="Label Placement Left" 
-              labelPlacement="left"
-              options={[{label: 'A', value: 'a'}]} 
-              className="w-48"
-            />
-            
-            <div className="bg-slate-50 p-4 rounded border space-y-4">
-               <h3 className="text-sm font-medium text-gray-500">Shadows</h3>
-               <div className="grid grid-cols-2 gap-4">
-                  <Select shadow="none" placeholder="No Shadow" options={[]} className="bg-white" />
-                  <Select shadow="md" placeholder="Medium Shadow" options={[]} className="bg-white" />
-                  <Select shadow="xl" placeholder="Extra Large Shadow" options={[]} className="bg-white" />
-               </div>
-            </div>
+        <h2 className="text-xl font-semibold">Styles & Layout</h2>
+        <div className="space-y-6">
+          <Select label="Label Placement Left" labelPlacement="left" options={[{ label: "A", value: "a" }]} className="w-48" />
 
-            <div className="bg-slate-100 p-4 rounded border">
-                <Select 
-                  label="Full Width Select" 
-                  fullWidth 
-                  options={[{label: 'Wide Option', value: 1}]}
-                  placeholder="I span the whole container"
-                />
+          <div className="bg-slate-50 p-4 rounded border space-y-4">
+            <h3 className="text-sm font-medium text-gray-500">Shadows</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <Select shadow="none" placeholder="No Shadow" options={[]} className="bg-white" />
+              <Select shadow="md" placeholder="Medium Shadow" options={[]} className="bg-white" />
+              <Select shadow="xl" placeholder="Extra Large Shadow" options={[]} className="bg-white" />
             </div>
-         </div>
+          </div>
+
+          <div className="bg-slate-100 p-4 rounded border">
+            <Select
+              label="Full Width Select"
+              fullWidth
+              options={[{ label: "Wide Option", value: 1 }]}
+              placeholder="I span the whole container"
+            />
+          </div>
+        </div>
       </section>
 
+      {/* Advanced Features */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Advanced Features</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+          <Select
+            label="Searchable Select"
+            searchable
+            placeholder="Type to filter..."
+            options={[
+              { label: "React", value: "react" },
+              { label: "Vue", value: "vue" },
+              { label: "Angular", value: "angular" },
+              { label: "Svelte", value: "svelte" },
+              { label: "Solid", value: "solid" },
+              { label: "Qwik", value: "qwik" }
+            ]}
+          />
+
+          <Select
+            label="Multiple Select"
+            multiple
+            placeholder="Select multiple items..."
+            defaultValue={["react", "vue"]}
+            options={[
+              { label: "React", value: "react" },
+              { label: "Vue", value: "vue" },
+              { label: "Angular", value: "angular" },
+              { label: "Svelte", value: "svelte" }
+            ]}
+          />
+
+          <Select
+            label="Searchable + Multiple"
+            searchable
+            multiple
+            fullWidth
+            placeholder="Type to search & select multiple..."
+            options={[
+              { label: "Apple", value: "apple" },
+              { label: "Banana", value: "banana" },
+              { label: "Cherry", value: "cherry" },
+              { label: "Durian", value: "durian" },
+              { label: "Elderberry", value: "elderberry" },
+              { label: "Fig", value: "fig" },
+              { label: "Grape", value: "grape" }
+            ]}
+          />
+        </div>
+      </section>
     </div>
   )
 }
