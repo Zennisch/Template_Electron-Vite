@@ -15,6 +15,7 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   onChange?: (checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void
 
   error?: boolean | string
+  helpText?: string
   size?: Size
 
   containerClassName?: string
@@ -29,6 +30,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
     indeterminate = false,
     onChange,
     error,
+    helpText,
     size = "md",
     disabled,
     className,
@@ -41,6 +43,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
   const generatedId = useId()
   const inputId = id || generatedId
   const errorId = `${inputId}-error`
+  const helpId = `${inputId}-help`
 
   useEffect(() => {
     if (innerRef.current) {
@@ -108,6 +111,8 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
     className
   )
 
+  const descriptionId = error ? errorId : helpText ? helpId : undefined
+
   return (
     <div className="flex flex-col">
       <div className={containerClasses}>
@@ -122,7 +127,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
             disabled={disabled}
             onChange={handleChange}
             aria-invalid={isError}
-            aria-describedby={isError ? errorId : undefined}
+            aria-describedby={descriptionId}
             {...rest}
           />
 
@@ -144,10 +149,20 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
         )}
       </div>
 
-      {isError && typeof error === "string" && (
-        <p className={cn("mt-1 text-xs text-red-600", labelPlacement === "left" ? "text-right" : "ml-7")} id={errorId}>
-          {error}
-        </p>
+      {(isError || helpText) && (
+        <div className={cn(labelPlacement === "left" ? "text-right pr-1" : "ml-7")}>
+          {isError && typeof error === "string" && (
+            <p className="mt-1 text-xs text-red-600 font-medium" id={errorId}>
+              {error}
+            </p>
+          )}
+          
+          {!isError && helpText && (
+            <p className="mt-1 text-xs text-slate-500" id={helpId}>
+              {helpText}
+            </p>
+          )}
+        </div>
       )}
     </div>
   )

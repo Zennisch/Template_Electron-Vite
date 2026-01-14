@@ -4,7 +4,7 @@ import { cn } from "./utils"
 type Size = "sm" | "md" | "lg"
 type LabelPlacement = "left" | "right"
 
-export interface ToggleProps
+export interface SwitchProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
   label?: string
   labelPlacement?: LabelPlacement
@@ -15,11 +15,12 @@ export interface ToggleProps
   
   size?: Size
   error?: boolean | string
+  helpText?: string
   
   containerClassName?: string
 }
 
-const Toggle = forwardRef<HTMLInputElement, ToggleProps>((props, ref) => {
+const Switch = forwardRef<HTMLInputElement, SwitchProps>((props, ref) => {
   const {
     label,
     labelPlacement = "right",
@@ -28,6 +29,7 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>((props, ref) => {
     onChange,
     size = "md",
     error,
+    helpText,
     disabled,
     className,
     containerClassName,
@@ -38,6 +40,7 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>((props, ref) => {
   const generatedId = useId()
   const inputId = id || generatedId
   const errorId = `${inputId}-error`
+  const helpId = `${inputId}-help`
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(e.target.checked)
@@ -100,6 +103,8 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>((props, ref) => {
     "translate-x-0",
     thumbSizeClasses[size]
   )
+  
+  const descriptionId = error ? errorId : helpText ? helpId : undefined
 
   return (
     <div className="flex flex-col">
@@ -115,7 +120,7 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>((props, ref) => {
             disabled={disabled}
             onChange={handleChange}
             aria-invalid={isError}
-            aria-describedby={isError ? errorId : undefined}
+            aria-describedby={descriptionId}
             {...rest}
           />
           
@@ -136,18 +141,25 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>((props, ref) => {
         )}
       </div>
 
-      {isError && typeof error === "string" && (
-        <p 
-          className={cn("mt-1 text-xs text-red-600", labelPlacement === "left" ? "text-right" : "ml-13")} 
-          id={errorId}
-        >
-          {error}
-        </p>
+      {(isError || helpText) && (
+        <div className={cn(labelPlacement === "left" ? "text-right pr-2" : "ml-13")}> 
+          {isError && typeof error === "string" && (
+            <p className="mt-1 text-xs text-red-600 font-medium" id={errorId}>
+              {error}
+            </p>
+          )}
+
+          {!isError && helpText && (
+            <p className="mt-1 text-xs text-slate-500" id={helpId}>
+              {helpText}
+            </p>
+          )}
+        </div>
       )}
     </div>
   )
 })
 
-Toggle.displayName = "Toggle"
+Switch.displayName = "Switch"
 
-export default Toggle
+export default Switch
