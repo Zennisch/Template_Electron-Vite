@@ -1,4 +1,5 @@
 import Button from "./components/primary/Button"
+import Checkbox from "./components/primary/Checkbox"
 import TextInput from "./components/primary/TextInput"
 
 // Simple icon placeholder
@@ -221,6 +222,57 @@ export const Components = () => {
               placeholder="This input spans the full width of its container using the 'fullWidth' prop." 
             />
          </div>
+      </section>
+
+      <div className="border-t my-8"></div>
+
+      <div className="space-y-2 unreset">
+        <h1 className="text-3xl font-bold border-b pb-2">Checkbox Component</h1>
+        <p className="text-gray-500">Comprehensive display of all Checkbox props.</p>
+      </div>
+
+      {/* Sizes */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Sizes</h2>
+        <div className="flex flex-col gap-4">
+          <Checkbox label="Small Checkbox (sm)" size="sm" defaultChecked />
+          <Checkbox label="Medium Checkbox (md)" size="md" defaultChecked />
+          <Checkbox label="Large Checkbox (lg)" size="lg" defaultChecked />
+        </div>
+      </section>
+
+      {/* States */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">States</h2>
+        <div className="flex flex-col gap-4">
+          <Checkbox label="Unchecked" />
+          <Checkbox label="Checked" defaultChecked />
+          <Checkbox label="Indeterminate" indeterminate />
+          <Checkbox label="Disabled Unchecked" disabled />
+          <Checkbox label="Disabled Checked" disabled defaultChecked />
+          <Checkbox label="Disabled Indeterminate" disabled indeterminate />
+        </div>
+      </section>
+
+      {/* Validation */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Validation</h2>
+        <div className="flex flex-col gap-4">
+          <Checkbox label="Error (Boolean)" error defaultChecked />
+          <Checkbox label="Error (String)" error="You must agree to the terms" />
+          <div className="w-fit">
+             <Checkbox label="Error with Label Left" labelPlacement="left" error="Required field" />
+          </div>
+         </div>
+      </section>
+
+      {/* Label Placement */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Label Placement</h2>
+        <div className="flex flex-col gap-4 items-start">
+          <Checkbox label="Label on Right (Default)" />
+          <Checkbox label="Label on Left" labelPlacement="left" />
+        </div>
       </section>
 
     </div>

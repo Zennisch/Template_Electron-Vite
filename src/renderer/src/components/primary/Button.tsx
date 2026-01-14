@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes, forwardRef, memo, ReactNode } from "react"
-import { cn, DefaultSpinner } from "./utils"
+import { cn, DefaultSpinnerIcon } from "./utils"
 
 type Variant = "primary" | "secondary" | "tertiary" | "danger" | "ghost"
 type Size = "xs" | "sm" | "md" | "lg" | "xl"
@@ -133,7 +133,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   )
 
   const renderContent = () => {
-    const Spinner = loadingComponent || DefaultSpinner
+    const Spinner = loadingComponent || DefaultSpinnerIcon
 
     if (loading && loadingText) {
       return (
