@@ -410,10 +410,10 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
                     "relative cursor-default select-none py-2.5 pl-3 pr-9 transition-colors",
                     option.disabled
                       ? "opacity-50 cursor-not-allowed"
-                      : "cursor-pointer hover:bg-indigo-50 hover:text-indigo-900",
+                      : "cursor-pointer hover:bg-indigo-100 hover:text-indigo-900",
                     checked && !multiple ? "bg-indigo-50 text-indigo-900 font-medium" : "text-slate-900",
                     checked && multiple ? "bg-indigo-50/50" : "",
-                    isFocused && !checked && !option.disabled ? "bg-indigo-50 text-indigo-900" : ""
+                    isFocused && !option.disabled ? "bg-indigo-100 text-indigo-900" : ""
                   )}
                   role="option"
                   aria-selected={checked}
