@@ -328,15 +328,16 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
       )}
 
       <div className={wrapperClasses}>
-        <button
-          type="button"
+        <div
           id={selectId}
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           aria-labelledby={label ? undefined : selectId}
-          disabled={disabled}
+          aria-disabled={disabled}
+          tabIndex={disabled ? -1 : 0}
+          role="combobox"
           className={triggerClasses}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => !disabled && setIsOpen(!isOpen)}
           onKeyDown={handleKeyDown}
         >
           {iconStart && !multiple && (
@@ -352,7 +353,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
               className={cn("h-5 w-5 text-slate-400 transition-transform duration-200", isOpen && "transform rotate-180")}
             />
           </span>
-        </button>
+        </div>
 
         <ul
           ref={listRef}
