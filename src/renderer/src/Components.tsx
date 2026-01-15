@@ -6,11 +6,12 @@ import Select, { OptionItem } from "./components/primary/Select"
 import Slider from "./components/primary/Slider"
 import Switch from "./components/primary/Switch"
 import TextInput from "./components/primary/TextInput"
+import Modal from "./components/primary/Modal"
 
 // Simple icon placeholder
 const Icon = () => <span className="text-current">★</span>
 
-const AsyncSelectExample = () => {
+const AsyncSelect = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [options, setOptions] = useState<OptionItem[]>([])
 
@@ -57,6 +58,137 @@ const AsyncSelectExample = () => {
       options={options}
       helpText="Simulates a server-side search with 800ms delay"
     />
+  )
+}
+
+const Modals = () => {
+  const [basicOpen, setBasicOpen] = useState(false)
+  const [size, setSize] = useState<"sm" | "md" | "lg" | "xl" | "2xl" | "full">("md")
+  const [sizeOpen, setSizeOpen] = useState(false)
+  const [topOpen, setTopOpen] = useState(false)
+  const [loadingOpen, setLoadingOpen] = useState(false)
+  const [customOpen, setCustomOpen] = useState(false)
+
+  return (
+    <div className="space-y-2 unreset">
+      <h1 className="text-3xl font-bold border-b pb-2">Modal Component</h1>
+      <p className="text-gray-500">Comprehensive display of all Modal props.</p>
+
+      {/* Basic */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Basic Usage</h2>
+        <Button onClick={() => setBasicOpen(true)}>Open Basic Modal</Button>
+        <Modal
+          isOpen={basicOpen}
+          onClose={() => setBasicOpen(false)}
+          header="Basic Modal"
+          body={<p>This is a standard modal dialog with a header and footer buttons.</p>}
+          footer={
+            <div className="flex justify-end gap-2 w-full">
+              <Button variant="ghost" onClick={() => setBasicOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={() => setBasicOpen(false)}>Confirm</Button>
+            </div>
+          }
+        />
+      </section>
+
+      {/* Sizes */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Sizes</h2>
+        <div className="flex flex-wrap gap-4">
+          {(["sm", "md", "lg", "xl", "2xl", "full"] as const).map((s) => (
+            <Button
+              key={s}
+              onClick={() => {
+                setSize(s)
+                setSizeOpen(true)
+              }}
+            >
+              {s.toUpperCase()}
+            </Button>
+          ))}
+        </div>
+        <Modal
+          isOpen={sizeOpen}
+          onClose={() => setSizeOpen(false)}
+          size={size}
+          header={`Size: ${size}`}
+          body={
+            <p className="text-slate-600">
+              The width of this modal is defined by the <code>size="{size}"</code> prop.
+            </p>
+          }
+          footer={<Button onClick={() => setSizeOpen(false)}>Close</Button>}
+        />
+      </section>
+
+      {/* Position */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Positions</h2>
+        <div className="flex flex-wrap gap-4">
+          <Button onClick={() => setTopOpen(true)}>Top Position</Button>
+        </div>
+        <Modal
+          isOpen={topOpen}
+          onClose={() => setTopOpen(false)}
+          position="top"
+          header="Top Position"
+          body={<p>This modal is positioned at the top of the viewport.</p>}
+          footer={<Button onClick={() => setTopOpen(false)}>Close</Button>}
+        />
+      </section>
+
+      {/* States */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">States & Customization</h2>
+        <div className="flex flex-wrap gap-4">
+          <Button onClick={() => setLoadingOpen(true)}>Loading State</Button>
+          <Button onClick={() => setCustomOpen(true)}>Custom Content (No Close on Backdrop)</Button>
+        </div>
+
+        {/* Loading */}
+        <Modal
+          isOpen={loadingOpen}
+          onClose={() => setLoadingOpen(false)}
+          loading
+          header="Processing Data"
+          body={<p>The modal is in a loading state...</p>}
+        />
+
+        {/* Custom */}
+        <Modal
+          isOpen={customOpen}
+          onClose={() => setCustomOpen(false)}
+          closeOnBackdropClick={false}
+          header={
+            <div className="flex items-center gap-2 text-indigo-600">
+              <Icon /> Custom Header
+            </div>
+          }
+          body={
+            <div className="space-y-4">
+              <p>This modal has custom content and disables backdrop closing.</p>
+              <div className="p-4 bg-yellow-50 text-yellow-800 rounded border border-yellow-200">
+                <strong>Warning:</strong> You must click one of the buttons below to close.
+              </div>
+            </div>
+          }
+          footer={
+            <div className="w-full flex justify-between items-center">
+              <span className="text-sm text-gray-500">Step 1 of 3</span>
+              <div className="flex gap-2">
+                <Button variant="secondary" onClick={() => setCustomOpen(false)}>
+                  Back
+                </Button>
+                <Button onClick={() => setCustomOpen(false)}>Next</Button>
+              </div>
+            </div>
+          }
+        />
+      </section>
+    </div>
   )
 }
 
@@ -543,7 +675,7 @@ export const Components = () => {
             ]}
           />
 
-          <AsyncSelectExample />
+          <AsyncSelect />
         </div>
       </section>
 
@@ -648,6 +780,10 @@ export const Components = () => {
           <Switch label="Label on Left" labelPlacement="left" />
         </div>
       </section>
+
+      <div className="border-t my-8"></div>
+
+      <Modals />
     </div>
   )
 }
