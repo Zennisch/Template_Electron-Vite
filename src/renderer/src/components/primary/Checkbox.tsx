@@ -12,30 +12,34 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   defaultChecked?: boolean
   indeterminate?: boolean
 
-  onChange?: (checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void
-
   error?: boolean | string
   helpText?: string
   size?: Size
 
   containerClassName?: string
+
+  onChange?: (checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
   const {
     label,
     labelPlacement = "right",
+
     checked,
     defaultChecked,
     indeterminate = false,
-    onChange,
+
     error,
     helpText,
     size = "md",
+
     disabled,
     className,
     containerClassName,
     id,
+
+    onChange,
     ...rest
   } = props
 
@@ -156,7 +160,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
               {error}
             </p>
           )}
-          
+
           {!isError && helpText && (
             <p className="mt-1 text-xs text-slate-500" id={helpId}>
               {helpText}

@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, useEffect, useId, useImperativeHandle, useRef, useState } from "react"
+import { forwardRef, HTMLAttributes, ReactNode, useEffect, useId, useImperativeHandle, useRef, useState } from "react"
 import { CheckIcon, ChevronDownIcon, cn, LoadingSpinner, SearchIcon, XMarkIcon } from "./utils"
 
 type Size = "sm" | "md" | "lg" | "xl"
@@ -12,13 +12,13 @@ export interface OptionItem {
   icon?: ReactNode
 }
 
-export interface SelectProps {
+export interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue" | "value"> {
   label?: string
   labelPlacement?: LabelPlacement
 
+  options?: OptionItem[]
   value?: string | number | (string | number)[]
   defaultValue?: string | number | (string | number)[]
-  options?: OptionItem[]
   placeholder?: string
 
   error?: string | boolean
@@ -32,41 +32,46 @@ export interface SelectProps {
 
   searchable?: boolean
   multiple?: boolean
-
-  onSearchChange?: (query: string) => void
   isLoading?: boolean
 
-  onChange?: (value: any) => void
-
   containerClassName?: string
-  className?: string
   disabled?: boolean
-  id?: string
+
+  onChange?: (value: any) => void
+  onSearchChange?: (query: string) => void
 }
 
 const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
   const {
     label,
     labelPlacement = "top",
+
     options = [],
-    placeholder = "Select an option",
     value,
     defaultValue,
+    placeholder = "Select an option",
+
     error,
     helpText,
+
     iconStart,
+
     size = "md",
     shadow = "none",
     fullWidth = false,
+
     searchable = false,
     multiple = false,
-    onSearchChange,
     isLoading = false,
-    onChange,
-    containerClassName,
+
     className,
+    containerClassName,
     id,
-    disabled
+    disabled,
+
+    onChange,
+    onSearchChange,
+    ...rest
   } = props
 
   const generatedId = useId()
@@ -315,7 +320,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
   }
 
   return (
-    <div className={containerClasses} ref={containerRef}>
+    <div className={containerClasses} ref={containerRef} {...rest}>
       {label && (
         <label className={labelClasses} onClick={() => !disabled && setIsOpen(!isOpen)}>
           {label}

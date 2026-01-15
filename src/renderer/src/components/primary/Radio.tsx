@@ -11,29 +11,33 @@ export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   checked?: boolean
   defaultChecked?: boolean
 
-  onChange?: (checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void
-
   error?: boolean | string
   helpText?: string
   size?: Size
 
   containerClassName?: string
+
+  onChange?: (checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
   const {
     label,
     labelPlacement = "right",
+
     checked,
     defaultChecked,
-    onChange,
+
     error,
     helpText,
     size = "md",
+
     disabled,
     className,
     containerClassName,
     id,
+
+    onChange,
     ...rest
   } = props
 

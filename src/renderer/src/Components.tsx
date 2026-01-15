@@ -631,11 +631,7 @@ export const Components = () => {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Validation & Help Text</h2>
         <div className="flex flex-col gap-4">
-          <Switch
-            label="With Help Text"
-            defaultChecked
-            helpText="This option enables aggressive caching."
-          />
+          <Switch label="With Help Text" defaultChecked helpText="This option enables aggressive caching." />
           <Switch label="Error (Boolean)" error defaultChecked />
           <Switch label="Error (String)" error="Failed to sync" />
           <div className="w-fit">

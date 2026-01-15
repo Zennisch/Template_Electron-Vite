@@ -29,15 +29,20 @@ const TextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputPr
   const {
     label,
     labelPlacement = "top",
+
     error,
     helpText,
+
     iconStart,
     iconEnd,
+
     size = "md",
     shadow = "none",
     fullWidth = false,
+
     multiline = false,
     rows = 3,
+
     containerClassName,
     className,
     id,

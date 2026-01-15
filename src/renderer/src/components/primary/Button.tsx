@@ -71,7 +71,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const isDisabled = disabled || loading
   const effectiveHref = isDisabled ? undefined : href
 
-  const baseClasses = "relative inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-70 select-none ring-offset-white"
+  const baseClasses =
+    "relative inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-70 select-none ring-offset-white"
 
   const variantClasses: Record<Variant, string> = {
     primary: "bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:ring-indigo-600",
@@ -110,15 +111,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   }
 
   const strengthMap: Record<PressAnimationStrength, string> = {
-      light: "active:scale-[0.98]",
-      medium: "active:scale-[0.96]",
-      strong: "active:scale-[0.90]"
-    }
+    light: "active:scale-[0.98]",
+    medium: "active:scale-[0.96]",
+    strong: "active:scale-[0.90]"
+  }
 
-  const animationClass =
-    pressAnimationStyle === "scale" && !isDisabled
-      ? strengthMap[pressAnimationStrength]
-      : ""
+  const animationClass = pressAnimationStyle === "scale" && !isDisabled ? strengthMap[pressAnimationStrength] : ""
 
   const classes = cn(
     baseClasses,
