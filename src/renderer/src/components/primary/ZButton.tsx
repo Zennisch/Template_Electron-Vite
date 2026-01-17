@@ -1,12 +1,12 @@
-import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react"
+import { ButtonHTMLAttributes, forwardRef, ReactNode, useState, MouseEvent } from "react"
 import { cn, DefaultSpinnerIcon } from "./utils"
-import { motion, HTMLMotionProps } from "framer-motion"
+import { motion, HTMLMotionProps, AnimatePresence } from "framer-motion"
 
 type Variant = "primary" | "secondary" | "tertiary" | "ghost"
 type Size = "xs" | "sm" | "md" | "lg" | "xl"
 type Shape = "rounded" | "square" | "pill"
 type Shadow = "none" | "sm" | "md" | "lg" | "xl"
-type PressAnimationStyle = "none" | "scale"
+type PressAnimationStyle = "none" | "scale" | "ripple"
 type PressAnimationDuration = "short" | "medium" | "long"
 type PressAnimationStrength = "light" | "medium" | "strong"
 
@@ -69,8 +69,11 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     type = "button",
 
     onClick,
+    onPointerDown,
     ...rest
   } = props
+
+  const [ripples, setRipples] = useState<{ x: number; y: number; id: number; size: number }[]>([])
 
   const isDisabled = disabled || loading
   const effectiveHref = isDisabled ? undefined : href
@@ -155,6 +158,7 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     shapeClasses[shape],
     shadowClasses[shadow],
     fullWidthClass,
+    pressAnimationStyle === "ripple" ? "overflow-hidden transform-gpu" : "",
     className
   )
 
@@ -180,12 +184,25 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
         }
       : {}
 
+  const handlePointerDown = (e: MouseEvent<HTMLButtonElement>) => {
+    if (pressAnimationStyle === "ripple" && !isDisabled) {
+      const button = e.currentTarget
+      const rect = button.getBoundingClientRect()
+      const size = Math.max(rect.width, rect.height)
+      const x = e.clientX - rect.left - size / 2
+      const y = e.clientY - rect.top - size / 2
+
+      setRipples((prev) => [...prev, { x, y, size, id: Date.now() }])
+    }
+    onPointerDown?.(e as any)
+  }
+
   const render = () => {
     const Spinner = loadingComponent || DefaultSpinnerIcon
 
     if (loading && loadingText) {
       return (
-        <span className="flex items-center gap-2">
+        <span className="flex items-center gap-2 relative z-10">
           {Spinner}
           {loadingText}
         </span>
@@ -193,7 +210,7 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     }
 
     return (
-      <span className="flex items-center gap-2">
+      <span className="flex items-center gap-2 relative z-10">
         {loading ? Spinner : iconStart}
         {children}
         {iconEnd}
@@ -211,9 +228,35 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       aria-disabled={isDisabled}
       className={classes}
       onClick={isDisabled ? (e: any) => e.preventDefault() : onClick}
+      onPointerDown={handlePointerDown}
       {...motionProps}
       {...rest}
     >
+      {pressAnimationStyle === "ripple" && (
+        <span className="absolute inset-0 overflow-hidden rounded-[inherit] pointer-events-none z-0">
+          <AnimatePresence>
+            {ripples.map((ripple) => (
+              <motion.span
+                key={ripple.id}
+                initial={{ scale: 0, opacity: 0.35 }}
+                animate={{ scale: 2.5, opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1 }}
+                style={{
+                  position: "absolute",
+                  left: ripple.x,
+                  top: ripple.y,
+                  width: ripple.size,
+                  height: ripple.size,
+                  borderRadius: "50%",
+                  backgroundColor: "currentColor"
+                }}
+                onAnimationComplete={() => setRipples((prev) => prev.filter((r) => r.id !== ripple.id))}
+              />
+            ))}
+          </AnimatePresence>
+        </span>
+      )}
       {render()}
     </Element>
   )

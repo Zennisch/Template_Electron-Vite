@@ -332,6 +332,7 @@ export const Components = () => {
               Rendered as &lt;a&gt; tag
             </Button>
           </div>
+          <Button pressAnimationStyle="ripple">Ripple Effect</Button>
         </div>
       </section>
 
