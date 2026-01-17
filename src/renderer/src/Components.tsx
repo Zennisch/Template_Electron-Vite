@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import Button from "./components/primary/Button"
+import { default as Button } from "./components/primary/ZButton"
 import Checkbox from "./components/primary/Checkbox"
 import Radio from "./components/primary/Radio"
 import Select, { OptionItem } from "./components/primary/Select"
@@ -207,7 +207,6 @@ export const Components = () => {
           <Button variant="primary">Primary</Button>
           <Button variant="secondary">Secondary</Button>
           <Button variant="tertiary">Tertiary</Button>
-          <Button variant="danger">Danger</Button>
           <Button variant="ghost">Ghost</Button>
         </div>
       </section>
@@ -329,7 +328,7 @@ export const Components = () => {
           <Button fullWidth>Full Width Button</Button>
           <div className="flex gap-4">
             <Button className="bg-pink-500 hover:bg-pink-600 focus-visible:ring-pink-500">Custom ClassName</Button>
-            <Button as="a" href="#" target="_blank" variant="secondary">
+            <Button element="a" href="#" target="_blank" variant="secondary">
               Rendered as &lt;a&gt; tag
             </Button>
           </div>

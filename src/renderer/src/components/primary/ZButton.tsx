@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react"
 import { cn, DefaultSpinnerIcon } from "./utils"
-import { motion } from "framer-motion"
+import { motion, HTMLMotionProps } from "framer-motion"
 
 type Variant = "primary" | "secondary" | "tertiary" | "ghost"
 type Size = "xs" | "sm" | "md" | "lg" | "xl"
@@ -69,7 +69,6 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     type = "button",
 
     onClick,
-
     ...rest
   } = props
 
@@ -161,6 +160,26 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
 
   const Element = motion(element as any)
 
+  const scaleMap: Record<PressAnimationStrength, number> = {
+    light: 0.98,
+    medium: 0.95,
+    strong: 0.9
+  }
+
+  const durationMap: Record<PressAnimationDuration, number> = {
+    short: 0.1,
+    medium: 0.2,
+    long: 0.3
+  }
+
+  const motionProps: HTMLMotionProps<any> =
+    !isDisabled && pressAnimationStyle === "scale"
+      ? {
+          whileTap: { scale: scaleMap[pressAnimationStrength] },
+          transition: { duration: durationMap[pressAnimationDuration] }
+        }
+      : {}
+
   const render = () => {
     const Spinner = loadingComponent || DefaultSpinnerIcon
 
@@ -192,6 +211,7 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       aria-disabled={isDisabled}
       className={classes}
       onClick={isDisabled ? (e: any) => e.preventDefault() : onClick}
+      {...motionProps}
       {...rest}
     >
       {render()}
