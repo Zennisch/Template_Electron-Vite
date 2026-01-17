@@ -1,4 +1,10 @@
-export const cn = (...parts: Array<string | false | undefined>) => parts.filter(Boolean).join(" ")
+export const cn = (...parts: Array<string | false | undefined>) =>
+  parts
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\n+/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 
 export const DefaultSpinnerIcon = (
   <svg
