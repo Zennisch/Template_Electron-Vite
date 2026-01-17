@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, forwardRef, ReactNode, useState, MouseEvent } from "react"
+import { ButtonHTMLAttributes, forwardRef, ReactNode, useState, MouseEvent, useMemo } from "react"
 import { cn, DefaultSpinnerIcon } from "./utils"
 import { motion, HTMLMotionProps, AnimatePresence } from "framer-motion"
 
@@ -162,7 +162,7 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     className
   )
 
-  const Element = motion(element as any)
+  const Element = useMemo(() => motion(element as any), [element])
 
   const scaleMap: Record<PressAnimationStrength, number> = {
     light: 0.98,
