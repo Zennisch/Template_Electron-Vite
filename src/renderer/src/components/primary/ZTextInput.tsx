@@ -27,6 +27,7 @@ type BaseProps = {
   size?: Size
   shadow?: Shadow
   fullWidth?: boolean
+  backgroundColor?: string
 
   multiline?: boolean
   rows?: number
@@ -70,25 +71,66 @@ const colors: Record<string, string> = {
   shadowError: "rgba(220, 38, 38, 0.1)"
 }
 
-const sizeConfig: Record<Size, { text: string; padding: string; label: string; iconPad: string; floatY: number }> = {
-  sm: { text: "text-sm", padding: "px-2.5 py-1.5", label: "top-1.5 left-1.5 text-sm", iconPad: "pl-6", floatY: -30 },
-  md: { text: "text-base", padding: "px-3 py-2.5", label: "top-2.5 left-2 text-base", iconPad: "pl-7", floatY: -34 },
-  lg: { text: "text-lg", padding: "px-4 py-3", label: "top-3 left-3 text-lg", iconPad: "pl-8", floatY: -38 },
-  xl: { text: "text-xl", padding: "px-5 py-3.5", label: "top-3.5 left-4 text-xl", iconPad: "pl-9", floatY: -44 }
+const sizeConfig: Record<
+  Size,
+  { text: string; padding: string; label: string; iconPad: string; iconPadValue: string; floatY: number }
+> = {
+  sm: {
+    text: "text-sm",
+    padding: "px-2.5 py-1.5",
+    label: "top-1.5 left-1.5 text-sm",
+    iconPad: "pl-6",
+    iconPadValue: "24px",
+    floatY: -16
+  },
+  md: {
+    text: "text-base",
+    padding: "px-3 py-2.5",
+    label: "top-2.5 left-2 text-base",
+    iconPad: "pl-7",
+    iconPadValue: "28px",
+    floatY: -22
+  },
+  lg: {
+    text: "text-lg",
+    padding: "px-4 py-3",
+    label: "top-3 left-3 text-lg",
+    iconPad: "pl-8",
+    iconPadValue: "32px",
+    floatY: -26
+  },
+  xl: {
+    text: "text-xl",
+    padding: "px-5 py-3.5",
+    label: "top-3.5 left-4 text-xl",
+    iconPad: "pl-9",
+    iconPadValue: "36px",
+    floatY: -28
+  }
 }
 
 const labelVariants: Variants = {
-  initial: { x: 0, y: 0, scale: 1, color: colors.textDefault },
-  float: (custom: { y: number; error: boolean; hasIcon: boolean }) => ({
-    x: custom.hasIcon ? -12 : 0,
+  initial: (custom: { paddingStart: string }) => ({
+    x: 0,
+    y: 0,
+    scale: 1,
+    paddingLeft: custom.paddingStart,
+    color: colors.textDefault,
+    backgroundColor: "rgba(255, 255, 255, 0)"
+  }),
+  float: (custom: { y: number; error: boolean; hasIcon: boolean; bgColor: string; paddingStart: string }) => ({
+    x: 0,
     y: custom.y,
     scale: 0.85,
+    paddingLeft: "4px",
+    backgroundColor: custom.bgColor,
     color: custom.error ? colors.textError : colors.textFocus
   })
 }
 
 const borderVariants: Variants = {
   initial: (shadow) => ({ borderColor: colors.borderDefault, boxShadow: shadow }),
+
   focus: (shadow) => ({
     borderColor: colors.borderFocus,
     boxShadow: `0px 0px 0px 4px ${colors.shadowFocus}, ${shadow}`
@@ -110,6 +152,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
     iconEnd,
 
     size = "md",
+    backgroundColor = "#ffffff",
     shadow = "none",
     fullWidth = false,
 
@@ -176,7 +219,8 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
   const containerClasses = cn("relative mt-6 mb-2", fullWidth ? "w-full" : "max-w-md w-auto", containerClassName)
 
   const wrapperClasses = cn(
-    "relative border rounded-lg bg-white flex items-center",
+    "relative flex items-center rounded-lg border",
+    "bg-white",
     config.padding,
     shadowClasses[shadow],
     disabled && "opacity-60 cursor-not-allowed bg-slate-50"
@@ -184,24 +228,25 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
 
   const inputBaseClasses = cn(
     "w-full bg-transparent outline-none text-slate-900 placeholder:text-slate-400 z-10",
-    config.text,
     "disabled:cursor-not-allowed resize-none",
+    config.text,
     className
   )
 
   const labelClasses = cn(
     "absolute pointer-events-none bg-transparent px-1 font-medium origin-top-left whitespace-nowrap z-20",
-    config.label,
-    !!iconStart && config.iconPad
+    config.label
   )
 
   const labelCustom = useMemo(
     () => ({
       y: config.floatY,
       error: !!error,
-      hasIcon: !!iconStart
+      hasIcon: !!iconStart,
+      bgColor: backgroundColor,
+      paddingStart: iconStart ? config.iconPadValue : "4px"
     }),
-    [config.floatY, error, iconStart]
+    [config.floatY, error, iconStart, backgroundColor, config.iconPadValue]
   )
 
   return (
