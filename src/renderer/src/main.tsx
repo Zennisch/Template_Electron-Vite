@@ -10,11 +10,13 @@ import "@fortawesome/fontawesome-free/css/all.min.css"
 import "./assets/main.css"
 import { HashRouter } from "react-router-dom"
 import { Components } from "./Components"
+import ZTextInput from "./components/primary/ZTextInput"
+import ZTextInputTest from "./ZTextInputTest"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <HashRouter>
-      <Components />
+      <ZTextInputTest />
     </HashRouter>
   </StrictMode>
 )
