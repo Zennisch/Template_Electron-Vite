@@ -189,9 +189,9 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     baseClasses,
     variantClasses[variant],
     sizeClasses[size],
-    iconOnly ? iconSizeClasses[size] : paddingClasses[size],
     shapeClasses[shape],
     shadowClasses[shadow],
+    iconOnly ? iconSizeClasses[size] : paddingClasses[size],
     fullWidth ? "w-full" : "",
     pressAnimationStyle === "ripple" && "overflow-hidden transform-gpu",
     className
