@@ -4,7 +4,7 @@ export const cn = (...parts: Array<string | false | undefined>) =>
     .join(" ")
     .replace(/\n+/g, " ")
     .replace(/\s{2,}/g, " ")
-    .trim();
+    .trim()
 
 export const DefaultSpinnerIcon = (
   <svg

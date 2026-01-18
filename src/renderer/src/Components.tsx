@@ -411,20 +411,13 @@ export const Components = () => {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Animations Check</h2>
         <div className="max-w-md space-y-4">
-            <TextInput
-            label="Floating Label"
-            placeholder="Focus me to see float..."
-            />
-            <TextInput
-            label="Error Shake"
-            error="I am shaking!"
-            defaultValue="Invalid Input"
-            />
-            <TextInput
+          <TextInput label="Floating Label" placeholder="Focus me to see float..." />
+          <TextInput label="Error Shake" error="I am shaking!" defaultValue="Invalid Input" />
+          <TextInput
             label="Delayed Error"
             error={!false} // Static true for demo, but implies logic
             helpText="Shows error reveal animation on mount"
-            />
+          />
         </div>
       </section>
 

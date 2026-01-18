@@ -1,11 +1,22 @@
-import { AnimatePresence, motion, useAnimation } from "framer-motion"
-import { forwardRef, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes, useEffect, useId, useState } from "react"
+import { AnimatePresence, motion, useAnimation, Variants } from "framer-motion"
+import {
+  ChangeEvent,
+  FocusEvent,
+  forwardRef,
+  InputHTMLAttributes,
+  ReactNode,
+  TextareaHTMLAttributes,
+  useEffect,
+  useId,
+  useMemo,
+  useState
+} from "react"
 import { cn } from "./utils"
 
 type Size = "sm" | "md" | "lg" | "xl"
 type Shadow = "none" | "sm" | "md" | "lg" | "xl"
 
-export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
+type BaseProps = {
   label?: string
   error?: string | boolean
   helpText?: string
@@ -23,33 +34,13 @@ export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   containerClassName?: string
 }
 
-const sizeClasses: Record<Size, string> = {
-  sm: "text-sm",
-  md: "text-base",
-  lg: "text-lg",
-  xl: "text-xl"
-}
-
-const paddingClasses: Record<Size, string> = {
-  sm: "px-2.5 py-1.5",
-  md: "px-3 py-2.5",
-  lg: "px-4 py-3",
-  xl: "px-5 py-3.5"
-}
-
-const labelMapping: Record<Size, string> = {
-  sm: "top-1.5 left-1.5 text-sm",
-  md: "top-2.5 left-2 text-base",
-  lg: "top-3 left-3 text-lg",
-  xl: "top-3.5 left-4 text-xl"
-}
-
-const iconStartPadding: Record<Size, string> = {
-  sm: "pl-6",
-  md: "pl-7",
-  lg: "pl-8",
-  xl: "pl-9"
-}
+export type TextInputProps = BaseProps &
+  Omit<InputHTMLAttributes<HTMLInputElement>, "size"> &
+  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "size" | "onChange" | "onBlur" | "onFocus"> & {
+    onChange?: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    onBlur?: (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    onFocus?: (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+  }
 
 const shadowClasses: Record<Shadow, string> = {
   none: "shadow-none",
@@ -57,6 +48,42 @@ const shadowClasses: Record<Shadow, string> = {
   md: "shadow",
   lg: "shadow-lg",
   xl: "shadow-xl"
+}
+
+const colors: Record<string, string> = {
+  borderDefault: "#e2e8f0",
+  borderHover: "#cbd5e1",
+  borderFocus: "#4f46e5",
+  borderError: "#dc2626",
+  textDefault: "#64748b",
+  textFocus: "#4f46e5",
+  textError: "#dc2626",
+  shadowFocus: "rgba(79, 70, 229, 0.1)",
+  shadowError: "rgba(220, 38, 38, 0.1)"
+}
+
+const sizeConfig: Record<Size, { text: string; padding: string; label: string; iconPad: string; floatY: number }> = {
+  sm: { text: "text-sm", padding: "px-2.5 py-1.5", label: "top-1.5 left-1.5 text-sm", iconPad: "pl-6", floatY: -30 },
+  md: { text: "text-base", padding: "px-3 py-2.5", label: "top-2.5 left-2 text-base", iconPad: "pl-7", floatY: -34 },
+  lg: { text: "text-lg", padding: "px-4 py-3", label: "top-3 left-3 text-lg", iconPad: "pl-8", floatY: -38 },
+  xl: { text: "text-xl", padding: "px-5 py-3.5", label: "top-3.5 left-4 text-xl", iconPad: "pl-9", floatY: -44 }
+}
+
+const labelVariants: Variants = {
+  initial: { x: 0, y: 0, scale: 1, color: colors.textDefault },
+  float: (custom: { y: number; error: boolean; hasIcon: boolean }) => ({
+    x: custom.hasIcon ? -12 : 0,
+    y: custom.y,
+    scale: 0.85,
+    color: custom.error ? colors.textError : colors.textFocus
+  })
+}
+
+const borderVariants: Variants = {
+  initial: { borderColor: colors.borderDefault, boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)" },
+  focus: { borderColor: colors.borderFocus, boxShadow: `0px 0px 0px 4px ${colors.shadowFocus}` },
+  error: { borderColor: colors.borderError, boxShadow: `0px 0px 0px 4px ${colors.shadowError}` },
+  hover: { borderColor: colors.borderHover }
 }
 
 const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputProps>((props, ref) => {
@@ -96,41 +123,13 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
   const [isFocused, setIsFocused] = useState(false)
   const [internalValue, setInternalValue] = useState(defaultValue || "")
 
-  const controls = useAnimation()
-
   const isControlled = value !== undefined
   const actualValue = isControlled ? value : internalValue
-  const hasValue = !!String(actualValue ?? "")
 
-  const labelVariants = {
-    initial: {
-      x: 0,
-      y: 0,
-      scale: 1,
-      color: "#64748b"
-    },
-    float: {
-      x: iconStart ? -12 : 0,
-      y: size === "sm" ? -30 : size === "md" ? -34 : size === "lg" ? -38 : -44,
-      scale: 0.85,
-      color: error ? "#dc2626" : "#4f46e5"
-    }
-  }
+  const hasValue = actualValue !== "" && actualValue !== null && actualValue !== undefined
+  const shouldFloat = isFocused || hasValue || !!placeholder
 
-  const borderVariants = {
-    initial: {
-      borderColor: "#e2e8f0",
-      boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)"
-    },
-    focus: {
-      borderColor: "#4f46e5",
-      boxShadow: "0px 0px 0px 4px rgba(79, 70, 229, 0.1)"
-    },
-    error: {
-      borderColor: "#dc2626",
-      boxShadow: "0px 0px 0px 4px rgba(220, 38, 38, 0.1)"
-    }
-  }
+  const controls = useAnimation()
 
   useEffect(() => {
     if (error) {
@@ -141,46 +140,55 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
     }
   }, [error, controls])
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleFocus = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setIsFocused(true)
-    onFocus?.(e as any)
+    onFocus?.(e)
   }
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleBlur = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setIsFocused(false)
-    onBlur?.(e as any)
+    onBlur?.(e)
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!isControlled) {
       setInternalValue(e.target.value)
     }
-    onChange?.(e as any)
+    onChange?.(e)
   }
+
+  const config = sizeConfig[size]
 
   const containerClasses = cn("relative mt-6 mb-2", fullWidth ? "w-full" : "max-w-md w-auto", containerClassName)
 
   const wrapperClasses = cn(
     "relative border rounded-lg bg-white flex items-center transition-colors",
-    paddingClasses[size],
+    config.padding,
     shadowClasses[shadow],
-    disabled ? "opacity-60 cursor-not-allowed bg-slate-50" : ""
+    disabled && "opacity-60 cursor-not-allowed bg-slate-50"
   )
 
   const inputBaseClasses = cn(
     "w-full bg-transparent outline-none text-slate-900 placeholder:text-slate-400 z-10",
-    sizeClasses[size],
+    config.text,
     "disabled:cursor-not-allowed resize-none",
     className
   )
 
-  const labelBaseClasses = cn(
+  const labelClasses = cn(
     "absolute pointer-events-none bg-transparent px-1 font-medium origin-top-left whitespace-nowrap z-20",
-    labelMapping[size],
-    iconStart ? iconStartPadding[size] : undefined
+    config.label,
+    !!iconStart && config.iconPad
   )
 
-  const shouldFloat = isFocused || hasValue || !!placeholder
+  const labelCustom = useMemo(
+    () => ({
+      y: config.floatY,
+      error: !!error,
+      hasIcon: !!iconStart
+    }),
+    [config.floatY, error, iconStart]
+  )
 
   return (
     <div className={containerClasses}>
@@ -190,9 +198,11 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
           variants={borderVariants}
           initial="initial"
           animate={error ? "error" : isFocused ? "focus" : "initial"}
-          whileHover={!isFocused && !error && !disabled ? { borderColor: "#cbd5e1" } : {}}
+          whileHover={!isFocused && !error && !disabled ? "hover" : undefined}
         >
-          {iconStart && <div className={cn("text-slate-500 mr-2 shrink-0 flex items-center justify-center")}>{iconStart}</div>}
+          {iconStart && (
+            <div className="text-slate-500 mr-2 shrink-0 flex items-center justify-center pointer-events-none">{iconStart}</div>
+          )}
 
           {multiline ? (
             <textarea
@@ -228,15 +238,18 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
             />
           )}
 
-          {iconEnd && <div className={cn("text-slate-500 ml-2 shrink-0 flex items-center justify-center")}>{iconEnd}</div>}
+          {iconEnd && (
+            <div className="text-slate-500 ml-2 shrink-0 flex items-center justify-center pointer-events-none">{iconEnd}</div>
+          )}
 
           {label && (
             <motion.label
               htmlFor={inputId}
-              className={labelBaseClasses}
+              className={labelClasses}
               variants={labelVariants}
               initial="initial"
               animate={shouldFloat ? "float" : "initial"}
+              custom={labelCustom}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
               {label}
@@ -271,6 +284,6 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
   )
 })
 
-ZTextInput.displayName = "ZTextInput"
+ZTextInput.displayName = "TextInput"
 
 export default ZTextInput
