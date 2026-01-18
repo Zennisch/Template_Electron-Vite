@@ -103,15 +103,15 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
 
   const labelVariants = {
     initial: {
+      x: 0,
       y: 0,
       scale: 1,
-      x: 0,
       color: "#64748b"
     },
     float: {
+      x: iconStart ? -12 : 0,
       y: size === "sm" ? -24 : size === "md" ? -28 : size === "lg" ? -32 : -36,
       scale: 0.85,
-      x: iconStart ? -12 : 0,
       color: error ? "#dc2626" : "#4f46e5"
     }
   }
