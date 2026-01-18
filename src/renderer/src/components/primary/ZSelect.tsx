@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, Variants } from "framer-motion"
-import { forwardRef, HTMLAttributes, ReactNode, useEffect, useId, useImperativeHandle, useRef, useState } from "react"
+import { forwardRef, HTMLAttributes, ReactNode, useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { CheckIcon, ChevronDownIcon, cn, LoadingSpinner, SearchIcon, XMarkIcon } from "./utils"
 
 type Size = "sm" | "md" | "lg" | "xl"
@@ -212,9 +212,10 @@ const ZSelectInner = <T extends string | number>(props: SelectProps<T>, ref: Rea
     }
   }
 
-  const filteredOptions = onSearchChange
-    ? options
-    : options.filter((opt) => opt.label.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredOptions = useMemo(() => {
+    if (onSearchChange) return options
+    return options.filter((opt) => opt.label.toLowerCase().includes(searchQuery.toLowerCase()))
+  }, [options, searchQuery, onSearchChange])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (disabled) return
