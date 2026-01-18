@@ -111,7 +111,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
     },
     float: {
       x: iconStart ? -12 : 0,
-      y: size === "sm" ? -24 : size === "md" ? -28 : size === "lg" ? -32 : -36,
+      y: size === "sm" ? -30 : size === "md" ? -34 : size === "lg" ? -38 : -44,
       scale: 0.85,
       color: error ? "#dc2626" : "#4f46e5"
     }
@@ -175,7 +175,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
   )
 
   const labelBaseClasses = cn(
-    "absolute pointer-events-none bg-white px-1 font-medium origin-top-left whitespace-nowrap z-20",
+    "absolute pointer-events-none bg-transparent px-1 font-medium origin-top-left whitespace-nowrap z-20",
     labelMapping[size],
     iconStart ? iconStartPadding[size] : undefined
   )
