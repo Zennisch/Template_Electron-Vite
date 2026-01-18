@@ -10,8 +10,70 @@ type PressAnimationStyle = "none" | "scale" | "ripple"
 type PressAnimationDuration = "short" | "medium" | "long"
 type PressAnimationStrength = "light" | "medium" | "strong"
 
+const variantClasses: Record<Variant, string> = {
+  primary: `
+      bg-indigo-600 
+      text-white 
+      hover:bg-indigo-700 
+      focus-visible:ring-indigo-600`,
+  secondary: `
+      bg-white
+      text-indigo-700
+      border border-indigo-200
+      hover:bg-indigo-50
+      focus-visible:ring-indigo-600`,
+  tertiary: `
+      bg-indigo-100
+      text-indigo-900
+      hover:bg-indigo-200
+      focus-visible:ring-indigo-600`,
+  ghost: `
+      bg-transparent
+      text-indigo-700
+      hover:bg-indigo-50
+      focus-visible:ring-indigo-600`
+}
+
+const sizeClasses: Record<Size, string> = {
+  xs: `h-8 text-xs`,
+  sm: `h-9 text-sm`,
+  md: `h-10 text-base`,
+  lg: `h-11 text-lg`,
+  xl: `h-12 text-xl`
+}
+
+const iconSizeClasses: Record<Size, string> = {
+  xs: "w-8 p-0",
+  sm: "w-9 p-0",
+  md: "w-10 p-0",
+  lg: "w-11 p-0",
+  xl: "w-12 p-0"
+}
+
+const paddingClasses: Record<Size, string> = {
+  xs: "px-3",
+  sm: "px-4",
+  md: "px-5",
+  lg: "px-8",
+  xl: "px-10"
+}
+
+const shapeClasses: Record<Shape, string> = {
+  rounded: "rounded-md",
+  square: "rounded-none",
+  pill: "rounded-full"
+}
+
+const shadowClasses: Record<Shadow, string> = {
+  none: "shadow-none",
+  sm: "shadow-sm",
+  md: "shadow",
+  lg: "shadow-lg",
+  xl: "shadow-xl"
+}
+
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  element?: React.ElementType
+  as?: React.ElementType
   href?: string
   target?: string
 
@@ -39,7 +101,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const {
-    element = "button",
+    as: Component = "button",
     href,
     target,
 
@@ -88,81 +150,19 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       transition-colors
     `
 
-  const variantClasses: Record<Variant, string> = {
-    primary: `
-      bg-indigo-600 
-      text-white 
-      hover:bg-indigo-700 
-      focus-visible:ring-indigo-600`,
-    secondary: `
-      bg-white
-      text-indigo-700
-      border border-indigo-200
-      hover:bg-indigo-50
-      focus-visible:ring-indigo-600`,
-    tertiary: `
-      bg-indigo-100
-      text-indigo-900
-      hover:bg-indigo-200
-      focus-visible:ring-indigo-600`,
-    ghost: `
-      bg-transparent
-      text-indigo-700
-      hover:bg-indigo-50
-      focus-visible:ring-indigo-600`
-  }
-
-  const sizeClasses: Record<Size, string> = {
-    xs: `
-      h-8
-      text-xs
-      ${iconOnly ? "w-8 p-0" : "px-3"}`,
-    sm: `
-      h-9
-      text-sm
-      ${iconOnly ? "w-9 p-0" : "px-4"}`,
-    md: `
-      h-10
-      text-sm
-      ${iconOnly ? "w-10 p-0" : "px-5"}`,
-    lg: `
-      h-11
-      text-base
-      ${iconOnly ? "w-11 p-0" : "px-8"}`,
-    xl: `
-      h-12
-      text-lg
-      ${iconOnly ? "w-12 p-0" : "px-10"}`
-  }
-
-  const shapeClasses: Record<Shape, string> = {
-    rounded: "rounded-md",
-    square: "rounded-none",
-    pill: "rounded-full"
-  }
-
-  const shadowClasses: Record<Shadow, string> = {
-    none: "shadow-none",
-    sm: "shadow-sm",
-    md: "shadow",
-    lg: "shadow-lg",
-    xl: "shadow-xl"
-  }
-
-  const fullWidthClass = fullWidth ? "w-full" : ""
-
   const classes = cn(
     baseClasses,
     variantClasses[variant],
     sizeClasses[size],
+    iconOnly ? iconSizeClasses[size] : paddingClasses[size],
     shapeClasses[shape],
     shadowClasses[shadow],
-    fullWidthClass,
-    pressAnimationStyle === "ripple" ? "overflow-hidden transform-gpu" : "",
+    fullWidth ? "w-full" : "",
+    pressAnimationStyle === "ripple" && "overflow-hidden transform-gpu",
     className
   )
 
-  const Element = useMemo(() => motion(element as any), [element])
+  const Element = useMemo(() => motion(Component as any), [Component])
 
   const scaleMap: Record<PressAnimationStrength, number> = {
     light: 0.98,
@@ -223,7 +223,7 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       ref={ref}
       href={effectiveHref}
       target={target}
-      type={element === "button" ? type : undefined}
+      type={Component === "button" ? type : undefined}
       disabled={isDisabled}
       aria-disabled={isDisabled}
       className={classes}

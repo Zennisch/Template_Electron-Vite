@@ -328,7 +328,7 @@ export const Components = () => {
           <Button fullWidth>Full Width Button</Button>
           <div className="flex gap-4">
             <Button className="bg-pink-500 hover:bg-pink-600 focus-visible:ring-pink-500">Custom ClassName</Button>
-            <Button element="a" href="#" target="_blank" variant="secondary">
+            <Button as="a" href="#" target="_blank" variant="secondary">
               Rendered as &lt;a&gt; tag
             </Button>
           </div>
