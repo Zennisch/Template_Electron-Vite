@@ -36,20 +36,23 @@ const shadowClasses: Record<Shadow, string> = {
   xl: "shadow-xl"
 }
 
-export interface OptionItem {
+export interface OptionItem<T extends string | number> {
   label: string
-  value: string | number
+  value: T
   disabled?: boolean
   icon?: ReactNode
 }
 
-export interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue" | "value"> {
+export interface SelectProps<T extends string | number> extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue" | "value"
+> {
   label?: string
   labelPlacement?: LabelPlacement
 
-  options?: OptionItem[]
-  value?: string | number | (string | number)[]
-  defaultValue?: string | number | (string | number)[]
+  options?: OptionItem<T>[]
+  value?: T | T[]
+  defaultValue?: T | T[]
   placeholder?: string
 
   error?: string | boolean
@@ -68,11 +71,11 @@ export interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "onCha
   containerClassName?: string
   disabled?: boolean
 
-  onChange?: (value: any) => void
+  onChange?: (value: T | T[]) => void
   onSearchChange?: (query: string) => void
 }
 
-const ZSelect = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
+const ZSelectInner = <T extends string | number>(props: SelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
   const {
     label,
     labelPlacement = "top",
@@ -114,7 +117,7 @@ const ZSelect = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
   const [searchQuery, setSearchQuery] = useState("")
   const [focusedIndex, setFocusedIndex] = useState(-1)
 
-  const [internalValue, setInternalValue] = useState<string | number | (string | number)[] | undefined>(
+  const [internalValue, setInternalValue] = useState<T | T[] | undefined>(
     defaultValue !== undefined ? defaultValue : multiple ? [] : undefined
   )
   const isControlled = value !== undefined
@@ -168,10 +171,10 @@ const ZSelect = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
     }
   }, [isOpen, searchable])
 
-  const handleSelect = (optionValue: string | number) => {
+  const handleSelect = (optionValue: T) => {
     if (multiple) {
-      let newValue: (string | number)[] = []
-      const currentArray = Array.isArray(currentValue) ? currentValue : []
+      let newValue: T[] = []
+      const currentArray = (Array.isArray(currentValue) ? currentValue : []) as T[]
 
       if (currentArray.includes(optionValue)) {
         newValue = currentArray.filter((v) => v !== optionValue)
@@ -197,10 +200,11 @@ const ZSelect = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
     }
   }
 
-  const removeValue = (valToRemove: string | number, e: React.MouseEvent) => {
+  const removeValue = (valToRemove: T, e: React.MouseEvent) => {
     e.stopPropagation()
     if (multiple && Array.isArray(currentValue)) {
-      const newValue = currentValue.filter((v) => v !== valToRemove)
+      const currentArray = currentValue as T[]
+      const newValue = currentArray.filter((v) => v !== valToRemove)
       if (!isControlled) {
         setInternalValue(newValue)
       }
@@ -252,13 +256,13 @@ const ZSelect = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
     }
   }
 
-  const getLabel = (val: string | number) => {
+  const getLabel = (val: T) => {
     return options.find((o) => o.value === val)?.label || val
   }
 
-  const isSelected = (val: string | number) => {
+  const isSelected = (val: T) => {
     if (multiple) {
-      return Array.isArray(currentValue) && currentValue.includes(val)
+      return Array.isArray(currentValue) && (currentValue as T[]).includes(val)
     }
     return currentValue === val
   }
@@ -300,7 +304,7 @@ const ZSelect = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
     if (multiple && Array.isArray(currentValue) && currentValue.length > 0) {
       return (
         <div className="flex flex-wrap gap-1.5 -ml-1">
-          {currentValue.map((val) => (
+          {(currentValue as T[]).map((val) => (
             <span
               key={val}
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-medium border border-indigo-200"
@@ -483,8 +487,12 @@ const ZSelect = forwardRef<HTMLDivElement, SelectProps>((props, ref) => {
       )}
     </div>
   )
-})
+}
 
-ZSelect.displayName = "Select"
+const ZSelect = forwardRef(ZSelectInner) as <T extends string | number>(
+  props: SelectProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> }
+) => ReturnType<typeof ZSelectInner>
+
+;(ZSelect as any).displayName = "Select"
 
 export default ZSelect
