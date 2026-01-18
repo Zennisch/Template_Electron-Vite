@@ -164,11 +164,13 @@ const ZSelectInner = <T extends string | number>(props: SelectProps<T>, ref: Rea
   }, [focusedIndex, isOpen])
 
   useEffect(() => {
-    if (isOpen && searchable && searchInputRef.current) {
-      setTimeout(() => {
+    if (isOpen && searchable) {
+      const frameId = requestAnimationFrame(() => {
         searchInputRef.current?.focus()
-      }, 50)
+      })
+      return () => cancelAnimationFrame(frameId)
     }
+    return
   }, [isOpen, searchable])
 
   const handleSelect = (optionValue: T) => {
