@@ -81,6 +81,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
     value,
     defaultValue,
     disabled,
+    placeholder,
     onChange,
     onFocus,
     onBlur,
@@ -179,6 +180,8 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
     iconStart ? iconStartPadding[size] : undefined
   )
 
+  const shouldFloat = isFocused || hasValue || !!placeholder
+
   return (
     <div className={containerClasses}>
       <motion.div animate={controls}>
@@ -200,6 +203,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
               onFocus={handleFocus}
               onBlur={handleBlur}
               disabled={disabled}
+              placeholder={placeholder}
               rows={rows}
               className={cn(inputBaseClasses, "block")}
               aria-invalid={!!error}
@@ -216,6 +220,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
               onFocus={handleFocus}
               onBlur={handleBlur}
               disabled={disabled}
+              placeholder={placeholder}
               className={inputBaseClasses}
               aria-invalid={!!error}
               aria-describedby={error ? errorId : helpText ? helpId : undefined}
@@ -231,7 +236,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
               className={labelBaseClasses}
               variants={labelVariants}
               initial="initial"
-              animate={isFocused || hasValue ? "float" : "initial"}
+              animate={shouldFloat ? "float" : "initial"}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
               {label}
