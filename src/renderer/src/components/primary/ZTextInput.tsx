@@ -50,6 +50,14 @@ const shadowClasses: Record<Shadow, string> = {
   xl: "shadow-xl"
 }
 
+const shadowValues: Record<Shadow, string> = {
+  none: "0 0 #0000",
+  sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+  md: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+  xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+}
+
 const colors: Record<string, string> = {
   borderDefault: "#e2e8f0",
   borderHover: "#cbd5e1",
@@ -80,9 +88,15 @@ const labelVariants: Variants = {
 }
 
 const borderVariants: Variants = {
-  initial: { borderColor: colors.borderDefault, boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)" },
-  focus: { borderColor: colors.borderFocus, boxShadow: `0px 0px 0px 4px ${colors.shadowFocus}` },
-  error: { borderColor: colors.borderError, boxShadow: `0px 0px 0px 4px ${colors.shadowError}` },
+  initial: (shadow) => ({ borderColor: colors.borderDefault, boxShadow: shadow }),
+  focus: (shadow) => ({
+    borderColor: colors.borderFocus,
+    boxShadow: `0px 0px 0px 4px ${colors.shadowFocus}, ${shadow}`
+  }),
+  error: (shadow) => ({
+    borderColor: colors.borderError,
+    boxShadow: `0px 0px 0px 4px ${colors.shadowError}, ${shadow}`
+  }),
   hover: { borderColor: colors.borderHover }
 }
 
@@ -162,7 +176,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
   const containerClasses = cn("relative mt-6 mb-2", fullWidth ? "w-full" : "max-w-md w-auto", containerClassName)
 
   const wrapperClasses = cn(
-    "relative border rounded-lg bg-white flex items-center transition-colors",
+    "relative border rounded-lg bg-white flex items-center",
     config.padding,
     shadowClasses[shadow],
     disabled && "opacity-60 cursor-not-allowed bg-slate-50"
@@ -197,8 +211,10 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputP
           className={wrapperClasses}
           variants={borderVariants}
           initial="initial"
+          custom={shadowValues[shadow]}
           animate={error ? "error" : isFocused ? "focus" : "initial"}
           whileHover={!isFocused && !error && !disabled ? "hover" : undefined}
+          transition={{ duration: 0.2 }}
         >
           {iconStart && (
             <div className="text-slate-500 mr-2 shrink-0 flex items-center justify-center pointer-events-none">{iconStart}</div>
