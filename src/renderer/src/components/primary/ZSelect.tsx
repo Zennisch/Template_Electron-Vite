@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, Variants } from "framer-motion"
 import { forwardRef, HTMLAttributes, ReactNode, useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 import { CheckIcon, ChevronDownIcon, cn, LoadingSpinner, SearchIcon, XMarkIcon } from "./utils"
 
 type Size = "sm" | "md" | "lg" | "xl"
@@ -124,16 +125,47 @@ const ZSelectInner = <T extends string | number>(props: SelectProps<T>, ref: Rea
   const currentValue = isControlled ? value : internalValue
 
   const containerRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
+  const [coords, setCoords] = useState({ left: 0, top: 0, width: 0 })
 
   const isError = !!error
 
   useImperativeHandle(ref, () => containerRef.current as HTMLDivElement)
 
   useEffect(() => {
+    if (!isOpen) return
+
+    const updatePosition = () => {
+      if (triggerRef.current) {
+        const rect = triggerRef.current.getBoundingClientRect()
+        setCoords({
+          left: rect.left,
+          top: rect.bottom + 4,
+          width: rect.width
+        })
+      }
+    }
+
+    updatePosition()
+    window.addEventListener("resize", updatePosition)
+    window.addEventListener("scroll", updatePosition, true)
+
+    return () => {
+      window.removeEventListener("resize", updatePosition)
+      window.removeEventListener("scroll", updatePosition, true)
+    }
+  }, [isOpen])
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node) &&
+        listRef.current &&
+        !listRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false)
         setSearchQuery("")
         setFocusedIndex(-1)
@@ -362,6 +394,7 @@ const ZSelectInner = <T extends string | number>(props: SelectProps<T>, ref: Rea
           className={triggerClasses}
           onClick={() => !disabled && setIsOpen(!isOpen)}
           onKeyDown={handleKeyDown}
+          ref={triggerRef}
         >
           {iconStart && !multiple && (
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">
@@ -377,100 +410,109 @@ const ZSelectInner = <T extends string | number>(props: SelectProps<T>, ref: Rea
             />
           </span>
         </div>
+        {createPortal(
+          <AnimatePresence>
+            {!disabled && isOpen && (
+              <motion.ul
+                ref={listRef}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={dropdownVariants}
+                style={{
+                  position: "fixed",
+                  left: coords.left,
+                  top: coords.top,
+                  width: coords.width,
+                  zIndex: 9999
+                }}
+                className={cn(
+                  "max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm origin-top"
+                )}
+                role="listbox"
+                tabIndex={-1}
+              >
+                {searchable && (
+                  <li className="sticky top-0 z-10 bg-white border-b border-slate-100 p-2">
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-400">
+                        <SearchIcon className="h-4 w-4" />
+                      </span>
+                      <input
+                        ref={searchInputRef}
+                        type="text"
+                        className="w-full rounded border border-slate-300 py-1.5 pl-8 pr-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-900"
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onKeyDown={handleKeyDown}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value)
+                          onSearchChange?.(e.target.value)
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                  </li>
+                )}
 
-        <AnimatePresence>
-          {!disabled && isOpen && (
-            <motion.ul
-              ref={listRef}
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              variants={dropdownVariants}
-              className={cn(
-                "absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm origin-top"
-              )}
-              role="listbox"
-              tabIndex={-1}
-            >
-              {searchable && (
-                <li className="sticky top-0 z-10 bg-white border-b border-slate-100 p-2">
-                  <div className="relative">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-400">
-                      <SearchIcon className="h-4 w-4" />
-                    </span>
-                    <input
-                      ref={searchInputRef}
-                      type="text"
-                      className="w-full rounded border border-slate-300 py-1.5 pl-8 pr-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-900"
-                      placeholder="Search..."
-                      value={searchQuery}
-                      onKeyDown={handleKeyDown}
-                      onChange={(e) => {
-                        setSearchQuery(e.target.value)
-                        onSearchChange?.(e.target.value)
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    />
+                {isLoading ? (
+                  <div className="py-2 px-3 text-slate-500 text-sm text-center flex justify-center items-center gap-2">
+                    <LoadingSpinner className="animate-spin h-4 w-4" />
+                    <span>Loading...</span>
                   </div>
-                </li>
-              )}
+                ) : filteredOptions.length === 0 ? (
+                  <div className="py-2 px-3 text-slate-500 text-sm text-center">No options found</div>
+                ) : (
+                  filteredOptions.map((option, index) => {
+                    const checked = isSelected(option.value)
+                    const isFocused = index === focusedIndex
 
-              {isLoading ? (
-                <div className="py-2 px-3 text-slate-500 text-sm text-center flex justify-center items-center gap-2">
-                  <LoadingSpinner className="animate-spin h-4 w-4" />
-                  <span>Loading...</span>
-                </div>
-              ) : filteredOptions.length === 0 ? (
-                <div className="py-2 px-3 text-slate-500 text-sm text-center">No options found</div>
-              ) : (
-                filteredOptions.map((option, index) => {
-                  const checked = isSelected(option.value)
-                  const isFocused = index === focusedIndex
-
-                  return (
-                    <li
-                      key={option.value}
-                      className={cn(
-                        "relative cursor-default select-none py-2.5 pl-3 pr-9 transition-colors",
-                        option.disabled
-                          ? "opacity-50 cursor-not-allowed"
-                          : "cursor-pointer hover:bg-indigo-100 hover:text-indigo-900",
-                        checked && !multiple ? "bg-indigo-50 text-indigo-900 font-medium" : "text-slate-900",
-                        checked && multiple ? "bg-indigo-50/50" : "",
-                        isFocused && !option.disabled ? "bg-indigo-100 text-indigo-900" : ""
-                      )}
-                      role="option"
-                      aria-selected={checked}
-                      onClick={() => !option.disabled && handleSelect(option.value)}
-                    >
-                      <div className="flex items-center gap-2">
-                        {multiple && (
-                          <div
-                            className={cn(
-                              "flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors",
-                              checked ? "bg-indigo-600 border-indigo-600 text-white" : "border-slate-300 bg-white"
-                            )}
-                          >
-                            {checked && <CheckIcon className="h-3 w-3" />}
-                          </div>
+                    return (
+                      <li
+                        key={option.value}
+                        className={cn(
+                          "relative cursor-default select-none py-2.5 pl-3 pr-9 transition-colors",
+                          option.disabled
+                            ? "opacity-50 cursor-not-allowed"
+                            : "cursor-pointer hover:bg-indigo-100 hover:text-indigo-900",
+                          checked && !multiple ? "bg-indigo-50 text-indigo-900 font-medium" : "text-slate-900",
+                          checked && multiple ? "bg-indigo-50/50" : "",
+                          isFocused && !option.disabled ? "bg-indigo-100 text-indigo-900" : ""
                         )}
+                        role="option"
+                        aria-selected={checked}
+                        onClick={() => !option.disabled && handleSelect(option.value)}
+                      >
+                        <div className="flex items-center gap-2">
+                          {multiple && (
+                            <div
+                              className={cn(
+                                "flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors",
+                                checked ? "bg-indigo-600 border-indigo-600 text-white" : "border-slate-300 bg-white"
+                              )}
+                            >
+                              {checked && <CheckIcon className="h-3 w-3" />}
+                            </div>
+                          )}
 
-                        {option.icon && <span className="text-slate-400">{option.icon}</span>}
-                        <span className="block truncate">{option.label}</span>
-                      </div>
+                          {option.icon && <span className="text-slate-400">{option.icon}</span>}
+                          <span className="block truncate">{option.label}</span>
+                        </div>
 
-                      {checked && !multiple && (
-                        <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-indigo-600">
-                          <CheckIcon className="h-5 w-5" />
-                        </span>
-                      )}
-                    </li>
-                  )
-                })
-              )}
-            </motion.ul>
-          )}
-        </AnimatePresence>
+                        {checked && !multiple && (
+                          <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-indigo-600">
+                            <CheckIcon className="h-5 w-5" />
+                          </span>
+                        )}
+                      </li>
+                    )
+                  })
+                )}
+              </motion.ul>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
       </div>
 
       {(isError || helpText) && (
