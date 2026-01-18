@@ -142,7 +142,7 @@ const ZSelectInner = <T extends string | number>(props: SelectProps<T>, ref: Rea
         const rect = triggerRef.current.getBoundingClientRect()
         setCoords({
           left: rect.left,
-          top: rect.bottom + 4,
+          top: rect.bottom + 8,
           width: rect.width
         })
       }
