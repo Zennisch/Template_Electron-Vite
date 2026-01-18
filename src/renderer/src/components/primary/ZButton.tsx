@@ -72,6 +72,44 @@ const shadowClasses: Record<Shadow, string> = {
   xl: "shadow-xl"
 }
 
+const scaleMap: Record<PressAnimationStrength, number> = {
+  light: 0.98,
+  medium: 0.95,
+  strong: 0.9
+}
+
+const durationMap: Record<PressAnimationDuration, number> = {
+  short: 0.1,
+  medium: 0.2,
+  long: 0.3
+}
+
+const RippleEffect = ({ ripples, onClear }: { ripples: any[]; onClear: (id: number) => void }) => (
+  <span className="absolute inset-0 overflow-hidden rounded-[inherit] pointer-events-none z-0">
+    <AnimatePresence>
+      {ripples.map((ripple) => (
+        <motion.span
+          key={ripple.id}
+          initial={{ scale: 0, opacity: 0.35 }}
+          animate={{ scale: 2.5, opacity: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1 }}
+          style={{
+            position: "absolute",
+            left: ripple.x,
+            top: ripple.y,
+            width: ripple.size,
+            height: ripple.size,
+            borderRadius: "50%",
+            backgroundColor: "currentColor"
+          }}
+          onAnimationComplete={() => onClear(ripple.id)}
+        />
+      ))}
+    </AnimatePresence>
+  </span>
+)
+
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   as?: React.ElementType
   href?: string
@@ -102,8 +140,6 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const {
     as: Component = "button",
-    href,
-    target,
 
     children,
 
@@ -138,7 +174,6 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const [ripples, setRipples] = useState<{ x: number; y: number; id: number; size: number }[]>([])
 
   const isDisabled = disabled || loading
-  const effectiveHref = isDisabled ? undefined : href
 
   const baseClasses = `
       relative inline-flex items-center justify-center
@@ -162,19 +197,8 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     className
   )
 
-  const Element = useMemo(() => motion(Component as any), [Component])
-
-  const scaleMap: Record<PressAnimationStrength, number> = {
-    light: 0.98,
-    medium: 0.95,
-    strong: 0.9
-  }
-
-  const durationMap: Record<PressAnimationDuration, number> = {
-    short: 0.1,
-    medium: 0.2,
-    long: 0.3
-  }
+  // Motion setup
+  const MotionComponent = useMemo(() => motion.create(Component), [Component])
 
   const motionProps: HTMLMotionProps<any> =
     !isDisabled && pressAnimationStyle === "scale"
@@ -197,68 +221,41 @@ const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     onPointerDown?.(e as any)
   }
 
-  const render = () => {
-    const Spinner = loadingComponent || DefaultSpinnerIcon
-
-    if (loading && loadingText) {
-      return (
-        <span className="flex items-center gap-2 relative z-10">
-          {Spinner}
-          {loadingText}
-        </span>
-      )
-    }
-
-    return (
-      <span className="flex items-center gap-2 relative z-10">
+  // Render
+  const Spinner = loadingComponent || DefaultSpinnerIcon
+  const content =
+    loading && loadingText ? (
+      <>
+        {Spinner}
+        {loadingText}
+      </>
+    ) : (
+      <>
         {loading ? Spinner : iconStart}
         {children}
         {iconEnd}
-      </span>
+      </>
     )
-  }
 
   return (
-    <Element
+    <MotionComponent
       ref={ref}
-      href={effectiveHref}
-      target={target}
       type={Component === "button" ? type : undefined}
       disabled={isDisabled}
       aria-disabled={isDisabled}
+      aria-busy={loading}
       className={classes}
-      onClick={isDisabled ? (e: any) => e.preventDefault() : onClick}
+      onClick={isDisabled ? (e: React.MouseEvent<HTMLElement>) => e.preventDefault() : onClick}
       onPointerDown={handlePointerDown}
       {...motionProps}
       {...rest}
     >
       {pressAnimationStyle === "ripple" && (
-        <span className="absolute inset-0 overflow-hidden rounded-[inherit] pointer-events-none z-0">
-          <AnimatePresence>
-            {ripples.map((ripple) => (
-              <motion.span
-                key={ripple.id}
-                initial={{ scale: 0, opacity: 0.35 }}
-                animate={{ scale: 2.5, opacity: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1 }}
-                style={{
-                  position: "absolute",
-                  left: ripple.x,
-                  top: ripple.y,
-                  width: ripple.size,
-                  height: ripple.size,
-                  borderRadius: "50%",
-                  backgroundColor: "currentColor"
-                }}
-                onAnimationComplete={() => setRipples((prev) => prev.filter((r) => r.id !== ripple.id))}
-              />
-            ))}
-          </AnimatePresence>
-        </span>
+        <RippleEffect ripples={ripples} onClear={(id) => setRipples((prev) => prev.filter((r) => r.id !== id))} />
       )}
-      {render()}
-    </Element>
+
+      <span className="flex items-center gap-2 relative z-10">{content}</span>
+    </MotionComponent>
   )
 })
 
