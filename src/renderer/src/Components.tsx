@@ -5,7 +5,7 @@ import Radio from "./components/primary/Radio"
 import Select, { OptionItem } from "./components/primary/Select"
 import Slider from "./components/primary/Slider"
 import Switch from "./components/primary/Switch"
-import TextInput from "./components/primary/TextInput"
+import { default as TextInput } from "./components/primary/ZTextInput"
 import Modal from "./components/primary/Modal"
 
 // Simple icon placeholder
@@ -384,12 +384,6 @@ export const Components = () => {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Layout & Styles</h2>
         <div className="grid gap-6 max-w-2xl">
-          <TextInput
-            label="Horizontal Layout (labelPlacement='left')"
-            labelPlacement="left"
-            placeholder="Labels are on the left"
-          />
-
           <div className="p-4 bg-gray-50 rounded-lg space-y-4 border">
             <h3 className="font-medium text-sm text-gray-600">Shadows</h3>
             <TextInput label="Shadow SM" shadow="sm" placeholder="Small shadow" className="bg-white" />
@@ -410,6 +404,27 @@ export const Components = () => {
             placeholder="Tell us about yourself..."
             helpText="This uses the 'multiline' prop to render a textarea."
           />
+        </div>
+      </section>
+
+      {/* Animation Example */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Animations Check</h2>
+        <div className="max-w-md space-y-4">
+            <TextInput
+            label="Floating Label"
+            placeholder="Focus me to see float..."
+            />
+            <TextInput
+            label="Error Shake"
+            error="I am shaking!"
+            defaultValue="Invalid Input"
+            />
+            <TextInput
+            label="Delayed Error"
+            error={!false} // Static true for demo, but implies logic
+            helpText="Shows error reveal animation on mount"
+            />
         </div>
       </section>
 
