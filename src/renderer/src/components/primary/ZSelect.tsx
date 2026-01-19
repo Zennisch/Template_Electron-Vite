@@ -336,42 +336,43 @@ const ZSelectInner = <T extends string | number>(props: SelectProps<T>, ref: Rea
   )
 
   const renderTriggerContent = () => {
-    if (multiple && Array.isArray(currentValue) && currentValue.length > 0) {
+    if (multiple) {
+      const values = (Array.isArray(currentValue) ? currentValue : []) as T[]
       return (
-        <div className="flex flex-wrap gap-1.5 -ml-1">
-          {(currentValue as T[]).map((val) => (
-            <span
-              key={val}
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-medium border border-indigo-200"
-            >
-              {getLabel(val)}
-              <button
-                type="button"
-                onClick={(e) => removeValue(val, e)}
-                disabled={disabled}
-                className="hover:text-indigo-900 focus:outline-none"
+        <div className="flex flex-wrap gap-1.5 -ml-1 w-full">
+          <AnimatePresence mode="popLayout">
+            {values.map((val) => (
+              <motion.span
+                layout
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.1 }}
+                key={val}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-medium border border-indigo-200"
               >
-                <XMarkIcon className="h-3 w-3" />
-              </button>
-            </span>
-          ))}
+                {getLabel(val)}
+                <button
+                  type="button"
+                  onClick={(e) => removeValue(val, e)}
+                  disabled={disabled}
+                  className="hover:text-indigo-900 focus:outline-none"
+                >
+                  <XMarkIcon className="h-3 w-3" />
+                </button>
+              </motion.span>
+            ))}
+          </AnimatePresence>
+          {values.length === 0 && <span className="text-slate-400 ml-1">{placeholder}</span>}
         </div>
       )
     }
 
     const selected = options.find((opt) => opt.value === currentValue)
 
-    if (multiple && (!currentValue || (Array.isArray(currentValue) && currentValue.length === 0))) {
-      return <span className="text-slate-400">{placeholder}</span>
-    }
-
-    if (!multiple) {
-      return (
-        <span className={cn("block truncate", !selected && "text-slate-400")}>{selected ? selected.label : placeholder}</span>
-      )
-    }
-
-    return null
+    return (
+      <span className={cn("block truncate", !selected && "text-slate-400")}>{selected ? selected.label : placeholder}</span>
+    )
   }
 
   return (
