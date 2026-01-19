@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
-import { default as Button } from "./components/primary/ZButton"
+import Button from "./components/primary/ZButton"
 import Checkbox from "./components/primary/Checkbox"
 import Radio from "./components/primary/Radio"
-import { default as Select, ZSelectItem } from "./components/primary/ZSelect"
+import Select, { ZSelectItem } from "./components/primary/ZSelect"
 import Slider from "./components/primary/Slider"
 import Switch from "./components/primary/Switch"
-import { default as TextInput } from "./components/primary/ZTextInput"
-import Modal from "./components/primary/Modal"
+import TextInput from "./components/primary/ZTextInput"
+import Modal from "./components/primary/ZModal"
 
 // Simple icon placeholder
 const Icon = () => <span className="text-current">★</span>
@@ -69,10 +69,17 @@ const Modals = () => {
   const [loadingOpen, setLoadingOpen] = useState(false)
   const [customOpen, setCustomOpen] = useState(false)
 
+  // New states for animations
+  const [attentionOpen, setAttentionOpen] = useState(false)
+  const [attentionTrigger, setAttentionTrigger] = useState(0)
+
+  const [stepOpen, setStepOpen] = useState(false)
+  const [step, setStep] = useState(1)
+
   return (
     <div className="space-y-2 unreset">
-      <h1 className="text-3xl font-bold border-b pb-2">Modal Component</h1>
-      <p className="text-gray-500">Comprehensive display of all Modal props.</p>
+      <h1 className="text-3xl font-bold border-b pb-2">Modal Component (ZModal)</h1>
+      <p className="text-gray-500">Comprehensive display of all ZModal props including new animations.</p>
 
       {/* Basic */}
       <section className="space-y-4">
@@ -82,7 +89,6 @@ const Modals = () => {
           isOpen={basicOpen}
           onClose={() => setBasicOpen(false)}
           header="Basic Modal"
-          body={<p>This is a standard modal dialog with a header and footer buttons.</p>}
           footer={
             <div className="flex justify-end gap-2 w-full">
               <Button variant="ghost" onClick={() => setBasicOpen(false)}>
@@ -91,7 +97,9 @@ const Modals = () => {
               <Button onClick={() => setBasicOpen(false)}>Confirm</Button>
             </div>
           }
-        />
+        >
+          <p>This is a standard modal dialog with a header and footer buttons.</p>
+        </Modal>
       </section>
 
       {/* Sizes */}
@@ -115,13 +123,12 @@ const Modals = () => {
           onClose={() => setSizeOpen(false)}
           size={size}
           header={`Size: ${size}`}
-          body={
-            <p className="text-slate-600">
-              The width of this modal is defined by the <code>size="{size}"</code> prop.
-            </p>
-          }
           footer={<Button onClick={() => setSizeOpen(false)}>Close</Button>}
-        />
+        >
+          <p className="text-slate-600">
+            The width of this modal is defined by the <code>size="{size}"</code> prop.
+          </p>
+        </Modal>
       </section>
 
       {/* Position */}
@@ -135,9 +142,10 @@ const Modals = () => {
           onClose={() => setTopOpen(false)}
           position="top"
           header="Top Position"
-          body={<p>This modal is positioned at the top of the viewport.</p>}
           footer={<Button onClick={() => setTopOpen(false)}>Close</Button>}
-        />
+        >
+          <p>This modal is positioned at the top of the viewport.</p>
+        </Modal>
       </section>
 
       {/* States */}
@@ -145,17 +153,13 @@ const Modals = () => {
         <h2 className="text-xl font-semibold">States & Customization</h2>
         <div className="flex flex-wrap gap-4">
           <Button onClick={() => setLoadingOpen(true)}>Loading State</Button>
-          <Button onClick={() => setCustomOpen(true)}>Custom Content (No Close on Backdrop)</Button>
+          <Button onClick={() => setCustomOpen(true)}>Custom Content</Button>
         </div>
 
         {/* Loading */}
-        <Modal
-          isOpen={loadingOpen}
-          onClose={() => setLoadingOpen(false)}
-          loading
-          header="Processing Data"
-          body={<p>The modal is in a loading state...</p>}
-        />
+        <Modal isOpen={loadingOpen} onClose={() => setLoadingOpen(false)} loading header="Processing Data">
+          <p>The modal is in a loading state...</p>
+        </Modal>
 
         {/* Custom */}
         <Modal
@@ -165,14 +169,6 @@ const Modals = () => {
           header={
             <div className="flex items-center gap-2 text-indigo-600">
               <Icon /> Custom Header
-            </div>
-          }
-          body={
-            <div className="space-y-4">
-              <p>This modal has custom content and disables backdrop closing.</p>
-              <div className="p-4 bg-yellow-50 text-yellow-800 rounded border border-yellow-200">
-                <strong>Warning:</strong> You must click one of the buttons below to close.
-              </div>
             </div>
           }
           footer={
@@ -186,7 +182,101 @@ const Modals = () => {
               </div>
             </div>
           }
-        />
+        >
+          <div className="space-y-4">
+            <p>This modal has custom content and disables backdrop closing.</p>
+            <div className="p-4 bg-yellow-50 text-yellow-800 rounded border border-yellow-200">
+              <strong>Warning:</strong> You must click one of the buttons below to close.
+            </div>
+          </div>
+        </Modal>
+      </section>
+
+      {/* Animations (New) */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Animations & Transitions</h2>
+        <div className="flex flex-wrap gap-4">
+          <Button onClick={() => setAttentionOpen(true)}>Attention Shake</Button>
+          <Button
+            onClick={() => {
+              setStep(1)
+              setStepOpen(true)
+            }}
+          >
+            Step/Wizard Crossfade
+          </Button>
+        </div>
+
+        {/* Attention/Shake Modal */}
+        <Modal
+          isOpen={attentionOpen}
+          onClose={() => setAttentionOpen(false)}
+          header="Micro-interaction: Shake"
+          attentionTrigger={attentionTrigger}
+          footer={
+            <div className="flex justify-end gap-2">
+              <Button variant="ghost" onClick={() => setAttentionOpen(false)}>
+                Close
+              </Button>
+              <Button onClick={() => setAttentionTrigger((t) => t + 1)}>Trigger Shake Error</Button>
+            </div>
+          }
+        >
+          <div className="space-y-4">
+            <p>
+              Use the <code>attentionTrigger</code> prop to shake the modal when a user tries to perform an invalid action or
+              needs to pay attention.
+            </p>
+            <div className="p-3 bg-red-50 text-red-700 rounded text-sm">
+              Press the button below to simulate an error validation.
+            </div>
+          </div>
+        </Modal>
+
+        {/* Wizard/Step Modal */}
+        <Modal
+          isOpen={stepOpen}
+          onClose={() => setStepOpen(false)}
+          header={`Wizard Step ${step}`}
+          stepKey={step}
+          footer={
+            <div className="flex justify-between w-full">
+              <Button variant="secondary" disabled={step === 1} onClick={() => setStep((s) => s - 1)}>
+                Back
+              </Button>
+              <Button onClick={() => (step < 3 ? setStep((s) => s + 1) : setStepOpen(false))}>
+                {step === 3 ? "Finish" : "Next"}
+              </Button>
+            </div>
+          }
+        >
+          <div className="min-h-30 flex flex-col gap-4">
+            {step === 1 && (
+              <div className="space-y-2">
+                <h3 className="font-semibold text-lg">Introduction</h3>
+                <p>Welcome to the wizard. This content fades in from the right.</p>
+                <TextInput placeholder="Enter your name" fullWidth />
+              </div>
+            )}
+            {step === 2 && (
+              <div className="space-y-2">
+                <h3 className="font-semibold text-lg">Details</h3>
+                <p>Please select your preferences.</p>
+                <div className="space-y-2">
+                  <div className="p-2 border rounded hover:bg-slate-50">Option A</div>
+                  <div className="p-2 border rounded hover:bg-slate-50">Option B</div>
+                </div>
+              </div>
+            )}
+            {step === 3 && (
+              <div className="space-y-2">
+                <h3 className="font-semibold text-lg">Confirmation</h3>
+                <p>You are all set! Click Finish to close.</p>
+                <div className="text-center py-4 text-green-600 font-bold text-2xl">✓ Success</div>
+              </div>
+            )}
+          </div>
+        </Modal>
       </section>
     </div>
   )
