@@ -4,7 +4,7 @@ import Checkbox from "./components/primary/ZCheckbox"
 import Radio from "./components/primary/ZRadio"
 import Select, { ZSelectItem } from "./components/primary/ZSelect"
 import Slider from "./components/primary/Slider"
-import Switch from "./components/primary/Switch"
+import Switch from "./components/primary/ZSwitch"
 import TextInput from "./components/primary/ZTextInput"
 import Modal from "./components/primary/ZModal"
 
