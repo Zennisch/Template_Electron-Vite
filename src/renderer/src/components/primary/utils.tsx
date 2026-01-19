@@ -1,3 +1,5 @@
+import { motion } from "framer-motion"
+
 export const cn = (...parts: Array<string | false | undefined>) =>
   parts
     .filter(Boolean)
@@ -81,5 +83,48 @@ export const LoadingSpinner = ({ className }: { className?: string }) => (
       fill="currentColor"
       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
     ></path>
+  </svg>
+)
+
+export const AnimatedCheckIcon = ({ className }: { className?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+    stroke="currentColor"
+    strokeWidth="4"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <motion.path
+      d="M5 12L10 17L19 7"
+      initial={{ pathLength: 0, opacity: 0 }}
+      animate={{ pathLength: 1, opacity: 1 }}
+      exit={{ pathLength: 0, opacity: 0 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    />
+  </svg>
+)
+
+export const AnimatedIndeterminateIcon = ({ className }: { className?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+    stroke="currentColor"
+    strokeWidth="4"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <motion.line
+      x1="5"
+      y1="12"
+      x2="19"
+      y2="12"
+      initial={{ pathLength: 0, opacity: 0 }}
+      animate={{ pathLength: 1, opacity: 1 }}
+      exit={{ pathLength: 0, opacity: 0 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    />
   </svg>
 )

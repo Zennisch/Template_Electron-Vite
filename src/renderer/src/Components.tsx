@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import Button from "./components/primary/ZButton"
-import Checkbox from "./components/primary/Checkbox"
+import Checkbox from "./components/primary/ZCheckbox"
 import Radio from "./components/primary/Radio"
 import Select, { ZSelectItem } from "./components/primary/ZSelect"
 import Slider from "./components/primary/Slider"
@@ -282,6 +282,25 @@ const Modals = () => {
   )
 }
 
+const CheckboxWithState = () => {
+  const [checked, setChecked] = useState(false)
+
+  return (
+    <div className="flex flex-col gap-3 p-4 border rounded-lg bg-white shadow-sm max-w-sm">
+      <h3 className="text-sm font-semibold text-gray-900">Controlled State</h3>
+      <div className="flex items-center justify-between">
+        <Checkbox label={checked ? "Active" : "Inactive"} checked={checked} onChange={(c) => setChecked(c)} />
+        <Button size="xs" variant="secondary" onClick={() => setChecked(!checked)}>
+          Toggle State
+        </Button>
+      </div>
+      <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded border">
+        Current state: <span className={checked ? "text-green-600 font-bold" : "text-gray-600"}>{String(checked)}</span>
+      </div>
+    </div>
+  )
+}
+
 export const Components = () => {
   return (
     <div className="flex flex-col gap-8 p-8 w-full max-w-4xl mx-auto pb-20 overflow-y-auto h-screen">
@@ -551,6 +570,12 @@ export const Components = () => {
           <Checkbox label="Disabled Checked" disabled defaultChecked />
           <Checkbox label="Disabled Indeterminate" disabled indeterminate />
         </div>
+      </section>
+
+      {/* Controlled */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Controlled State</h2>
+        <CheckboxWithState />
       </section>
 
       {/* Validation */}
