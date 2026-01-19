@@ -345,6 +345,6 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
   )
 })
 
-ZTextInput.displayName = "TextInput"
+ZTextInput.displayName = "ZTextInput"
 
 export default ZTextInput

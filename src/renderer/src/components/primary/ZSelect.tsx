@@ -1,4 +1,5 @@
-import { forwardRef, HTMLAttributes, ReactNode, useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from "react"
+import { forwardRef, ReactNode, useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from "react"
+import { motion, HTMLMotionProps } from "framer-motion"
 import { cn } from "./utils"
 import { ZSelectTrigger } from "./ZSelectTrigger"
 import { ZSelectList } from "./ZSelectList"
@@ -14,10 +15,7 @@ export interface ZSelectItem<T extends string | number> {
   icon?: ReactNode
 }
 
-interface ZSelectProps<T extends string | number> extends Omit<
-  HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue" | "value"
-> {
+interface ZSelectProps<T extends string | number> extends Omit<HTMLMotionProps<"div">, "onChange" | "defaultValue" | "value"> {
   label?: string
   labelPlacement?: LabelPlacement
 
@@ -46,7 +44,7 @@ interface ZSelectProps<T extends string | number> extends Omit<
   onSearchChange?: (query: string) => void
 }
 
-const ZSelectInner = <T extends string | number>(props: ZSelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
   const {
     label,
     labelPlacement = "top",
@@ -259,7 +257,7 @@ const ZSelectInner = <T extends string | number>(props: ZSelectProps<T>, ref: Re
   const wrapperClasses = cn("relative", fullWidth ? "w-full" : "w-64", labelPlacement === "left" && "flex-1")
 
   return (
-    <div className={containerClasses} ref={containerRef} {...rest}>
+    <motion.div className={containerClasses} ref={containerRef} {...rest}>
       {label && (
         <label className={labelClasses} onClick={() => !disabled && setIsOpen(!isOpen)}>
           {label}
@@ -322,14 +320,14 @@ const ZSelectInner = <T extends string | number>(props: ZSelectProps<T>, ref: Re
           )}
         </div>
       )}
-    </div>
+    </motion.div>
   )
 }
 
-const ZSelect = forwardRef(ZSelectInner) as <T extends string | number>(
-  props: ZSelectProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> }
-) => ReturnType<typeof ZSelectInner>
+ZSelectComponent.displayName = "ZSelect"
 
-;(ZSelect as any).displayName = "Select"
+const ZSelect = forwardRef(ZSelectComponent) as <T extends string | number>(
+  props: ZSelectProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> }
+) => ReturnType<typeof ZSelectComponent>
 
 export default ZSelect

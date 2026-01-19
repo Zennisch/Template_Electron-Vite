@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, forwardRef, ReactNode, useState, MouseEvent, useMemo } from "react"
+import { forwardRef, ReactNode, useState, MouseEvent, useMemo, ElementType } from "react"
 import { cn, DefaultSpinnerIcon } from "./utils"
 import { motion, HTMLMotionProps, AnimatePresence } from "framer-motion"
 
@@ -110,12 +110,12 @@ const RippleEffect = ({ ripples, onClear }: { ripples: any[]; onClear: (id: numb
   </span>
 )
 
-interface ZButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  as?: React.ElementType
+interface ZButtonProps extends HTMLMotionProps<"button"> {
+  as?: ElementType
   href?: string
   target?: string
 
-  children?: React.ReactNode
+  children?: ReactNode
 
   variant?: Variant
   size?: Size
@@ -197,7 +197,6 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
     className
   )
 
-  // Motion setup
   const MotionComponent = useMemo(() => motion.create(Component), [Component])
 
   const motionProps: HTMLMotionProps<any> =
@@ -221,7 +220,6 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
     onPointerDown?.(e as any)
   }
 
-  // Render
   const Spinner = loadingComponent || DefaultSpinnerIcon
   const content =
     loading && loadingText ? (
@@ -259,6 +257,6 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
   )
 })
 
-ZButton.displayName = "Button"
+ZButton.displayName = "ZButton"
 
 export default ZButton
