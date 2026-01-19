@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import Button from "./components/primary/ZButton"
 import Checkbox from "./components/primary/ZCheckbox"
-import Radio from "./components/primary/Radio"
+import Radio from "./components/primary/ZRadio"
 import Select, { ZSelectItem } from "./components/primary/ZSelect"
 import Slider from "./components/primary/Slider"
 import Switch from "./components/primary/Switch"
