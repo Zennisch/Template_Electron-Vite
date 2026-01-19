@@ -110,7 +110,7 @@ const RippleEffect = ({ ripples, onClear }: { ripples: any[]; onClear: (id: numb
   </span>
 )
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ZButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   as?: React.ElementType
   href?: string
   target?: string
@@ -137,7 +137,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   pressAnimationStrength?: PressAnimationStrength
 }
 
-const ZButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
   const {
     as: Component = "button",
 

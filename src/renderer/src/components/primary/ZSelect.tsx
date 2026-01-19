@@ -37,21 +37,21 @@ const shadowClasses: Record<Shadow, string> = {
   xl: "shadow-xl"
 }
 
-export interface OptionItem<T extends string | number> {
+export interface ZSelectItem<T extends string | number> {
   label: string
   value: T
   disabled?: boolean
   icon?: ReactNode
 }
 
-export interface SelectProps<T extends string | number> extends Omit<
+interface ZSelectProps<T extends string | number> extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange" | "defaultValue" | "value"
 > {
   label?: string
   labelPlacement?: LabelPlacement
 
-  options?: OptionItem<T>[]
+  options?: ZSelectItem<T>[]
   value?: T | T[]
   defaultValue?: T | T[]
   placeholder?: string
@@ -76,7 +76,7 @@ export interface SelectProps<T extends string | number> extends Omit<
   onSearchChange?: (query: string) => void
 }
 
-const ZSelectInner = <T extends string | number>(props: SelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const ZSelectInner = <T extends string | number>(props: ZSelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
   const {
     label,
     labelPlacement = "top",
@@ -536,7 +536,7 @@ const ZSelectInner = <T extends string | number>(props: SelectProps<T>, ref: Rea
 }
 
 const ZSelect = forwardRef(ZSelectInner) as <T extends string | number>(
-  props: SelectProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> }
+  props: ZSelectProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> }
 ) => ReturnType<typeof ZSelectInner>
 
 ;(ZSelect as any).displayName = "Select"

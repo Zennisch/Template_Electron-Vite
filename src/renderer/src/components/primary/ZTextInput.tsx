@@ -35,7 +35,7 @@ type BaseProps = {
   containerClassName?: string
 }
 
-export type TextInputProps = BaseProps &
+export type ZTextInputProps = BaseProps &
   Omit<InputHTMLAttributes<HTMLInputElement>, "size"> &
   Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "size" | "onChange" | "onBlur" | "onFocus"> & {
     onChange?: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
@@ -142,7 +142,7 @@ const borderVariants: Variants = {
   hover: { borderColor: colors.borderHover }
 }
 
-const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputProps>((props, ref) => {
+const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInputProps>((props, ref) => {
   const {
     label,
     error,

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { default as Button } from "./components/primary/ZButton"
 import Checkbox from "./components/primary/Checkbox"
 import Radio from "./components/primary/Radio"
-import { default as Select, OptionItem } from "./components/primary/ZSelect"
+import { default as Select, ZSelectItem } from "./components/primary/ZSelect"
 import Slider from "./components/primary/Slider"
 import Switch from "./components/primary/Switch"
 import { default as TextInput } from "./components/primary/ZTextInput"
@@ -13,7 +13,7 @@ const Icon = () => <span className="text-current">★</span>
 
 const AsyncSelect = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const [options, setOptions] = useState<OptionItem<string>[]>([])
+  const [options, setOptions] = useState<ZSelectItem<string>[]>([])
 
   const allData = [
     { label: "Algorithms", value: "algo" },
