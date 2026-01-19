@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useAnimation, Variants, HTMLMotionProps } from "framer-motion"
-import { forwardRef, ReactNode, useEffect, useRef, useState } from "react"
+import { forwardRef, MouseEvent, ReactNode, useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { cn, LoadingSpinner, XMarkIcon } from "./utils"
 
@@ -159,7 +159,7 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
 
   if (!mounted) return null
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
+  const handleBackdropClick = (e: MouseEvent) => {
     if (closeOnBackdropClick && e.target === e.currentTarget) {
       onClose()
     }

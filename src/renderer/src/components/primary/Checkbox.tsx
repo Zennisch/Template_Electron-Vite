@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, ReactNode, useEffect, useId, useRef } from "react"
+import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useEffect, useId, useRef } from "react"
 import { cn, DefaultCheckIcon, DefaultIndeterminateIcon } from "./utils"
 
 type LabelPlacement = "left" | "right"
@@ -18,7 +18,7 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
 
   containerClassName?: string
 
-  onChange?: (checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (checked: boolean, event: ChangeEvent<HTMLInputElement>) => void
 }
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
@@ -64,7 +64,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
     }
   }, [ref])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange?.(e.target.checked, e)
   }
 

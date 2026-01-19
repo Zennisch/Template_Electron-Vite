@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { KeyboardEvent, RefObject, useEffect, useRef } from "react"
 import { createPortal } from "react-dom"
 import { AnimatePresence, motion, Variants } from "framer-motion"
 import { SearchIcon, LoadingSpinner, cn } from "./utils"
@@ -28,14 +28,14 @@ interface ZSelectListProps<T extends string | number> {
   searchable: boolean
   searchQuery: string
   onSearchChange?: (query: string) => void
-  onKeyDown: (e: React.KeyboardEvent) => void
+  onKeyDown: (e: KeyboardEvent) => void
 
   isLoading: boolean
   options: ZSelectItem<T>[]
   focusedIndex: number
   multiple: boolean
   selectedValues: T[]
-  listRef: React.RefObject<HTMLUListElement | null>
+  listRef: RefObject<HTMLUListElement | null>
 
   onSelect: (value: T) => void
 }

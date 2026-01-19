@@ -1,5 +1,5 @@
-import { forwardRef, InputHTMLAttributes, ReactNode, TextareaHTMLAttributes, useId } from "react"
-import { cn } from "./utils"
+import { forwardRef, InputHTMLAttributes, ReactNode, Ref, TextareaHTMLAttributes, useId } from "react"
+import { cn } from "../utils"
 
 type Size = "sm" | "md" | "lg" | "xl"
 type Shadow = "none" | "sm" | "md" | "lg" | "xl"
@@ -133,7 +133,7 @@ const TextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputPr
           {multiline ? (
             <textarea
               id={inputId}
-              ref={ref as React.Ref<HTMLTextAreaElement>}
+              ref={ref as Ref<HTMLTextAreaElement>}
               rows={rows}
               className={inputClasses}
               disabled={disabled}
@@ -144,7 +144,7 @@ const TextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, TextInputPr
           ) : (
             <input
               id={inputId}
-              ref={ref as React.Ref<HTMLInputElement>}
+              ref={ref as Ref<HTMLInputElement>}
               className={inputClasses}
               disabled={disabled}
               aria-invalid={isError}

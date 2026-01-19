@@ -5,6 +5,7 @@ import {
   forwardRef,
   InputHTMLAttributes,
   ReactNode,
+  Ref,
   TextareaHTMLAttributes,
   useEffect,
   useId,
@@ -267,7 +268,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
 
           {multiline ? (
             <textarea
-              ref={ref as React.Ref<HTMLTextAreaElement>}
+              ref={ref as Ref<HTMLTextAreaElement>}
               id={inputId}
               value={actualValue}
               onChange={handleChange}
@@ -283,7 +284,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
             />
           ) : (
             <input
-              ref={ref as React.Ref<HTMLInputElement>}
+              ref={ref as Ref<HTMLInputElement>}
               type="text"
               id={inputId}
               value={actualValue}

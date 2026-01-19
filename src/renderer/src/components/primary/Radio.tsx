@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, ReactNode, useId } from "react"
+import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useId } from "react"
 import { cn } from "./utils"
 
 type LabelPlacement = "left" | "right"
@@ -17,7 +17,7 @@ export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
 
   containerClassName?: string
 
-  onChange?: (checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (checked: boolean, event: ChangeEvent<HTMLInputElement>) => void
 }
 
 const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
@@ -46,7 +46,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
   const errorId = `${inputId}-error`
   const helpId = `${inputId}-help`
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange?.(e.target.checked, e)
   }
 

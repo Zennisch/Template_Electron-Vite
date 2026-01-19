@@ -1,5 +1,5 @@
-import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react"
-import { cn, DefaultSpinnerIcon } from "./utils"
+import { ButtonHTMLAttributes, ElementType, forwardRef, ReactNode } from "react"
+import { cn, DefaultSpinnerIcon } from "../utils"
 
 type Variant = "primary" | "secondary" | "tertiary" | "danger" | "ghost"
 type Size = "xs" | "sm" | "md" | "lg" | "xl"
@@ -10,8 +10,8 @@ type PressAnimationDuration = "short" | "medium" | "long"
 type PressAnimationStrength = "light" | "medium" | "strong"
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children?: React.ReactNode
-  as?: React.ElementType
+  children?: ReactNode
+  as?: ElementType
   href?: string
   target?: string
 

@@ -1,4 +1,16 @@
-import { forwardRef, ReactNode, useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from "react"
+import {
+  ForwardedRef,
+  forwardRef,
+  KeyboardEvent,
+  MouseEvent,
+  ReactNode,
+  useEffect,
+  useId,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState
+} from "react"
 import { motion, HTMLMotionProps } from "framer-motion"
 import { cn } from "./utils"
 import { ZSelectTrigger } from "./ZSelectTrigger"
@@ -44,7 +56,7 @@ interface ZSelectProps<T extends string | number> extends Omit<HTMLMotionProps<"
   onSearchChange?: (query: string) => void
 }
 
-const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref: React.ForwardedRef<HTMLDivElement>) => {
+const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref: ForwardedRef<HTMLDivElement>) => {
   const {
     label,
     labelPlacement = "top",
@@ -126,7 +138,7 @@ const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref
   }, [isOpen])
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: Event) => {
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target as Node) &&
@@ -179,7 +191,7 @@ const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref
     }
   }
 
-  const removeValue = (valToRemove: T, e: React.MouseEvent) => {
+  const removeValue = (valToRemove: T, e: MouseEvent) => {
     e.stopPropagation()
     if (multiple && Array.isArray(currentValue)) {
       const currentArray = currentValue as T[]
@@ -196,7 +208,7 @@ const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref
     return options.filter((opt) => opt.label.toLowerCase().includes(searchQuery.toLowerCase()))
   }, [options, searchQuery, onSearchChange])
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: KeyboardEvent) => {
     if (disabled) return
 
     if (!isOpen) {
@@ -327,7 +339,7 @@ const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref
 ZSelectComponent.displayName = "ZSelect"
 
 const ZSelect = forwardRef(ZSelectComponent) as <T extends string | number>(
-  props: ZSelectProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> }
+  props: ZSelectProps<T> & { ref?: ForwardedRef<HTMLDivElement> }
 ) => ReturnType<typeof ZSelectComponent>
 
 export default ZSelect

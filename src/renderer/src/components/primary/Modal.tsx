@@ -1,4 +1,4 @@
-import { forwardRef, HTMLAttributes, ReactNode, useEffect, useState } from "react"
+import { forwardRef, HTMLAttributes, MouseEvent, ReactNode, useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { cn, LoadingSpinner, XMarkIcon } from "./utils"
 
@@ -99,7 +99,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>((props, ref) => {
     top: "items-start pt-16"
   }
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
+  const handleBackdropClick = (e: MouseEvent) => {
     if (closeOnBackdropClick && e.target === e.currentTarget) {
       onClose()
     }

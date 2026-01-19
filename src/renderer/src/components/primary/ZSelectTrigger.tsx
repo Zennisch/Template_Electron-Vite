@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef } from "react"
+import { ForwardedRef, KeyboardEvent, MouseEvent, ReactNode, forwardRef } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { ChevronDownIcon, XMarkIcon, cn } from "./utils"
 
@@ -36,14 +36,11 @@ export interface ZSelectTriggerProps<T extends string | number> {
   getLabel: (val: T) => string
 
   onToggle: () => void
-  onRemove: (value: T, e: React.MouseEvent) => void
-  onKeyDown: (e: React.KeyboardEvent) => void
+  onRemove: (value: T, e: MouseEvent) => void
+  onKeyDown: (e: KeyboardEvent) => void
 }
 
-const ZSelectTriggerInner = <T extends string | number>(
-  props: ZSelectTriggerProps<T>,
-  ref: React.ForwardedRef<HTMLDivElement>
-) => {
+const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerProps<T>, ref: ForwardedRef<HTMLDivElement>) => {
   const {
     id,
     isOpen,
@@ -148,5 +145,5 @@ const ZSelectTriggerInner = <T extends string | number>(
 }
 
 export const ZSelectTrigger = forwardRef(ZSelectTriggerInner) as <T extends string | number>(
-  props: ZSelectTriggerProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> }
+  props: ZSelectTriggerProps<T> & { ref?: ForwardedRef<HTMLDivElement> }
 ) => ReturnType<typeof ZSelectTriggerInner>

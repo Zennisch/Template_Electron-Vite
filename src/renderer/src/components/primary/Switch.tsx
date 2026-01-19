@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, useId } from "react"
+import { ChangeEvent, forwardRef, InputHTMLAttributes, useId } from "react"
 import { cn } from "./utils"
 
 type Size = "sm" | "md" | "lg"
@@ -46,7 +46,7 @@ const Switch = forwardRef<HTMLInputElement, SwitchProps>((props, ref) => {
   const errorId = `${inputId}-error`
   const helpId = `${inputId}-help`
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange?.(e.target.checked)
   }
 

@@ -1,5 +1,5 @@
 import { forwardRef, HTMLAttributes, ReactNode, useEffect, useId, useImperativeHandle, useRef, useState } from "react"
-import { CheckIcon, ChevronDownIcon, cn, LoadingSpinner, SearchIcon, XMarkIcon } from "./utils"
+import { CheckIcon, ChevronDownIcon, cn, LoadingSpinner, SearchIcon, XMarkIcon } from "../utils"
 
 type Size = "sm" | "md" | "lg" | "xl"
 type Shadow = "none" | "sm" | "md" | "lg" | "xl"

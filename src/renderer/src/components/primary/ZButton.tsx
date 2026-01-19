@@ -243,7 +243,7 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
       aria-disabled={isDisabled}
       aria-busy={loading}
       className={classes}
-      onClick={isDisabled ? (e: React.MouseEvent<HTMLElement>) => e.preventDefault() : onClick}
+      onClick={isDisabled ? (e: MouseEvent<HTMLElement>) => e.preventDefault() : onClick}
       onPointerDown={handlePointerDown}
       {...motionProps}
       {...rest}
