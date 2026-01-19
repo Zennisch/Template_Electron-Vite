@@ -15,6 +15,7 @@ import { motion, HTMLMotionProps } from "framer-motion"
 import { cn } from "./utils"
 import { ZSelectTrigger } from "./ZSelectTrigger"
 import { ZSelectList } from "./ZSelectList"
+import { ZHelperText } from "./ZHelperText"
 
 export type Size = "sm" | "md" | "lg" | "xl"
 export type Shadow = "none" | "sm" | "md" | "lg" | "xl"
@@ -317,21 +318,13 @@ const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref
         />
       </div>
 
-      {(isError || helpText) && (
-        <div className={cn(labelPlacement === "left" && "ml-34")}>
-          {isError && typeof error === "string" && (
-            <p className="mt-1 text-sm text-red-600" id={errorId}>
-              {error}
-            </p>
-          )}
-
-          {!isError && helpText && (
-            <p className="mt-1 text-sm text-slate-500" id={helpId}>
-              {helpText}
-            </p>
-          )}
-        </div>
-      )}
+      <ZHelperText
+        error={error}
+        helpText={helpText}
+        errorId={errorId}
+        helpId={helpId}
+        className={cn(labelPlacement === "left" && "ml-34")}
+      />
     </motion.div>
   )
 }

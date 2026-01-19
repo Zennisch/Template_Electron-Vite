@@ -1,6 +1,7 @@
-import { AnimatePresence, motion } from "framer-motion"
+import { motion } from "framer-motion"
 import { ChangeEvent, forwardRef, InputHTMLAttributes, useId, useState } from "react"
 import { cn } from "./utils"
+import { ZHelperText } from "./ZHelperText"
 
 type Size = "sm" | "md" | "lg"
 type LabelPlacement = "left" | "right"
@@ -168,30 +169,14 @@ const ZSwitch = forwardRef<HTMLInputElement, ZSwitchProps>((props, ref) => {
         )}
       </div>
 
-      <AnimatePresence>
-        {(isError || helpText) && (
-          <motion.div
-            key={isError ? "error" : "help"}
-            initial={{ opacity: 0, height: 0, y: -5 }}
-            animate={{ opacity: 1, height: "auto", y: 0 }}
-            exit={{ opacity: 0, height: 0, y: -5 }}
-            transition={{ duration: 0.2 }}
-            className={cn("overflow-hidden", labelPlacement === "left" ? "text-right pr-2" : "ml-1")}
-          >
-            {isError && typeof error === "string" && (
-              <p className="mt-1 text-xs text-red-600 font-medium" id={errorId}>
-                {error}
-              </p>
-            )}
-
-            {!isError && helpText && (
-              <p className="mt-1 text-xs text-slate-500" id={helpId}>
-                {helpText}
-              </p>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ZHelperText
+        error={error}
+        helpText={helpText}
+        errorId={errorId}
+        helpId={helpId}
+        textSize="xs"
+        className={labelPlacement === "left" ? "text-right pr-2" : "ml-1"}
+      />
     </div>
   )
 })

@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useAnimation, Variants } from "framer-motion"
+import { motion, useAnimation, Variants } from "framer-motion"
 import {
   ChangeEvent,
   FocusEvent,
@@ -13,6 +13,7 @@ import {
   useState
 } from "react"
 import { cn } from "./utils"
+import { ZHelperText } from "./ZHelperText"
 
 type Size = "sm" | "md" | "lg" | "xl"
 type Shadow = "none" | "sm" | "md" | "lg" | "xl"
@@ -320,28 +321,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
         </motion.div>
       </motion.div>
 
-      <AnimatePresence>
-        {(error || helpText) && (
-          <motion.div
-            key={error ? "error" : "help"}
-            initial={{ opacity: 0, y: -5, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: "auto" }}
-            exit={{ opacity: 0, y: -5, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            {error ? (
-              <p className="text-red-600 text-sm mt-1 ml-1 font-medium" id={errorId}>
-                {typeof error === "string" ? error : "Invalid input"}
-              </p>
-            ) : (
-              <p className="text-slate-500 text-sm mt-1 ml-1" id={helpId}>
-                {helpText}
-              </p>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ZHelperText error={error} helpText={helpText} errorId={errorId} helpId={helpId} className="ml-1" />
     </div>
   )
 })

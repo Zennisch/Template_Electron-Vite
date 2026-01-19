@@ -1,6 +1,7 @@
-import { AnimatePresence, motion, Transition } from "framer-motion"
+import { motion, Transition } from "framer-motion"
 import { ChangeEvent, FocusEvent, forwardRef, InputHTMLAttributes, useId, useRef, useState } from "react"
 import { cn } from "./utils"
+import { ZHelperText } from "./ZHelperText"
 
 type Size = "sm" | "md" | "lg"
 
@@ -226,28 +227,7 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
         />
       </div>
 
-      <AnimatePresence>
-        {(error || helpText) && (
-          <motion.div
-            key={error ? "error" : "help"}
-            initial={{ opacity: 0, y: -5, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: "auto" }}
-            exit={{ opacity: 0, y: -5, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            {error ? (
-              <p className="text-red-600 text-sm mt-1 font-medium" id={errorId}>
-                {typeof error === "string" ? error : "Invalid value"}
-              </p>
-            ) : (
-              <p className="text-slate-500 text-sm mt-1" id={helpId}>
-                {helpText}
-              </p>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ZHelperText error={error} helpText={helpText} errorId={errorId} helpId={helpId} defaultErrorMessage="Invalid value" />
     </div>
   )
 })

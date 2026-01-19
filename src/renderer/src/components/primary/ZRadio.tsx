@@ -1,6 +1,7 @@
-import { AnimatePresence, motion } from "framer-motion"
+import { motion } from "framer-motion"
 import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useId, useState } from "react"
 import { cn } from "./utils"
+import { ZHelperText } from "./ZHelperText"
 
 type Size = "sm" | "md" | "lg"
 type LabelPlacement = "left" | "right"
@@ -150,29 +151,18 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
         )}
       </div>
 
-      <AnimatePresence>
-        {(isError || helpText) && (
-          <motion.div
-            initial={{ opacity: 0, height: 0, y: -4 }}
-            animate={{ opacity: 1, height: "auto", y: 0 }}
-            exit={{ opacity: 0, height: 0, y: -4 }}
-            className={cn("overflow-hidden", labelPlacement === "left" ? "mr-1 text-right" : "ml-0.5")}
-          >
-            <div className={cn(labelPlacement === "right" ? (size === "sm" ? "ml-6" : size === "md" ? "ml-7" : "ml-9") : "")}>
-              {isError && (
-                <p className="text-red-600 text-xs font-medium mt-1" id={errorId}>
-                  {typeof error === "string" ? error : "Selection required"}
-                </p>
-              )}
-              {!isError && helpText && (
-                <p className="text-slate-500 text-xs mt-1" id={helpId}>
-                  {helpText}
-                </p>
-              )}
-            </div>
-          </motion.div>
+      <ZHelperText
+        error={error}
+        helpText={helpText}
+        errorId={errorId}
+        helpId={helpId}
+        textSize="xs"
+        defaultErrorMessage="Selection required"
+        className={cn(
+          labelPlacement === "left" ? "mr-1 text-right" : "ml-0.5",
+          labelPlacement === "right" && (size === "sm" ? "pl-6" : size === "md" ? "pl-7" : "pl-9")
         )}
-      </AnimatePresence>
+      />
     </div>
   )
 })

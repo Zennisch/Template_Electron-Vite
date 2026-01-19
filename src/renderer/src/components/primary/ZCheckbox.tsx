@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, Variants } from "framer-motion"
 import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useEffect, useId, useRef, useState } from "react"
 import { AnimatedCheckIcon, AnimatedIndeterminateIcon, cn } from "./utils"
+import { ZHelperText } from "./ZHelperText"
 
 type Size = "sm" | "md" | "lg"
 type LabelPlacement = "left" | "right"
@@ -232,33 +233,15 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
         )}
       </div>
 
-      <AnimatePresence>
-        {(isError || helpText) && (
-          <motion.div
-            initial={{ opacity: 0, height: 0, y: -5 }}
-            animate={{ opacity: 1, height: "auto", y: 0 }}
-            exit={{ opacity: 0, height: 0, y: -5 }}
-            className={cn(
-              "overflow-hidden",
-              // Adjust margin based on label placement.
-              // If label is right (default), text should align with label or box?
-              // Usually nice to indent to align with text.
-              labelPlacement === "left" ? "text-right pr-1" : size === "sm" ? "ml-6" : size === "md" ? "ml-7" : "ml-9"
-            )}
-          >
-            {isError && typeof error === "string" && (
-              <p className="mt-1 text-xs text-red-600 font-medium" id={errorId}>
-                {error}
-              </p>
-            )}
-            {!isError && helpText && (
-              <p className="mt-1 text-xs text-slate-500" id={helpId}>
-                {helpText}
-              </p>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ZHelperText
+        error={error}
+        helpText={helpText}
+        errorId={errorId}
+        helpId={helpId}
+        textSize="xs"
+        defaultErrorMessage="Selection required"
+        className={labelPlacement === "left" ? "text-right pr-1" : size === "sm" ? "ml-6" : size === "md" ? "ml-7" : "ml-9"}
+      />
     </div>
   )
 })
