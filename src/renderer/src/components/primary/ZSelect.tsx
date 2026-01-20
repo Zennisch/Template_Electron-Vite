@@ -28,6 +28,17 @@ export interface ZSelectItem<T extends string | number> {
   icon?: ReactNode
 }
 
+const SELECT_LAYOUT = {
+  DROPDOWN_OFFSET: 8,
+  DEFAULT_WIDTH: "w-64",
+  LABEL_MIN_WIDTH: "min-w-[120px]",
+  HELPER_MARGIN_LEFT: "ml-34",
+  GAP: {
+    TOP: "gap-1.5",
+    LEFT: "gap-4"
+  }
+}
+
 interface ZSelectProps<T extends string | number> extends Omit<HTMLMotionProps<"div">, "onChange" | "defaultValue" | "value"> {
   label?: string
   labelPlacement?: LabelPlacement
@@ -122,7 +133,7 @@ const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref
         const rect = triggerRef.current.getBoundingClientRect()
         setCoords({
           left: rect.left,
-          top: rect.bottom + 8,
+          top: rect.bottom + SELECT_LAYOUT.DROPDOWN_OFFSET,
           width: rect.width
         })
       }
@@ -255,7 +266,7 @@ const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref
 
   const containerClasses = cn(
     "relative flex",
-    labelPlacement === "top" ? "flex-col gap-1.5" : "flex-row items-baseline gap-4",
+    labelPlacement === "top" ? `flex-col ${SELECT_LAYOUT.GAP.TOP}` : `flex-row items-baseline ${SELECT_LAYOUT.GAP.LEFT}`,
     fullWidth ? "w-full" : "w-auto",
     containerClassName
   )
@@ -264,10 +275,14 @@ const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref
     "block text-sm font-medium leading-6",
     isError ? "text-red-600" : "text-slate-900",
     disabled && "opacity-50 cursor-not-allowed",
-    labelPlacement === "left" && "min-w-[120px]"
+    labelPlacement === "left" && SELECT_LAYOUT.LABEL_MIN_WIDTH
   )
 
-  const wrapperClasses = cn("relative", fullWidth ? "w-full" : "w-64", labelPlacement === "left" && "flex-1")
+  const wrapperClasses = cn(
+    "relative",
+    fullWidth ? "w-full" : SELECT_LAYOUT.DEFAULT_WIDTH,
+    labelPlacement === "left" && "flex-1"
+  )
 
   return (
     <motion.div className={containerClasses} ref={containerRef} {...rest}>
@@ -323,7 +338,7 @@ const ZSelectComponent = <T extends string | number>(props: ZSelectProps<T>, ref
         helpText={helpText}
         errorId={errorId}
         helpId={helpId}
-        className={cn(labelPlacement === "left" && "ml-34")}
+        className={cn(labelPlacement === "left" && SELECT_LAYOUT.HELPER_MARGIN_LEFT)}
       />
     </motion.div>
   )

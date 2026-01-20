@@ -5,18 +5,38 @@ import { cn, LoadingSpinner, SearchIcon } from "./utils"
 import { ZSelectOption } from "./ZSelectOption"
 import { ZSelectItem } from "./ZSelect"
 
+const LIST_ANIMATION = {
+  DURATION_ENTER: 0.2,
+  DURATION_EXIT: 0.15,
+  SCALE_HIDDEN: 0.95,
+  Y_HIDDEN: -10
+}
+
+const LIST_LAYOUT = {
+  Z_INDEX: 9999,
+  MAX_HEIGHT: "max-h-60",
+  SEARCH_ICON_SIZE: "h-4 w-4",
+  LOADING_ICON_SIZE: "h-4 w-4",
+  CONTAINER_PADDING: "py-1",
+  SEARCH_CONTAINER_PADDING: "p-2",
+  SEARCH_ICON_PADDING_LEFT: "pl-2",
+  SEARCH_INPUT_PADDING: "py-1.5 pl-8 pr-3",
+  EMPTY_STATE_PADDING: "py-2 px-3",
+  LOADING_GAP: "gap-2"
+}
+
 const dropdownVariants: Variants = {
   hidden: {
     opacity: 0,
-    scale: 0.95,
-    y: -10,
-    transition: { duration: 0.15, ease: "easeIn" }
+    scale: LIST_ANIMATION.SCALE_HIDDEN,
+    y: LIST_ANIMATION.Y_HIDDEN,
+    transition: { duration: LIST_ANIMATION.DURATION_EXIT, ease: "easeIn" }
   },
   visible: {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { duration: 0.2, ease: "easeOut" }
+    transition: { duration: LIST_ANIMATION.DURATION_ENTER, ease: "easeOut" }
   }
 }
 
@@ -98,24 +118,34 @@ export const ZSelectList = <T extends string | number>({
             left: coords.left,
             top: coords.top,
             width: coords.width,
-            zIndex: 9999
+            zIndex: LIST_LAYOUT.Z_INDEX
           }}
           className={cn(
-            "max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm origin-top"
+            "overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm origin-top",
+            LIST_LAYOUT.CONTAINER_PADDING,
+            LIST_LAYOUT.MAX_HEIGHT
           )}
           role="listbox"
           tabIndex={-1}
         >
           {searchable && (
-            <li className="sticky top-0 z-10 bg-white border-b border-slate-100 p-2">
+            <li className={cn("sticky top-0 z-10 bg-white border-b border-slate-100", LIST_LAYOUT.SEARCH_CONTAINER_PADDING)}>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-slate-400">
-                  <SearchIcon className="h-4 w-4" />
+                <span
+                  className={cn(
+                    "absolute inset-y-0 left-0 flex items-center text-slate-400",
+                    LIST_LAYOUT.SEARCH_ICON_PADDING_LEFT
+                  )}
+                >
+                  <SearchIcon className={LIST_LAYOUT.SEARCH_ICON_SIZE} />
                 </span>
                 <input
                   ref={searchInputRef}
                   type="text"
-                  className="w-full rounded border border-slate-300 py-1.5 pl-8 pr-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-900"
+                  className={cn(
+                    "w-full rounded border border-slate-300 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-900",
+                    LIST_LAYOUT.SEARCH_INPUT_PADDING
+                  )}
                   placeholder="Search..."
                   value={searchQuery}
                   onKeyDown={onKeyDown}
@@ -127,12 +157,20 @@ export const ZSelectList = <T extends string | number>({
           )}
 
           {isLoading ? (
-            <div className="py-2 px-3 text-slate-500 text-sm text-center flex justify-center items-center gap-2">
-              <LoadingSpinner className="animate-spin h-4 w-4" />
+            <div
+              className={cn(
+                "text-slate-500 text-sm text-center flex justify-center items-center",
+                LIST_LAYOUT.EMPTY_STATE_PADDING,
+                LIST_LAYOUT.LOADING_GAP
+              )}
+            >
+              <LoadingSpinner className={cn("animate-spin", LIST_LAYOUT.LOADING_ICON_SIZE)} />
               <span>Loading...</span>
             </div>
           ) : options.length === 0 ? (
-            <div className="py-2 px-3 text-slate-500 text-sm text-center">No options found</div>
+            <div className={cn("text-slate-500 text-sm text-center", LIST_LAYOUT.EMPTY_STATE_PADDING)}>
+              No options found
+            </div>
           ) : (
             options.map((option, index) => (
               <ZSelectOption

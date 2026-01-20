@@ -5,19 +5,50 @@ import { ChevronDownIcon, cn, XMarkIcon } from "./utils"
 type Size = "sm" | "md" | "lg" | "xl"
 type Shadow = "none" | "sm" | "md" | "lg" | "xl"
 
-const sizeClasses: Record<Size, string> = {
-  sm: "min-h-9 py-1 text-sm pl-3 pr-8",
-  md: "min-h-10 py-2 text-sm pl-3 pr-10",
-  lg: "min-h-11 py-2 text-base pl-3 pr-10",
-  xl: "min-h-12 py-3 text-lg pl-3 pr-12"
+interface TriggerSizeConfig {
+  height: string
+  py: string
+  text: string
+  padding: string
 }
 
-const shadowClasses: Record<Shadow, string> = {
+const TRIGGER_SIZES: Record<Size, TriggerSizeConfig> = {
+  sm: { height: "min-h-9", py: "py-1", text: "text-sm", padding: "pl-3 pr-8" },
+  md: { height: "min-h-10", py: "py-2", text: "text-sm", padding: "pl-3 pr-10" },
+  lg: { height: "min-h-11", py: "py-2", text: "text-base", padding: "pl-3 pr-10" },
+  xl: { height: "min-h-12", py: "py-3", text: "text-lg", padding: "pl-3 pr-12" }
+}
+
+const TRIGGER_SHADOWS: Record<Shadow, string> = {
   none: "shadow-none",
   sm: "shadow-sm",
   md: "shadow",
   lg: "shadow-lg",
   xl: "shadow-xl"
+}
+
+const TRIGGER_ANIMATION = {
+  TAG: {
+    DURATION: 0.1,
+    INITIAL_SCALE: 0.8,
+    EXIT_SCALE: 0.5
+  },
+  ICON: {
+    DURATION: 200 // ms
+  }
+}
+
+const TRIGGER_LAYOUT = {
+  ICON_START_PADDING: "pl-10",
+  MULTIPLE_GAP: "gap-1.5",
+  TAG_PADDING: "px-2 py-0.5",
+  MULTIPLE_CONTAINER_MARGIN_LEFT: "-ml-1",
+  TAG_GAP: "gap-1",
+  PLACEHOLDER_MARGIN_LEFT: "ml-1",
+  ICON_START_position: "pl-3",
+  CHEVRON_CONTAINER_PADDING: "pr-2",
+  CHEVRON_SIZE: "h-5 w-5",
+  TAG_REMOVE_ICON_SIZE: "h-3 w-3"
 }
 
 export interface ZSelectTriggerProps<T extends string | number> {
@@ -59,6 +90,8 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
     onKeyDown
   } = props
 
+  const config = TRIGGER_SIZES[size]
+
   const triggerClasses = cn(
     "relative w-full cursor-default rounded-md border text-left transition-all",
     "focus:outline-none focus:ring-2 focus:ring-offset-0",
@@ -69,27 +102,36 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
       : "border-slate-300 ring-slate-300 focus:ring-indigo-600 hover:border-slate-400",
     isOpen && !isError && "ring-2 ring-indigo-600 border-indigo-600",
 
-    sizeClasses[size],
-    shadowClasses[shadow],
-    iconStart && !multiple ? "pl-10" : "",
-    multiple ? "h-auto flex flex-wrap gap-1.5 items-center" : "",
+    config.height,
+    config.py,
+    config.text,
+    config.padding,
+    TRIGGER_SHADOWS[shadow],
+    iconStart && !multiple ? TRIGGER_LAYOUT.ICON_START_PADDING : "",
+    multiple ? cn("h-auto flex flex-wrap items-center", TRIGGER_LAYOUT.MULTIPLE_GAP) : "",
     className
   )
 
   const renderTriggerContent = () => {
     if (multiple) {
       return (
-        <div className="flex flex-wrap gap-1.5 -ml-1 w-full">
+        <div
+          className={cn("flex flex-wrap w-full", TRIGGER_LAYOUT.MULTIPLE_CONTAINER_MARGIN_LEFT, TRIGGER_LAYOUT.MULTIPLE_GAP)}
+        >
           <AnimatePresence mode="popLayout">
             {selectedValues.map((val) => (
               <motion.span
                 layout
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: TRIGGER_ANIMATION.TAG.INITIAL_SCALE }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.1 }}
+                exit={{ opacity: 0, scale: TRIGGER_ANIMATION.TAG.EXIT_SCALE }}
+                transition={{ duration: TRIGGER_ANIMATION.TAG.DURATION }}
                 key={val}
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-medium border border-indigo-200"
+                className={cn(
+                  "inline-flex items-center rounded bg-indigo-100 text-indigo-700 text-xs font-medium border border-indigo-200",
+                  TRIGGER_LAYOUT.TAG_GAP,
+                  TRIGGER_LAYOUT.TAG_PADDING
+                )}
               >
                 {getLabel(val)}
                 <button
@@ -98,12 +140,14 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
                   disabled={disabled}
                   className="hover:text-indigo-900 focus:outline-none"
                 >
-                  <XMarkIcon className="h-3 w-3" />
+                  <XMarkIcon className={TRIGGER_LAYOUT.TAG_REMOVE_ICON_SIZE} />
                 </button>
               </motion.span>
             ))}
           </AnimatePresence>
-          {selectedValues.length === 0 && <span className="text-slate-400 ml-1">{placeholder}</span>}
+          {selectedValues.length === 0 && (
+            <span className={cn("text-slate-400", TRIGGER_LAYOUT.PLACEHOLDER_MARGIN_LEFT)}>{placeholder}</span>
+          )}
         </div>
       )
     }
@@ -130,14 +174,31 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
       ref={ref}
     >
       {iconStart && !multiple && (
-        <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">{iconStart}</span>
+        <span
+          className={cn(
+            "absolute inset-y-0 left-0 flex items-center pointer-events-none text-slate-500",
+            TRIGGER_LAYOUT.ICON_START_position
+          )}
+        >
+          {iconStart}
+        </span>
       )}
 
       {renderTriggerContent()}
 
-      <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+      <span
+        className={cn(
+          "absolute inset-y-0 right-0 flex items-center pointer-events-none",
+          TRIGGER_LAYOUT.CHEVRON_CONTAINER_PADDING
+        )}
+      >
         <ChevronDownIcon
-          className={cn("h-5 w-5 text-slate-400 transition-transform duration-200", isOpen && "transform rotate-180")}
+          className={cn(
+            "text-slate-400 transition-transform",
+            TRIGGER_LAYOUT.CHEVRON_SIZE,
+            `duration-${TRIGGER_ANIMATION.ICON.DURATION}`,
+            isOpen && "transform rotate-180"
+          )}
         />
       </span>
     </div>
