@@ -18,33 +18,6 @@ import { ZHelperText } from "./ZHelperText"
 type Size = "sm" | "md" | "lg" | "xl"
 type Shadow = "none" | "sm" | "md" | "lg" | "xl"
 
-type BaseProps = {
-  label?: string
-  error?: string | boolean
-  helpText?: string
-
-  iconStart?: ReactNode
-  iconEnd?: ReactNode
-
-  size?: Size
-  shadow?: Shadow
-  fullWidth?: boolean
-  backgroundColor?: string
-
-  multiline?: boolean
-  rows?: number
-
-  containerClassName?: string
-}
-
-export type ZTextInputProps = BaseProps &
-  Omit<InputHTMLAttributes<HTMLInputElement>, "size"> &
-  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "size" | "onChange" | "onBlur" | "onFocus"> & {
-    onChange?: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-    onBlur?: (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-    onFocus?: (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-  }
-
 const shadowClasses: Record<Shadow, string> = {
   none: "shadow-none",
   sm: "shadow-sm",
@@ -143,6 +116,33 @@ const borderVariants: Variants = {
   }),
   hover: { borderColor: colors.borderHover }
 }
+
+type BaseProps = {
+  label?: string
+  error?: string | boolean
+  helpText?: string
+
+  iconStart?: ReactNode
+  iconEnd?: ReactNode
+
+  size?: Size
+  shadow?: Shadow
+  fullWidth?: boolean
+  backgroundColor?: string
+
+  multiline?: boolean
+  rows?: number
+
+  containerClassName?: string
+}
+
+export type ZTextInputProps = BaseProps &
+  Omit<InputHTMLAttributes<HTMLInputElement>, "size"> &
+  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "size" | "onChange" | "onBlur" | "onFocus"> & {
+    onChange?: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    onBlur?: (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    onFocus?: (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+  }
 
 const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInputProps>((props, ref) => {
   const {
