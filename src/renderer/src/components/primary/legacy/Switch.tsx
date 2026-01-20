@@ -1,5 +1,5 @@
 import { ChangeEvent, forwardRef, InputHTMLAttributes, useId } from "react"
-import { cn } from "./utils"
+import { cn } from "../utils"
 
 type Size = "sm" | "md" | "lg"
 type LabelPlacement = "left" | "right"
