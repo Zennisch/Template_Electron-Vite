@@ -6,6 +6,56 @@ import { ZHelperText } from "./ZHelperText"
 type Size = "sm" | "md" | "lg"
 type LabelPlacement = "left" | "right"
 
+interface RadioSizeConfig {
+  radio: string
+  dot: string
+  label: string
+  gap: string
+  helperPaddingLeft: string
+  helperPaddingRight: string
+}
+
+const RADIO_SIZES: Record<Size, RadioSizeConfig> = {
+  sm: {
+    radio: "h-4 w-4",
+    dot: "h-2 w-2",
+    label: "text-sm",
+    gap: "gap-2",
+    helperPaddingLeft: "pl-6",
+    helperPaddingRight: "pr-6"
+  },
+  md: {
+    radio: "h-5 w-5",
+    dot: "h-2.5 w-2.5",
+    label: "text-base",
+    gap: "gap-2.5",
+    helperPaddingLeft: "pl-7.5",
+    helperPaddingRight: "pr-7.5"
+  },
+  lg: {
+    radio: "h-6 w-6",
+    dot: "h-3 w-3",
+    label: "text-lg",
+    gap: "gap-3",
+    helperPaddingLeft: "pl-9",
+    helperPaddingRight: "pr-9"
+  }
+}
+
+const RADIO_THEME = {
+  base: "bg-white border-slate-300",
+  primary: {
+    checked: "checked:bg-indigo-600 checked:border-indigo-600",
+    focus: "ring-offset-white focus-visible:ring-indigo-600"
+  },
+  error: {
+    checked: "checked:bg-red-600 checked:border-red-600",
+    focus: "border-red-300 ring-offset-red-50 focus-visible:ring-red-500",
+    text: "text-red-600"
+  },
+  label: "text-slate-700"
+}
+
 export interface ZRadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
   label?: ReactNode
   labelPlacement?: LabelPlacement
@@ -18,18 +68,6 @@ export interface ZRadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
   containerClassName?: string
 
   onChange?: (checked: boolean, event: ChangeEvent<HTMLInputElement>) => void
-}
-
-const sizeConfig: Record<Size, { radio: string; dot: string; label: string }> = {
-  sm: { radio: "h-4 w-4", dot: "h-2 w-2", label: "text-sm ml-2" },
-  md: { radio: "h-5 w-5", dot: "h-2.5 w-2.5", label: "text-base ml-2.5" },
-  lg: { radio: "h-6 w-6", dot: "h-3 w-3", label: "text-lg ml-3" }
-}
-
-const sizeConfigLeft: Record<Size, { label: string }> = {
-  sm: { label: "text-sm mr-2" },
-  md: { label: "text-base mr-2.5" },
-  lg: { label: "text-lg mr-3" }
 }
 
 const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
@@ -72,13 +110,13 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
   }
 
   const isError = !!error
-  const config = sizeConfig[size]
-  const labelClass = labelPlacement === "left" ? sizeConfigLeft[size].label : config.label
+  const config = RADIO_SIZES[size]
 
   const containerClasses = cn(
     "flex",
     labelPlacement === "left" ? "flex-row-reverse justify-end" : "flex-row",
     "items-center",
+    config.gap,
     containerClassName
   )
 
@@ -86,23 +124,22 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
     "peer appearance-none shrink-0 rounded-full border transition-all cursor-pointer",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
     "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-slate-100",
-    "bg-white border-slate-300",
+    RADIO_THEME.base,
 
-    isError ? "checked:bg-red-600 checked:border-red-600" : "checked:bg-indigo-600 checked:border-indigo-600",
+    isError ? RADIO_THEME.error.checked : RADIO_THEME.primary.checked,
 
-    isError
-      ? "border-red-300 ring-offset-red-50 focus-visible:ring-red-500"
-      : "ring-offset-white focus-visible:ring-indigo-600",
+    isError ? RADIO_THEME.error.focus : RADIO_THEME.primary.focus,
 
     config.radio,
     className
   )
 
   const labelClasses = cn(
-    "select-none cursor-pointer font-medium text-slate-700",
+    "select-none cursor-pointer font-medium",
+    RADIO_THEME.label,
     disabled && "opacity-50 cursor-not-allowed",
-    isError && "text-red-600",
-    labelClass
+    isError && RADIO_THEME.error.text,
+    config.label
   )
 
   // Determine controlled vs uncontrolled for passing props
@@ -158,10 +195,7 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
         helpId={helpId}
         textSize="xs"
         defaultErrorMessage="Selection required"
-        className={cn(
-          labelPlacement === "left" ? "mr-1 text-right" : "ml-0.5",
-          labelPlacement === "right" && (size === "sm" ? "pl-6" : size === "md" ? "pl-7" : "pl-9")
-        )}
+        className={cn(labelPlacement === "left" ? cn("text-right", config.helperPaddingRight) : config.helperPaddingLeft)}
       />
     </div>
   )
