@@ -1,4 +1,4 @@
-import { CheckIcon, cn } from "./utils"
+import { AnimatedCheckIcon, cn } from "./utils"
 import { ZSelectItem } from "./ZSelect"
 
 export interface ZSelectOptionProps<T extends string | number> {
@@ -40,7 +40,7 @@ export const ZSelectOption = <T extends string | number>({
               isSelected ? "bg-indigo-600 border-indigo-600 text-white" : "border-slate-300 bg-white"
             )}
           >
-            {isSelected && <CheckIcon className="h-3 w-3" />}
+            {isSelected && <AnimatedCheckIcon className="h-3 w-3" />}
           </div>
         )}
 
@@ -50,7 +50,7 @@ export const ZSelectOption = <T extends string | number>({
 
       {isSelected && !multiple && (
         <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-indigo-600">
-          <CheckIcon className="h-5 w-5" />
+          <AnimatedCheckIcon className="h-5 w-5" />
         </span>
       )}
     </li>
