@@ -6,6 +6,129 @@ import { cn, LoadingSpinner, XMarkIcon } from "./utils"
 type Size = "sm" | "md" | "lg" | "xl" | "2xl" | "full"
 type Position = "center" | "top"
 
+const ANIMATION_CONFIG = {
+  OVERLAY: {
+    DURATION: 0.2,
+    EXIT_DURATION: 0.15,
+    EXIT_DELAY: 0.1
+  },
+  MODAL: {
+    SCALE_HIDDEN: 0.95,
+    Y_HIDDEN_TOP: -20,
+    Y_HIDDEN_CENTER: 10,
+    SPRING: {
+      TYPE: "spring",
+      DAMPING: 25,
+      STIFFNESS: 300,
+      DURATION: 0.3
+    },
+    EXIT_DURATION: 0.15
+  },
+  CONTENT: {
+    X_OFFSET: 10,
+    DURATION: 0.2,
+    EXIT_DURATION: 0.15
+  },
+  SHAKE: {
+    X_OFFSET: 6,
+    DURATION: 0.3
+  }
+} as const
+
+const MODAL_SIZES: Record<Size, string> = {
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+  "2xl": "max-w-2xl",
+  full: "max-w-[calc(100vw-2rem)]"
+}
+
+const MODAL_POSITIONS: Record<Position, string> = {
+  center: "items-center",
+  top: "items-start pt-16"
+}
+
+const MODAL_LAYOUT = {
+  PADDING: {
+    OVERLAY: "p-4",
+    HEADER: "px-6 py-4",
+    BODY: "p-6",
+    FOOTER: "px-6 py-4"
+  },
+  ROUNDED: {
+    CONTAINER: "rounded-xl",
+    FOOTER: "rounded-b-xl"
+  },
+  BUTTON: {
+    SIZE: "h-8 w-8",
+    ICON_SIZE: "h-5 w-5",
+    MARGIN_HEADER: "-mr-2",
+    POSITION_ABSOLUTE: "right-4 top-4"
+  },
+  GAP: "gap-3"
+}
+
+const MODAL_THEME = {
+  OVERLAY: "bg-slate-900/60 backdrop-blur-sm",
+  CONTAINER: "bg-white ring-1 ring-slate-900/5 shadow-2xl",
+  HEADER: {
+    BORDER: "border-b border-slate-100",
+    TEXT: "text-slate-900"
+  },
+  FOOTER: {
+    BORDER: "border-t border-slate-100",
+    BG: "bg-slate-50/50"
+  },
+  LOADING: "bg-white/60 backdrop-blur-[2px]",
+  CLOSE_BUTTON:
+    "bg-transparent text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+}
+
+const overlayVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: ANIMATION_CONFIG.OVERLAY.DURATION } },
+  exit: {
+    opacity: 0,
+    transition: { duration: ANIMATION_CONFIG.OVERLAY.EXIT_DURATION, delay: ANIMATION_CONFIG.OVERLAY.EXIT_DELAY }
+  }
+}
+
+const modalVariants: Variants = {
+  hidden: (position: Position) => ({
+    opacity: 0,
+    scale: ANIMATION_CONFIG.MODAL.SCALE_HIDDEN,
+    y: position === "top" ? ANIMATION_CONFIG.MODAL.Y_HIDDEN_TOP : ANIMATION_CONFIG.MODAL.Y_HIDDEN_CENTER
+  }),
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      type: ANIMATION_CONFIG.MODAL.SPRING.TYPE,
+      damping: ANIMATION_CONFIG.MODAL.SPRING.DAMPING,
+      stiffness: ANIMATION_CONFIG.MODAL.SPRING.STIFFNESS,
+      duration: ANIMATION_CONFIG.MODAL.SPRING.DURATION
+    }
+  },
+  exit: {
+    opacity: 0,
+    scale: ANIMATION_CONFIG.MODAL.SCALE_HIDDEN,
+    y: ANIMATION_CONFIG.MODAL.Y_HIDDEN_CENTER,
+    transition: { duration: ANIMATION_CONFIG.MODAL.EXIT_DURATION }
+  }
+}
+
+const contentVariants: Variants = {
+  initial: { opacity: 0, x: ANIMATION_CONFIG.CONTENT.X_OFFSET },
+  animate: { opacity: 1, x: 0, transition: { duration: ANIMATION_CONFIG.CONTENT.DURATION, ease: "easeOut" } },
+  exit: {
+    opacity: 0,
+    x: -ANIMATION_CONFIG.CONTENT.X_OFFSET,
+    transition: { duration: ANIMATION_CONFIG.CONTENT.EXIT_DURATION, ease: "easeIn" }
+  }
+}
+
 export interface ZModalProps extends HTMLMotionProps<"div"> {
   isOpen: boolean
   onClose: () => void
@@ -31,57 +154,6 @@ export interface ZModalProps extends HTMLMotionProps<"div"> {
   headerClassName?: string
   bodyClassName?: string
   footerClassName?: string
-}
-
-const overlayVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.2 } },
-  exit: { opacity: 0, transition: { duration: 0.15, delay: 0.1 } }
-}
-
-const modalVariants: Variants = {
-  hidden: (position: Position) => ({
-    opacity: 0,
-    scale: 0.95,
-    y: position === "top" ? -20 : 10
-  }),
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      damping: 25,
-      stiffness: 300,
-      duration: 0.3
-    }
-  },
-  exit: {
-    opacity: 0,
-    scale: 0.95,
-    y: 10,
-    transition: { duration: 0.15 }
-  }
-}
-
-const contentVariants: Variants = {
-  initial: { opacity: 0, x: 10 },
-  animate: { opacity: 1, x: 0, transition: { duration: 0.2, ease: "easeOut" } },
-  exit: { opacity: 0, x: -10, transition: { duration: 0.15, ease: "easeIn" } }
-}
-
-const sizeClasses: Record<Size, string> = {
-  sm: "max-w-sm",
-  md: "max-w-md",
-  lg: "max-w-lg",
-  xl: "max-w-xl",
-  "2xl": "max-w-2xl",
-  full: "max-w-[calc(100vw-2rem)]"
-}
-
-const positionClasses: Record<Position, string> = {
-  center: "items-center",
-  top: "items-start pt-16"
 }
 
 const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
@@ -150,9 +222,10 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
       return
     }
     if (attentionTrigger > 0 && isOpen) {
+      const x = ANIMATION_CONFIG.SHAKE.X_OFFSET
       controls.start({
-        x: [0, -6, 6, -6, 6, 0],
-        transition: { type: "tween", duration: 0.3 }
+        x: [0, -x, x, -x, x, 0],
+        transition: { type: "tween", duration: ANIMATION_CONFIG.SHAKE.DURATION }
       })
     }
   }, [attentionTrigger, controls, isOpen])
@@ -170,8 +243,9 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
       {isOpen && (
         <div
           className={cn(
-            "fixed inset-0 z-50 flex justify-center overflow-y-auto overflow-x-hidden p-4",
-            positionClasses[position],
+            "fixed inset-0 z-50 flex justify-center overflow-y-auto overflow-x-hidden",
+            MODAL_LAYOUT.PADDING.OVERLAY,
+            MODAL_POSITIONS[position],
             overlayClassName
           )}
           aria-modal="true"
@@ -179,7 +253,7 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
           onClick={handleBackdropClick}
         >
           <motion.div
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm -z-10"
+            className={cn("fixed inset-0 -z-10", MODAL_THEME.OVERLAY)}
             variants={overlayVariants}
             initial="hidden"
             animate="visible"
@@ -195,8 +269,10 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
             whileInView="visible"
             exit="exit"
             className={cn(
-              "relative w-full rounded-xl bg-white text-left shadow-2xl ring-1 ring-slate-900/5",
-              sizeClasses[size],
+              "relative w-full text-left",
+              MODAL_THEME.CONTAINER,
+              MODAL_LAYOUT.ROUNDED.CONTAINER,
+              MODAL_SIZES[size],
               containerClassName,
               className
             )}
@@ -209,7 +285,11 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 z-20 flex items-center justify-center rounded-xl bg-white/60 backdrop-blur-[2px]"
+                  className={cn(
+                    "absolute inset-0 z-20 flex items-center justify-center",
+                    MODAL_LAYOUT.ROUNDED.CONTAINER,
+                    MODAL_THEME.LOADING
+                  )}
                 >
                   <LoadingSpinner className="h-8 w-8 animate-spin text-indigo-600" />
                 </motion.div>
@@ -217,15 +297,27 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
             </AnimatePresence>
 
             {header && (
-              <div className={cn("flex items-center justify-between border-b border-slate-100 px-6 py-4", headerClassName)}>
-                <div className="text-lg font-semibold text-slate-900 leading-6">{header}</div>
+              <div
+                className={cn(
+                  "flex items-center justify-between",
+                  MODAL_THEME.HEADER.BORDER,
+                  MODAL_LAYOUT.PADDING.HEADER,
+                  headerClassName
+                )}
+              >
+                <div className={cn("text-lg font-semibold leading-6", MODAL_THEME.HEADER.TEXT)}>{header}</div>
                 {showCloseButton && !loading && (
                   <button
                     type="button"
-                    className="ml-auto -mr-2 inline-flex h-8 w-8 items-center justify-center rounded-md bg-transparent text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+                    className={cn(
+                      "ml-auto inline-flex items-center justify-center rounded-md",
+                      MODAL_LAYOUT.BUTTON.SIZE,
+                      MODAL_LAYOUT.BUTTON.MARGIN_HEADER,
+                      MODAL_THEME.CLOSE_BUTTON
+                    )}
                     onClick={onClose}
                   >
-                    <XMarkIcon className="h-5 w-5" />
+                    <XMarkIcon className={MODAL_LAYOUT.BUTTON.ICON_SIZE} />
                   </button>
                 )}
               </div>
@@ -234,14 +326,19 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
             {!header && showCloseButton && !loading && (
               <button
                 type="button"
-                className="absolute right-4 top-4 z-10 inline-flex h-8 w-8 items-center justify-center rounded-md bg-transparent text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+                className={cn(
+                  "absolute z-10 inline-flex items-center justify-center rounded-md",
+                  MODAL_LAYOUT.BUTTON.POSITION_ABSOLUTE,
+                  MODAL_LAYOUT.BUTTON.SIZE,
+                  MODAL_THEME.CLOSE_BUTTON
+                )}
                 onClick={onClose}
               >
-                <XMarkIcon className="h-5 w-5" />
+                <XMarkIcon className={MODAL_LAYOUT.BUTTON.ICON_SIZE} />
               </button>
             )}
 
-            <div className={cn("p-6", bodyClassName)}>
+            <div className={cn(MODAL_LAYOUT.PADDING.BODY, bodyClassName)}>
               {stepKey !== undefined ? (
                 <AnimatePresence mode="wait">
                   <motion.div key={stepKey} variants={contentVariants} initial="initial" animate="animate" exit="exit">
@@ -256,7 +353,12 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
             {footer && (
               <div
                 className={cn(
-                  "flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50/50 px-6 py-4 rounded-b-xl",
+                  "flex items-center justify-end",
+                  MODAL_LAYOUT.GAP,
+                  MODAL_THEME.FOOTER.BORDER,
+                  MODAL_THEME.FOOTER.BG,
+                  MODAL_LAYOUT.PADDING.FOOTER,
+                  MODAL_LAYOUT.ROUNDED.FOOTER,
                   footerClassName
                 )}
               >
