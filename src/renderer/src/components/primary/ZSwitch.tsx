@@ -6,6 +6,62 @@ import { ZHelperText } from "./ZHelperText"
 type Size = "sm" | "md" | "lg"
 type LabelPlacement = "left" | "right"
 
+interface SwitchSizeConfig {
+  track: string
+  thumb: string
+  x: number
+  label: string
+  containerGap: string
+  helperPaddingLeft: string
+  helperPaddingRight: string
+  border: string
+}
+
+const SWITCH_SIZES: Record<Size, SwitchSizeConfig> = {
+  sm: {
+    track: "w-7 h-4",
+    thumb: "w-3 h-3",
+    x: 12,
+    label: "text-sm",
+    containerGap: "gap-2",
+    helperPaddingLeft: "pl-9",
+    helperPaddingRight: "pr-9",
+    border: "border-2"
+  },
+  md: {
+    track: "w-11 h-6",
+    thumb: "w-5 h-5",
+    x: 20,
+    label: "text-sm",
+    containerGap: "gap-3",
+    helperPaddingLeft: "pl-14",
+    helperPaddingRight: "pr-14",
+    border: "border-2"
+  },
+  lg: {
+    track: "w-14 h-7",
+    thumb: "w-6 h-6",
+    x: 28,
+    label: "text-base",
+    containerGap: "gap-3",
+    helperPaddingLeft: "pl-17",
+    helperPaddingRight: "pr-17",
+    border: "border-2"
+  }
+}
+
+const SWITCH_COLORS = {
+  TRACK: {
+    CHECKED: "#4f46e5",
+    UNCHECKED: "#e2e8f0",
+    ERROR: "#dc2626"
+  }
+}
+
+const ANIMATION_CONFIG = {
+  DURATION: 0.2
+}
+
 export interface ZSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
   label?: string
   labelPlacement?: LabelPlacement
@@ -20,38 +76,6 @@ export interface ZSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>
   containerClassName?: string
 
   onChange?: (checked: boolean) => void
-}
-
-const sizeConfig = {
-  sm: {
-    track: "w-7 h-4",
-    thumb: "w-3 h-3",
-    x: 12, // 0.75rem (w-3) -> translate 12px
-    label: "text-sm",
-    padding: "ml-2"
-  },
-  md: {
-    track: "w-11 h-6",
-    thumb: "w-5 h-5",
-    x: 20, // 1.25rem (w-5) -> translate 20px
-    label: "text-sm",
-    padding: "ml-3"
-  },
-  lg: {
-    track: "w-14 h-7",
-    thumb: "w-6 h-6",
-    x: 28, // 1.5rem (w-6) -> translate 28px
-    label: "text-base",
-    padding: "ml-3"
-  }
-}
-
-const colors = {
-  track: {
-    checked: "#4f46e5", // indigo-600
-    unchecked: "#e2e8f0", // slate-200
-    error: "#dc2626" // red-600
-  }
 }
 
 const ZSwitch = forwardRef<HTMLInputElement, ZSwitchProps>((props, ref) => {
@@ -94,7 +118,7 @@ const ZSwitch = forwardRef<HTMLInputElement, ZSwitchProps>((props, ref) => {
   }
 
   const isError = !!error
-  const config = sizeConfig[size]
+  const config = SWITCH_SIZES[size]
 
   return (
     <div className={cn("flex flex-col", disabled && "opacity-50 cursor-not-allowed")}>
@@ -102,6 +126,7 @@ const ZSwitch = forwardRef<HTMLInputElement, ZSwitchProps>((props, ref) => {
         className={cn(
           "inline-flex items-center align-middle",
           labelPlacement === "left" ? "flex-row-reverse" : "flex-row",
+          config.containerGap,
           containerClassName
         )}
       >
@@ -121,9 +146,9 @@ const ZSwitch = forwardRef<HTMLInputElement, ZSwitchProps>((props, ref) => {
 
           <motion.div
             className={cn(
-              "relative inline-flex shrink-0 cursor-pointer rounded-full border-2 border-transparent",
+              "relative inline-flex shrink-0 cursor-pointer rounded-full border-transparent",
+              config.border,
               "focus:outline-none",
-              // Focus ring styles
               isError
                 ? "peer-focus-visible:ring-2 peer-focus-visible:ring-red-500 peer-focus-visible:ring-offset-2"
                 : "peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-600 peer-focus-visible:ring-offset-2",
@@ -132,9 +157,13 @@ const ZSwitch = forwardRef<HTMLInputElement, ZSwitchProps>((props, ref) => {
             )}
             initial={false}
             animate={{
-              backgroundColor: isChecked ? (isError ? colors.track.error : colors.track.checked) : colors.track.unchecked
+              backgroundColor: isChecked
+                ? isError
+                  ? SWITCH_COLORS.TRACK.ERROR
+                  : SWITCH_COLORS.TRACK.CHECKED
+                : SWITCH_COLORS.TRACK.UNCHECKED
             }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            transition={{ duration: ANIMATION_CONFIG.DURATION, ease: "easeOut" }}
             onClick={() => !disabled && document.getElementById(inputId)?.click()}
           >
             <span className="sr-only">{label || "Switch"}</span>
@@ -147,7 +176,7 @@ const ZSwitch = forwardRef<HTMLInputElement, ZSwitchProps>((props, ref) => {
               transition={{
                 type: "tween",
                 ease: "easeOut",
-                duration: 0.2
+                duration: ANIMATION_CONFIG.DURATION
               }}
             />
           </motion.div>
@@ -160,7 +189,6 @@ const ZSwitch = forwardRef<HTMLInputElement, ZSwitchProps>((props, ref) => {
               "select-none cursor-pointer text-slate-900 font-medium",
               disabled && "cursor-not-allowed",
               isError && "text-red-600",
-              labelPlacement === "left" ? "mr-3" : config.padding,
               config.label
             )}
           >
@@ -175,7 +203,7 @@ const ZSwitch = forwardRef<HTMLInputElement, ZSwitchProps>((props, ref) => {
         errorId={errorId}
         helpId={helpId}
         textSize="xs"
-        className={labelPlacement === "left" ? "text-right pr-2" : "ml-1"}
+        className={cn(labelPlacement === "left" ? cn("text-right", config.helperPaddingRight) : config.helperPaddingLeft)}
       />
     </div>
   )
