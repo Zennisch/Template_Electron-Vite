@@ -10,7 +10,15 @@ type PressAnimationStyle = "none" | "scale" | "ripple"
 type PressAnimationDuration = "short" | "medium" | "long"
 type PressAnimationStrength = "light" | "medium" | "strong"
 
-const variantClasses: Record<Variant, string> = {
+interface ButtonSizeConfig {
+  base: string
+  padding: string
+  iconOnly: string
+  spinner: string
+  gap: string
+}
+
+const VARIANT_CLASSES: Record<Variant, string> = {
   primary: `
       bg-indigo-600
       text-white
@@ -34,45 +42,51 @@ const variantClasses: Record<Variant, string> = {
       focus-visible:ring-indigo-600`
 }
 
-const sizeClasses: Record<Size, string> = {
-  xs: `h-8 text-xs`,
-  sm: `h-9 text-sm`,
-  md: `h-10 text-base`,
-  lg: `h-11 text-lg`,
-  xl: `h-12 text-xl`
+const BUTTON_SIZES: Record<Size, ButtonSizeConfig> = {
+  xs: {
+    base: "h-8 text-xs",
+    padding: "px-3",
+    iconOnly: "w-8 p-0",
+    spinner: "h-3 w-3",
+    gap: "gap-1.5"
+  },
+  sm: {
+    base: "h-9 text-sm",
+    padding: "px-4",
+    iconOnly: "w-9 p-0",
+    spinner: "h-4 w-4",
+    gap: "gap-2"
+  },
+  md: {
+    base: "h-10 text-base",
+    padding: "px-5",
+    iconOnly: "w-10 p-0",
+    spinner: "h-5 w-5",
+    gap: "gap-2"
+  },
+  lg: {
+    base: "h-11 text-lg",
+    padding: "px-8",
+    iconOnly: "w-11 p-0",
+    spinner: "h-6 w-6",
+    gap: "gap-2.5"
+  },
+  xl: {
+    base: "h-12 text-xl",
+    padding: "px-10",
+    iconOnly: "w-12 p-0",
+    spinner: "h-7 w-7",
+    gap: "gap-3"
+  }
 }
 
-const spinnerSizeClasses: Record<Size, string> = {
-  xs: "h-3 w-3",
-  sm: "h-4 w-4",
-  md: "h-5 w-5",
-  lg: "h-6 w-6",
-  xl: "h-7 w-7"
-}
-
-const iconSizeClasses: Record<Size, string> = {
-  xs: "w-8 p-0",
-  sm: "w-9 p-0",
-  md: "w-10 p-0",
-  lg: "w-11 p-0",
-  xl: "w-12 p-0"
-}
-
-const paddingClasses: Record<Size, string> = {
-  xs: "px-3",
-  sm: "px-4",
-  md: "px-5",
-  lg: "px-8",
-  xl: "px-10"
-}
-
-const shapeClasses: Record<Shape, string> = {
+const SHAPE_CLASSES: Record<Shape, string> = {
   rounded: "rounded-md",
   square: "rounded-none",
   pill: "rounded-full"
 }
 
-const shadowClasses: Record<Shadow, string> = {
+const SHADOW_CLASSES: Record<Shadow, string> = {
   none: "shadow-none",
   sm: "shadow-sm",
   md: "shadow",
@@ -80,13 +94,13 @@ const shadowClasses: Record<Shadow, string> = {
   xl: "shadow-xl"
 }
 
-const scaleMap: Record<PressAnimationStrength, number> = {
+const SCALE_MAP: Record<PressAnimationStrength, number> = {
   light: 0.98,
   medium: 0.95,
   strong: 0.9
 }
 
-const durationMap: Record<PressAnimationDuration, number> = {
+const DURATION_MAP: Record<PressAnimationDuration, number> = {
   short: 0.1,
   medium: 0.2,
   long: 0.3
@@ -183,6 +197,8 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
 
   const isDisabled = disabled || loading
 
+  const sizeConfig = BUTTON_SIZES[size]
+
   const baseClasses = `
       relative inline-flex items-center justify-center
       whitespace-nowrap font-medium
@@ -195,11 +211,11 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
 
   const classes = cn(
     baseClasses,
-    variantClasses[variant],
-    sizeClasses[size],
-    shapeClasses[shape],
-    shadowClasses[shadow],
-    iconOnly ? iconSizeClasses[size] : paddingClasses[size],
+    sizeConfig.base,
+    VARIANT_CLASSES[variant],
+    SHAPE_CLASSES[shape],
+    SHADOW_CLASSES[shadow],
+    iconOnly ? sizeConfig.iconOnly : sizeConfig.padding,
     fullWidth ? "w-full" : "",
     pressAnimationStyle === "ripple" && "overflow-hidden transform-gpu",
     className
@@ -210,8 +226,8 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
   const motionProps: HTMLMotionProps<any> =
     !isDisabled && pressAnimationStyle === "scale"
       ? {
-          whileTap: { scale: scaleMap[pressAnimationStrength] },
-          transition: { duration: durationMap[pressAnimationDuration] }
+          whileTap: { scale: SCALE_MAP[pressAnimationStrength] },
+          transition: { duration: DURATION_MAP[pressAnimationDuration] }
         }
       : {}
 
@@ -228,7 +244,7 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
     onPointerDown?.(e as any)
   }
 
-  const Spinner = loadingComponent || <DefaultSpinnerIcon className={cn("animate-spin", spinnerSizeClasses[size])} />
+  const Spinner = loadingComponent || <DefaultSpinnerIcon className={cn("animate-spin", sizeConfig.spinner)} />
 
   const content =
     loading && loadingText ? (
@@ -261,7 +277,7 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
         <RippleEffect ripples={ripples} onClear={(id) => setRipples((prev) => prev.filter((r) => r.id !== id))} />
       )}
 
-      <span className="flex items-center gap-2 relative z-10">{content}</span>
+      <span className={cn("flex items-center relative z-10", sizeConfig.gap)}>{content}</span>
     </MotionComponent>
   )
 })
