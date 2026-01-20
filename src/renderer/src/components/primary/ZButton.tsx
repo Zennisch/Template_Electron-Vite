@@ -1,6 +1,6 @@
-import { forwardRef, ReactNode, useState, MouseEvent, useMemo, ElementType } from "react"
+import { ElementType, forwardRef, MouseEvent, ReactNode, useMemo, useState } from "react"
 import { cn, DefaultSpinnerIcon } from "./utils"
-import { motion, HTMLMotionProps, AnimatePresence } from "framer-motion"
+import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion"
 
 type Variant = "primary" | "secondary" | "tertiary" | "ghost"
 type Size = "xs" | "sm" | "md" | "lg" | "xl"
@@ -12,9 +12,9 @@ type PressAnimationStrength = "light" | "medium" | "strong"
 
 const variantClasses: Record<Variant, string> = {
   primary: `
-      bg-indigo-600 
-      text-white 
-      hover:bg-indigo-700 
+      bg-indigo-600
+      text-white
+      hover:bg-indigo-700
       focus-visible:ring-indigo-600`,
   secondary: `
       bg-white

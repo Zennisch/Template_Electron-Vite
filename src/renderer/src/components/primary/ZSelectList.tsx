@@ -1,7 +1,7 @@
 import { KeyboardEvent, RefObject, useEffect, useRef } from "react"
 import { createPortal } from "react-dom"
 import { AnimatePresence, motion, Variants } from "framer-motion"
-import { SearchIcon, LoadingSpinner, cn } from "./utils"
+import { cn, LoadingSpinner, SearchIcon } from "./utils"
 import { ZSelectOption } from "./ZSelectOption"
 import { ZSelectItem } from "./ZSelect"
 

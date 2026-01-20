@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useAnimation, Variants, HTMLMotionProps } from "framer-motion"
+import { AnimatePresence, HTMLMotionProps, motion, useAnimation, Variants } from "framer-motion"
 import { forwardRef, MouseEvent, ReactNode, useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { cn, LoadingSpinner, XMarkIcon } from "./utils"

@@ -11,7 +11,7 @@ import {
   useRef,
   useState
 } from "react"
-import { motion, HTMLMotionProps } from "framer-motion"
+import { HTMLMotionProps, motion } from "framer-motion"
 import { cn } from "./utils"
 import { ZSelectTrigger } from "./ZSelectTrigger"
 import { ZSelectList } from "./ZSelectList"
