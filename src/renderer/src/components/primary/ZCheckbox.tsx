@@ -7,54 +7,50 @@ type Size = "sm" | "md" | "lg"
 type LabelPlacement = "left" | "right"
 type Shadow = "none" | "sm" | "md" | "lg"
 
-export interface ZCheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
-  label?: ReactNode
-  labelPlacement?: LabelPlacement
-
-  checked?: boolean
-  defaultChecked?: boolean
-  indeterminate?: boolean
-
-  error?: boolean | string
-  helpText?: string
-
-  size?: Size
-  shadow?: Shadow
-
-  containerClassName?: string
-
-  onChange?: (checked: boolean, event: ChangeEvent<HTMLInputElement>) => void
+interface CheckboxSizeConfig {
+  box: string
+  icon: string
+  text: string
+  labelGap: string
+  helperPaddingLeft: string
+  helperPaddingRight: string
 }
 
-const sizeConfig: Record<Size, { box: string; icon: string; text: string; labelGap: string }> = {
+const CHECKBOX_SIZES: Record<Size, CheckboxSizeConfig> = {
   sm: {
     box: "h-4 w-4 rounded",
     icon: "w-3 h-3",
     text: "text-sm",
-    labelGap: "gap-2"
+    labelGap: "gap-2",
+    helperPaddingLeft: "pl-6",
+    helperPaddingRight: "pr-6"
   },
   md: {
     box: "h-5 w-5 rounded",
     icon: "w-3.5 h-3.5",
     text: "text-sm",
-    labelGap: "gap-2.5"
+    labelGap: "gap-2.5",
+    helperPaddingLeft: "pl-7.5",
+    helperPaddingRight: "pr-7.5"
   },
   lg: {
     box: "h-6 w-6 rounded-md",
     icon: "w-4 h-4",
     text: "text-base",
-    labelGap: "gap-3"
+    labelGap: "gap-3",
+    helperPaddingLeft: "pl-9",
+    helperPaddingRight: "pr-9"
   }
 }
 
-const shadowClasses: Record<Shadow, string> = {
+const SHADOW_CLASSES: Record<Shadow, string> = {
   none: "shadow-none",
   sm: "shadow-sm",
   md: "shadow",
   lg: "shadow-lg"
 }
 
-const boxVariants: Variants = {
+const BOX_VARIANTS: Variants = {
   unchecked: {
     backgroundColor: "#fff",
     borderColor: "#cbd5e1",
@@ -79,6 +75,30 @@ const boxVariants: Variants = {
     backgroundColor: "#dc2626",
     borderColor: "#dc2626"
   }
+}
+
+const COLORS = {
+  FOCUS_RING: "#4f46e5",
+  ERROR_RING: "#ef4444",
+  WHITE_RING: "#fff"
+}
+
+export interface ZCheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
+  label?: ReactNode
+  labelPlacement?: LabelPlacement
+
+  checked?: boolean
+  indeterminate?: boolean
+
+  error?: boolean | string
+  helpText?: string
+
+  size?: Size
+  shadow?: Shadow
+
+  containerClassName?: string
+
+  onChange?: (checked: boolean, event: ChangeEvent<HTMLInputElement>) => void
 }
 
 const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
@@ -142,7 +162,7 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
   }
 
   const isError = !!error
-  const config = sizeConfig[size]
+  const config = CHECKBOX_SIZES[size]
 
   const containerClasses = cn(
     "relative inline-flex items-center",
@@ -161,7 +181,7 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
   const boxClasses = cn(
     "flex items-center justify-center border transition-shadow",
     config.box,
-    shadowClasses[shadow],
+    SHADOW_CLASSES[shadow],
     disabled ? "opacity-50 cursor-not-allowed bg-slate-100" : "cursor-pointer bg-white",
     // Focus ring handled by parent focus-within or manual focus state if simpler
     // We'll use focus-visible on the hidden input to trigger a ring on this box via sibling selector?
@@ -188,7 +208,6 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
             id={inputId}
             className="peer sr-only"
             checked={isChecked}
-            defaultChecked={defaultChecked}
             disabled={disabled}
             onChange={handleChange}
             onFocus={(e) => {
@@ -206,14 +225,16 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
 
           <motion.div
             className={boxClasses}
-            variants={boxVariants}
+            variants={BOX_VARIANTS}
             initial={false}
             animate={variantState}
             whileTap={!disabled ? "tap" : undefined}
             transition={{ duration: 0.15 }}
             onClick={() => innerRef.current?.click()}
             style={{
-              boxShadow: isFocused ? `0 0 0 2px #fff, 0 0 0 4px ${isError ? "#ef4444" : "#4f46e5"}` : undefined
+              boxShadow: isFocused
+                ? `0 0 0 2px ${COLORS.WHITE_RING}, 0 0 0 4px ${isError ? COLORS.ERROR_RING : COLORS.FOCUS_RING}`
+                : undefined
             }}
           >
             <AnimatePresence mode="wait">
@@ -240,7 +261,7 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
         helpId={helpId}
         textSize="xs"
         defaultErrorMessage="Selection required"
-        className={labelPlacement === "left" ? "text-right pr-1" : size === "sm" ? "ml-6" : size === "md" ? "ml-7" : "ml-9"}
+        className={labelPlacement === "left" ? cn("text-right", config.helperPaddingRight) : config.helperPaddingLeft}
       />
     </div>
   )
