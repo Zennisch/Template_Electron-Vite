@@ -5,28 +5,68 @@ import { ZHelperText } from "./ZHelperText"
 
 type Size = "sm" | "md" | "lg"
 
-const sizeConfig: Record<Size, { trackHeight: string; thumbSize: number; label: string }> = {
+interface SliderSizeConfig {
+  trackHeight: string
+  thumbSize: number
+  label: string
+  containerGap: string
+  labelMargin: string
+  height: string
+}
+
+const SLIDER_SIZES: Record<Size, SliderSizeConfig> = {
   sm: {
     trackHeight: "h-1",
     thumbSize: 12,
-    label: "text-sm"
+    label: "text-sm",
+    containerGap: "gap-1.5",
+    labelMargin: "mb-1",
+    height: "h-4"
   },
   md: {
     trackHeight: "h-2",
     thumbSize: 16,
-    label: "text-base"
+    label: "text-base",
+    containerGap: "gap-2",
+    labelMargin: "mb-1.5",
+    height: "h-5"
   },
   lg: {
     trackHeight: "h-3",
     thumbSize: 24,
-    label: "text-lg"
+    label: "text-lg",
+    containerGap: "gap-2.5",
+    labelMargin: "mb-2",
+    height: "h-6"
   }
 }
 
-export interface ZSliderProps extends Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "size" | "onChange" | "value" | "defaultValue"
-> {
+const LAYOUT = {
+  DEFAULT_WIDTH: "w-64",
+  INPUT_RESET: "m-0 p-0 appearance-none"
+}
+
+const ANIMATION_CONFIG = {
+  SCALE: {
+    PRESSED: 1.15,
+    FOCUSED: 1.05,
+    NORMAL: 1
+  },
+  DURATION: {
+    DRAG: 0,
+    JUMP: 0.2,
+    SCALE: 0.1,
+    SHADOW: 0.2
+  }
+}
+
+const COLORS = {
+  PRIMARY_SHADOW: "rgba(79, 70, 229, 0.2)",
+  ERROR_SHADOW: "rgba(220, 38, 38, 0.2)",
+  DEFAULT_SHADOW: "0 1px 3px 0 rgb(0 0 0 / 0.1)"
+}
+
+interface ZSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange" | "value" | "defaultValue"> {
   label?: string
   error?: string | boolean
   helpText?: string
@@ -78,7 +118,6 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
   const errorId = `${sliderId}-error`
   const helpId = `${sliderId}-help`
 
-  // Logic reused from Slider.tsx
   const [internalValue, setInternalValue] = useState<number>(defaultValue ?? min)
   const isControlled = value !== undefined
   const currentValue = isControlled ? value : internalValue
@@ -88,10 +127,9 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
   const [isPressed, setIsPressed] = useState(false)
   const isPressedRef = useRef(false)
 
-  const config = sizeConfig[size]
+  const config = SLIDER_SIZES[size]
   const percentage = ((currentValue! - min) / (max - min)) * 100
 
-  // Handlers
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = parseFloat(e.target.value)
     if (!isControlled) {
@@ -127,30 +165,25 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
     props.onBlur?.(e)
   }
 
-  // Styles
   const isError = !!error
 
   const containerClasses = cn(
-    "flex flex-col gap-2 relative touch-none",
-    fullWidth ? "w-full" : "w-64",
+    "flex flex-col relative touch-none",
+    fullWidth ? "w-full" : LAYOUT.DEFAULT_WIDTH,
     disabled && "opacity-60 cursor-not-allowed",
+    config.containerGap,
     containerClassName
   )
 
   const labelClasses = cn("block font-medium leading-6", config.label, isError ? "text-red-600" : "text-slate-900")
 
-  // Animation variants
-  // We use inline styles for width/left for performance, but motion.div for transitions
-
-  // When dragging, we want instant updates (no transition).
-  // When clicking (value jump), we want ease-out.
   const transitionSettings: Transition = isDragging
-    ? { type: "tween", duration: 0 }
-    : { type: "tween", ease: "easeOut", duration: 0.2 }
+    ? { type: "tween", duration: ANIMATION_CONFIG.DURATION.DRAG }
+    : { type: "tween", ease: "easeOut", duration: ANIMATION_CONFIG.DURATION.JUMP }
 
   return (
     <div className={containerClasses}>
-      <div className="flex justify-between items-center mb-1">
+      <div className={cn("flex justify-between items-center", config.labelMargin)}>
         {label && (
           <label htmlFor={sliderId} className={labelClasses}>
             {label}
@@ -163,10 +196,8 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
         )}
       </div>
 
-      <div className={cn("relative flex items-center select-none h-6", className)}>
-        {/* Track Background */}
+      <div className={cn("relative flex items-center select-none", config.height, className)}>
         <div className={cn("absolute w-full rounded-full bg-slate-200 overflow-hidden", config.trackHeight)}>
-          {/* Track Fill */}
           <motion.div
             className={cn("h-full rounded-full", isError ? "bg-red-600" : "bg-indigo-600")}
             initial={false}
@@ -175,7 +206,6 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
           />
         </div>
 
-        {/* Thumb */}
         <motion.div
           className={cn(
             "absolute top-1/2 -translate-y-1/2 bg-white rounded-full border shadow-sm z-10 flex items-center justify-center pointer-events-none",
@@ -189,22 +219,20 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
           }}
           initial={false}
           animate={{
-            scale: isPressed ? 1.15 : isFocused ? 1.05 : 1,
-            boxShadow: isFocused
-              ? `0 0 0 4px ${isError ? "rgba(220, 38, 38, 0.2)" : "rgba(79, 70, 229, 0.2)"}`
-              : "0 1px 3px 0 rgb(0 0 0 / 0.1)"
+            scale: isPressed
+              ? ANIMATION_CONFIG.SCALE.PRESSED
+              : isFocused
+                ? ANIMATION_CONFIG.SCALE.FOCUSED
+                : ANIMATION_CONFIG.SCALE.NORMAL,
+            boxShadow: isFocused ? `0 0 0 4px ${isError ? COLORS.ERROR_SHADOW : COLORS.PRIMARY_SHADOW}` : COLORS.DEFAULT_SHADOW
           }}
           transition={{
-            // Separate transition for position vs scale/shadow
             left: transitionSettings,
-            scale: { duration: 0.1 },
-            boxShadow: { duration: 0.2 }
+            scale: { duration: ANIMATION_CONFIG.DURATION.SCALE },
+            boxShadow: { duration: ANIMATION_CONFIG.DURATION.SHADOW }
           }}
-        >
-          {/* Optional inner dot for larger sizes? mimic IOS or keeping simple based on ZButton style */}
-        </motion.div>
+        ></motion.div>
 
-        {/* Invisible Interactive Input */}
         <input
           ref={ref}
           id={sliderId}
@@ -220,7 +248,7 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
           onPointerMove={handlePointerMove}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20 m-0 p-0 appearance-none"
+          className={cn("absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20", LAYOUT.INPUT_RESET)}
           aria-invalid={isError}
           aria-describedby={isError ? errorId : helpText ? helpId : undefined}
           {...rest}
