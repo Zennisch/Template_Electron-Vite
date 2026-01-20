@@ -18,7 +18,56 @@ import { ZHelperText } from "./ZHelperText"
 type Size = "sm" | "md" | "lg" | "xl"
 type Shadow = "none" | "sm" | "md" | "lg" | "xl"
 
-const shadowClasses: Record<Shadow, string> = {
+interface TextInputSizeConfig {
+  text: string
+  padding: string
+  label: string
+  iconPadValue: string
+  floatY: number
+  gap: string
+  helperMargin: string
+}
+
+const TEXT_INPUT_SIZES: Record<Size, TextInputSizeConfig> = {
+  sm: {
+    text: "text-sm",
+    padding: "px-2.5 py-1.5",
+    label: "top-1.5 left-1.5 text-sm",
+    iconPadValue: "24px",
+    floatY: -16,
+    gap: "gap-1.5",
+    helperMargin: "ml-0.5"
+  },
+  md: {
+    text: "text-base",
+    padding: "px-3 py-2.5",
+    label: "top-2.5 left-2 text-base",
+    iconPadValue: "28px",
+    floatY: -22,
+    gap: "gap-2",
+    helperMargin: "ml-1"
+  },
+  lg: {
+    text: "text-lg",
+    padding: "px-4 py-3",
+    label: "top-3 left-3 text-lg",
+    iconPadValue: "32px",
+    floatY: -26,
+    gap: "gap-2.5",
+    helperMargin: "ml-1.5"
+  },
+  xl: {
+    text: "text-xl",
+    padding: "px-5 py-3.5",
+    label: "top-3.5 left-4 text-xl",
+    iconPadValue: "36px",
+    floatY: -28,
+    gap: "gap-3",
+    helperMargin: "ml-2"
+  }
+}
+
+const SHADOW_CLASSES: Record<Shadow, string> = {
   none: "shadow-none",
   sm: "shadow-sm",
   md: "shadow",
@@ -26,7 +75,7 @@ const shadowClasses: Record<Shadow, string> = {
   xl: "shadow-xl"
 }
 
-const shadowValues: Record<Shadow, string> = {
+const SHADOW_VALUES: Record<Shadow, string> = {
   none: "0 0 #0000",
   sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
   md: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
@@ -34,7 +83,7 @@ const shadowValues: Record<Shadow, string> = {
   xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
 }
 
-const colors: Record<string, string> = {
+const COLORS: Record<string, string> = {
   borderDefault: "#e2e8f0",
   borderHover: "#cbd5e1",
   borderFocus: "#4f46e5",
@@ -46,75 +95,46 @@ const colors: Record<string, string> = {
   shadowError: "rgba(220, 38, 38, 0.1)"
 }
 
-const sizeConfig: Record<
-  Size,
-  { text: string; padding: string; label: string; iconPad: string; iconPadValue: string; floatY: number }
-> = {
-  sm: {
-    text: "text-sm",
-    padding: "px-2.5 py-1.5",
-    label: "top-1.5 left-1.5 text-sm",
-    iconPad: "pl-6",
-    iconPadValue: "24px",
-    floatY: -16
-  },
-  md: {
-    text: "text-base",
-    padding: "px-3 py-2.5",
-    label: "top-2.5 left-2 text-base",
-    iconPad: "pl-7",
-    iconPadValue: "28px",
-    floatY: -22
-  },
-  lg: {
-    text: "text-lg",
-    padding: "px-4 py-3",
-    label: "top-3 left-3 text-lg",
-    iconPad: "pl-8",
-    iconPadValue: "32px",
-    floatY: -26
-  },
-  xl: {
-    text: "text-xl",
-    padding: "px-5 py-3.5",
-    label: "top-3.5 left-4 text-xl",
-    iconPad: "pl-9",
-    iconPadValue: "36px",
-    floatY: -28
-  }
+const ANIMATION_CONFIG = {
+  LABEL_SCALE: 0.85,
+  LABEL_PADDING_LEFT: "4px",
+  RING_WIDTH: "4px",
+  ERROR_SHAKE_DURATION: 0.4,
+  TRANSITION_DURATION: 0.2,
+  SHAKE_DISTANCE: 4
 }
 
-const labelVariants: Variants = {
+const LABEL_VARIANTS: Variants = {
   initial: (custom: { paddingStart: string }) => ({
     x: 0,
     y: 0,
     scale: 1,
     paddingLeft: custom.paddingStart,
-    color: colors.textDefault,
+    color: COLORS.textDefault,
     backgroundColor: "rgba(255, 255, 255, 0)"
   }),
   float: (custom: { y: number; error: boolean; hasIcon: boolean; bgColor: string; paddingStart: string }) => ({
     x: 0,
     y: custom.y,
-    scale: 0.85,
-    paddingLeft: "4px",
+    scale: ANIMATION_CONFIG.LABEL_SCALE,
+    paddingLeft: ANIMATION_CONFIG.LABEL_PADDING_LEFT,
     backgroundColor: custom.bgColor,
-    color: custom.error ? colors.textError : colors.textFocus
+    color: custom.error ? COLORS.textError : COLORS.textFocus
   })
 }
 
-const borderVariants: Variants = {
-  initial: (shadow) => ({ borderColor: colors.borderDefault, boxShadow: shadow }),
+const BORDER_VARIANTS: Variants = {
+  initial: (shadow) => ({ borderColor: COLORS.borderDefault, boxShadow: shadow }),
 
   focus: (shadow) => ({
-    borderColor: colors.borderFocus,
-    boxShadow: `0px 0px 0px 4px ${colors.shadowFocus}, ${shadow}`
+    borderColor: COLORS.borderFocus,
+    boxShadow: `0px 0px 0px ${ANIMATION_CONFIG.RING_WIDTH} ${COLORS.shadowFocus}, ${shadow}`
   }),
   error: (shadow) => ({
-    borderColor: colors.borderError,
-    boxShadow: `0px 0px 0px 4px ${colors.shadowError}, ${shadow}`
+    borderColor: COLORS.borderError,
+    boxShadow: `0px 0px 0px ${ANIMATION_CONFIG.RING_WIDTH} ${COLORS.shadowError}, ${shadow}`
   }),
-  hover: { borderColor: colors.borderHover }
+  hover: { borderColor: COLORS.borderHover }
 }
 
 type BaseProps = {
@@ -192,9 +212,10 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
 
   useEffect(() => {
     if (error) {
+      const dist = ANIMATION_CONFIG.SHAKE_DISTANCE
       controls.start({
-        x: [0, -4, 4, -4, 4, 0],
-        transition: { duration: 0.4 }
+        x: [0, -dist, dist, -dist, dist, 0],
+        transition: { duration: ANIMATION_CONFIG.ERROR_SHAKE_DURATION }
       })
     }
   }, [error, controls])
@@ -216,15 +237,16 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
     onChange?.(e)
   }
 
-  const config = sizeConfig[size]
+  const config = TEXT_INPUT_SIZES[size]
 
   const containerClasses = cn("relative mt-6 mb-2", fullWidth ? "w-full" : "max-w-md w-auto", containerClassName)
 
   const wrapperClasses = cn(
     "relative flex items-center rounded-lg border",
     "bg-white",
+    config.gap,
     config.padding,
-    shadowClasses[shadow],
+    SHADOW_CLASSES[shadow],
     disabled && "opacity-60 cursor-not-allowed bg-slate-50"
   )
 
@@ -246,7 +268,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
       error: !!error,
       hasIcon: !!iconStart,
       bgColor: backgroundColor,
-      paddingStart: iconStart ? config.iconPadValue : "4px"
+      paddingStart: iconStart ? config.iconPadValue : ANIMATION_CONFIG.LABEL_PADDING_LEFT
     }),
     [config.floatY, error, iconStart, backgroundColor, config.iconPadValue]
   )
@@ -256,15 +278,15 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
       <motion.div animate={controls}>
         <motion.div
           className={wrapperClasses}
-          variants={borderVariants}
+          variants={BORDER_VARIANTS}
           initial="initial"
-          custom={shadowValues[shadow]}
+          custom={SHADOW_VALUES[shadow]}
           animate={error ? "error" : isFocused ? "focus" : "initial"}
           whileHover={!isFocused && !error && !disabled ? "hover" : undefined}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: ANIMATION_CONFIG.TRANSITION_DURATION }}
         >
           {iconStart && (
-            <div className="text-slate-500 mr-2 shrink-0 flex items-center justify-center pointer-events-none">{iconStart}</div>
+            <div className="text-slate-500 shrink-0 flex items-center justify-center pointer-events-none">{iconStart}</div>
           )}
 
           {multiline ? (
@@ -302,18 +324,18 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
           )}
 
           {iconEnd && (
-            <div className="text-slate-500 ml-2 shrink-0 flex items-center justify-center pointer-events-none">{iconEnd}</div>
+            <div className="text-slate-500 shrink-0 flex items-center justify-center pointer-events-none">{iconEnd}</div>
           )}
 
           {label && (
             <motion.label
               htmlFor={inputId}
               className={labelClasses}
-              variants={labelVariants}
+              variants={LABEL_VARIANTS}
               initial="initial"
               animate={shouldFloat ? "float" : "initial"}
               custom={labelCustom}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              transition={{ duration: ANIMATION_CONFIG.TRANSITION_DURATION, ease: "easeOut" }}
             >
               {label}
             </motion.label>
@@ -321,7 +343,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
         </motion.div>
       </motion.div>
 
-      <ZHelperText error={error} helpText={helpText} errorId={errorId} helpId={helpId} className="ml-1" />
+      <ZHelperText error={error} helpText={helpText} errorId={errorId} helpId={helpId} className={config.helperMargin} />
     </div>
   )
 })
