@@ -44,37 +44,37 @@ const VARIANT_CLASSES: Record<Variant, string> = {
 
 const BUTTON_SIZES: Record<Size, ButtonSizeConfig> = {
   xs: {
-    base: "h-8 text-xs",
+    base: "h-6 text-xs",
     padding: "px-3",
-    iconOnly: "w-8 p-0",
+    iconOnly: "w-6 p-0",
     spinner: "h-3 w-3",
     gap: "gap-1.5"
   },
   sm: {
-    base: "h-9 text-sm",
+    base: "h-8 text-sm",
     padding: "px-4",
-    iconOnly: "w-9 p-0",
+    iconOnly: "w-8 p-0",
     spinner: "h-4 w-4",
     gap: "gap-2"
   },
   md: {
-    base: "h-10 text-base",
+    base: "h-10 text-sm",
     padding: "px-5",
     iconOnly: "w-10 p-0",
     spinner: "h-5 w-5",
     gap: "gap-2"
   },
   lg: {
-    base: "h-11 text-lg",
-    padding: "px-8",
-    iconOnly: "w-11 p-0",
+    base: "h-12 text-base",
+    padding: "px-6",
+    iconOnly: "w-12 p-0",
     spinner: "h-6 w-6",
     gap: "gap-2.5"
   },
   xl: {
-    base: "h-12 text-xl",
-    padding: "px-10",
-    iconOnly: "w-12 p-0",
+    base: "h-14 text-lg",
+    padding: "px-8",
+    iconOnly: "w-14 p-0",
     spinner: "h-7 w-7",
     gap: "gap-3"
   }
@@ -94,28 +94,47 @@ const SHADOW_CLASSES: Record<Shadow, string> = {
   xl: "shadow-xl"
 }
 
-const SCALE_MAP: Record<PressAnimationStrength, number> = {
+const SCALE_STRENGTHS: Record<PressAnimationStrength, number> = {
   light: 0.98,
   medium: 0.95,
   strong: 0.9
 }
 
-const DURATION_MAP: Record<PressAnimationDuration, number> = {
+const SCALE_DURATIONS: Record<PressAnimationDuration, number> = {
   short: 0.1,
   medium: 0.2,
   long: 0.3
 }
 
-const RippleEffect = ({ ripples, onClear }: { ripples: any[]; onClear: (id: number) => void }) => (
+const RIPPLE_DURATIONS: Record<PressAnimationDuration, number> = {
+  short: 0.6,
+  medium: 1,
+  long: 1.5
+}
+
+const RIPPLE_OPACITIES: Record<PressAnimationStrength, number> = {
+  light: 0.2,
+  medium: 0.35,
+  strong: 0.5
+}
+
+interface RippleEffectProps {
+  ripples: any[]
+  duration?: PressAnimationDuration
+  strength?: PressAnimationStrength
+  onClear: (id: number) => void
+}
+
+const RippleEffect = ({ ripples, duration = "medium", strength = "medium", onClear }: RippleEffectProps) => (
   <span className="absolute inset-0 overflow-hidden rounded-[inherit] pointer-events-none z-0">
     <AnimatePresence>
       {ripples.map((ripple) => (
         <motion.span
           key={ripple.id}
-          initial={{ scale: 0, opacity: 0.35 }}
+          initial={{ scale: 0, opacity: RIPPLE_OPACITIES[strength] }}
           animate={{ scale: 2.5, opacity: 0 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: RIPPLE_DURATIONS[duration] }}
           style={{
             position: "absolute",
             left: ripple.x,
@@ -159,7 +178,7 @@ interface ZButtonProps extends HTMLMotionProps<"button"> {
   pressAnimationStrength?: PressAnimationStrength
 }
 
-const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
+const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
   const {
     as: Component = "button",
 
@@ -187,6 +206,7 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
     className,
     disabled,
     type = "button",
+    href,
 
     onClick,
     onPointerDown,
@@ -226,8 +246,8 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
   const motionProps: HTMLMotionProps<any> =
     !isDisabled && pressAnimationStyle === "scale"
       ? {
-          whileTap: { scale: SCALE_MAP[pressAnimationStrength] },
-          transition: { duration: DURATION_MAP[pressAnimationDuration] }
+          whileTap: { scale: SCALE_STRENGTHS[pressAnimationStrength] },
+          transition: { duration: SCALE_DURATIONS[pressAnimationDuration] }
         }
       : {}
 
@@ -264,6 +284,7 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
     <MotionComponent
       ref={ref}
       type={Component === "button" ? type : undefined}
+      href={isDisabled ? undefined : href}
       disabled={isDisabled}
       aria-disabled={isDisabled}
       aria-busy={loading}
@@ -274,7 +295,12 @@ const ZButton = forwardRef<HTMLButtonElement, ZButtonProps>((props, ref) => {
       {...rest}
     >
       {pressAnimationStyle === "ripple" && (
-        <RippleEffect ripples={ripples} onClear={(id) => setRipples((prev) => prev.filter((r) => r.id !== id))} />
+        <RippleEffect
+          ripples={ripples}
+          duration={pressAnimationDuration}
+          strength={pressAnimationStrength}
+          onClear={(id) => setRipples((prev) => prev.filter((r) => r.id !== id))}
+        />
       )}
 
       <span className={cn("flex items-center relative z-10", sizeConfig.gap)}>{content}</span>
