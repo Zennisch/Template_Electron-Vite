@@ -39,35 +39,35 @@ const SHADOWS: Record<Shadow, string> = {
 }
 
 const COLORS = {
-  FOCUS_RING: "#4f46e5",
-  ERROR_RING: "#ef4444",
-  WHITE_RING: "#fff"
+  FOCUS_RING: "#4444ee",
+  ERROR_RING: "#ee4444",
+  WHITE_RING: "#ffffff"
 }
 
 const VARIANTS: Variants = {
   unchecked: {
-    backgroundColor: "#fff",
-    borderColor: "#cbd5e1",
+    borderColor: "#ccddee",
+    backgroundColor: "#ffffff",
     scale: 1
   },
   checked: {
-    backgroundColor: "#4f46e5",
-    borderColor: "#4f46e5",
+    borderColor: "#4444ee",
+    backgroundColor: "#4444ee",
     scale: 1
   },
+  error: {
+    borderColor: "#dd2222",
+    backgroundColor: "#ffeeee"
+  },
+  errorChecked: {
+    borderColor: "#dd2222",
+    backgroundColor: "#dd2222"
+  },
   hover: {
-    borderColor: "#4f46e5"
+    borderColor: "#4444ee"
   },
   tap: {
     scale: 0.9
-  },
-  error: {
-    borderColor: "#dc2626",
-    backgroundColor: "#fef2f2"
-  },
-  errorChecked: {
-    backgroundColor: "#dc2626",
-    borderColor: "#dc2626"
   }
 }
 
@@ -102,7 +102,7 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
     helpText,
 
     size = "md",
-    shadow = "sm",
+    shadow = "none",
 
     disabled,
     className,
@@ -144,15 +144,23 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (disabled) return
-
-    if (!isControlled) {
-      setInternalChecked(e.target.checked)
-    }
+    if (!isControlled) setInternalChecked(e.target.checked)
     onChange?.(e.target.checked, e)
+  }
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(true)
+    onFocus?.(e)
+  }
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(false)
+    onBlur?.(e)
   }
 
   const isError = !!error
   const { box: boxCls, text: textCls, gap: gapCls } = SIZES[size]
+  const shadowCls = SHADOWS[shadow]
 
   const containerClasses = cn(
     "relative inline-flex items-center",
@@ -162,16 +170,16 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
   )
 
   const labelClasses = cn(
-    "cursor-pointer select-none font-medium text-slate-900",
+    "cursor-pointer select-none font-medium",
     textCls,
     disabled && "opacity-50 cursor-not-allowed",
-    isError && "text-red-600"
+    isError ? "text-red-900" : "text-slate-900"
   )
 
   const boxClasses = cn(
     "flex items-center justify-center border transition-shadow",
     boxCls,
-    SHADOWS[shadow],
+    shadowCls,
     disabled ? "opacity-50 cursor-not-allowed bg-slate-100" : "cursor-pointer bg-white",
     // Focus ring handled by parent focus-within or manual focus state if simpler
     // We'll use focus-visible on the hidden input to trigger a ring on this box via sibling selector?
@@ -198,14 +206,8 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
             checked={isChecked}
             disabled={disabled}
             onChange={handleChange}
-            onFocus={(e) => {
-              setIsFocused(true)
-              onFocus?.(e)
-            }}
-            onBlur={(e) => {
-              setIsFocused(false)
-              onBlur?.(e)
-            }}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             aria-invalid={isError}
             aria-describedby={error ? errorId : helpText ? helpId : undefined}
             {...rest}
