@@ -1,24 +1,57 @@
+import { HTMLMotionProps, motion } from "framer-motion"
 import { ElementType, forwardRef, MouseEvent, ReactNode, useMemo, useState } from "react"
 import { cn, DefaultSpinnerIcon } from "./utils"
-import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion"
+import { RippleEffect } from "./ZButtonRipple"
 
 type Variant = "primary" | "secondary" | "tertiary" | "ghost"
 type Size = "xs" | "sm" | "md" | "lg" | "xl"
 type Shape = "rounded" | "square" | "pill"
 type Shadow = "none" | "sm" | "md" | "lg" | "xl"
-type PressAnimationStyle = "none" | "scale" | "ripple"
-type PressAnimationDuration = "short" | "medium" | "long"
-type PressAnimationStrength = "light" | "medium" | "strong"
+export type PressAnimationStyle = "none" | "scale" | "ripple"
+export type PressAnimationDuration = "short" | "medium" | "long"
+export type PressAnimationStrength = "light" | "medium" | "strong"
 
-interface ButtonSizeConfig {
+interface SizeConfig {
   base: string
   padding: string
-  iconOnly: string
-  spinner: string
   gap: string
+  spinner: string
 }
 
-const VARIANT_CLASSES: Record<Variant, string> = {
+const SIZES: Record<Size, SizeConfig> = {
+  xs: {
+    base: "text-xs",
+    padding: "px-2 py-1.5",
+    gap: "gap-1.5",
+    spinner: "h-2 w-2"
+  },
+  sm: {
+    base: "text-sm",
+    padding: "px-2.5 py-1.75",
+    gap: "gap-1.75",
+    spinner: "h-3 w-3"
+  },
+  md: {
+    base: "text-base",
+    padding: "px-3 py-2",
+    gap: "gap-2",
+    spinner: "h-4 w-4"
+  },
+  lg: {
+    base: "text-lg",
+    padding: "px-3.5 py-2.25",
+    gap: "gap-2.25",
+    spinner: "h-5 w-5"
+  },
+  xl: {
+    base: "text-xl",
+    padding: "px-4 py-2.5",
+    gap: "gap-2.5",
+    spinner: "h-6 w-6"
+  }
+}
+
+const VARIANTS: Record<Variant, string> = {
   primary: `
       bg-indigo-600
       text-white
@@ -38,55 +71,17 @@ const VARIANT_CLASSES: Record<Variant, string> = {
   ghost: `
       bg-transparent
       text-indigo-700
-      hover:bg-indigo-50
+      hover:bg-transparent
       focus-visible:ring-indigo-600`
 }
 
-const BUTTON_SIZES: Record<Size, ButtonSizeConfig> = {
-  xs: {
-    base: "h-6 text-xs",
-    padding: "px-3",
-    iconOnly: "w-6 p-0",
-    spinner: "h-3 w-3",
-    gap: "gap-1.5"
-  },
-  sm: {
-    base: "h-8 text-sm",
-    padding: "px-4",
-    iconOnly: "w-8 p-0",
-    spinner: "h-4 w-4",
-    gap: "gap-2"
-  },
-  md: {
-    base: "h-10 text-sm",
-    padding: "px-5",
-    iconOnly: "w-10 p-0",
-    spinner: "h-5 w-5",
-    gap: "gap-2"
-  },
-  lg: {
-    base: "h-12 text-base",
-    padding: "px-6",
-    iconOnly: "w-12 p-0",
-    spinner: "h-6 w-6",
-    gap: "gap-2.5"
-  },
-  xl: {
-    base: "h-14 text-lg",
-    padding: "px-8",
-    iconOnly: "w-14 p-0",
-    spinner: "h-7 w-7",
-    gap: "gap-3"
-  }
-}
-
-const SHAPE_CLASSES: Record<Shape, string> = {
+const SHAPES: Record<Shape, string> = {
   rounded: "rounded-md",
   square: "rounded-none",
   pill: "rounded-full"
 }
 
-const SHADOW_CLASSES: Record<Shadow, string> = {
+const SHADOWS: Record<Shadow, string> = {
   none: "shadow-none",
   sm: "shadow-sm",
   md: "shadow",
@@ -105,51 +100,6 @@ const SCALE_DURATIONS: Record<PressAnimationDuration, number> = {
   medium: 0.2,
   long: 0.3
 }
-
-const RIPPLE_DURATIONS: Record<PressAnimationDuration, number> = {
-  short: 0.6,
-  medium: 1,
-  long: 1.5
-}
-
-const RIPPLE_OPACITIES: Record<PressAnimationStrength, number> = {
-  light: 0.2,
-  medium: 0.35,
-  strong: 0.5
-}
-
-interface RippleEffectProps {
-  ripples: any[]
-  duration?: PressAnimationDuration
-  strength?: PressAnimationStrength
-  onClear: (id: number) => void
-}
-
-const RippleEffect = ({ ripples, duration = "medium", strength = "medium", onClear }: RippleEffectProps) => (
-  <span className="absolute inset-0 overflow-hidden rounded-[inherit] pointer-events-none z-0">
-    <AnimatePresence>
-      {ripples.map((ripple) => (
-        <motion.span
-          key={ripple.id}
-          initial={{ scale: 0, opacity: RIPPLE_OPACITIES[strength] }}
-          animate={{ scale: 2.5, opacity: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: RIPPLE_DURATIONS[duration] }}
-          style={{
-            position: "absolute",
-            left: ripple.x,
-            top: ripple.y,
-            width: ripple.size,
-            height: ripple.size,
-            borderRadius: "50%",
-            backgroundColor: "currentColor"
-          }}
-          onAnimationComplete={() => onClear(ripple.id)}
-        />
-      ))}
-    </AnimatePresence>
-  </span>
-)
 
 interface ZButtonProps extends HTMLMotionProps<"button"> {
   as?: ElementType
@@ -217,7 +167,7 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
 
   const isDisabled = disabled || loading
 
-  const sizeConfig = BUTTON_SIZES[size]
+  const sizeConfig = SIZES[size]
 
   const baseClasses = `
       relative inline-flex items-center justify-center
@@ -232,10 +182,10 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
   const classes = cn(
     baseClasses,
     sizeConfig.base,
-    VARIANT_CLASSES[variant],
-    SHAPE_CLASSES[shape],
-    SHADOW_CLASSES[shadow],
-    iconOnly ? sizeConfig.iconOnly : sizeConfig.padding,
+    sizeConfig.padding,
+    VARIANTS[variant],
+    SHAPES[shape],
+    SHADOWS[shadow],
     fullWidth ? "w-full" : "",
     pressAnimationStyle === "ripple" && "overflow-hidden transform-gpu",
     className
