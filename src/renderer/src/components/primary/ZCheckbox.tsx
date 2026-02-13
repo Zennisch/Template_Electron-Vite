@@ -10,24 +10,24 @@ type Shadow = "none" | "sm" | "md" | "lg"
 interface CheckboxSizeConfig {
   box: string
   text: string
-  labelGap: string
+  gap: string
 }
 
 const SIZES: Record<Size, CheckboxSizeConfig> = {
   sm: {
     box: "h-4 w-4 rounded",
     text: "text-sm",
-    labelGap: "gap-0.5"
+    gap: "gap-0.5"
   },
   md: {
     box: "h-5 w-5 rounded",
     text: "text-base",
-    labelGap: "gap-1"
+    gap: "gap-1"
   },
   lg: {
     box: "h-6 w-6 rounded",
     text: "text-lg",
-    labelGap: "gap-1.5"
+    gap: "gap-1.5"
   }
 }
 
@@ -44,7 +44,7 @@ const COLORS = {
   WHITE_RING: "#fff"
 }
 
-const BOX_VARIANTS: Variants = {
+const VARIANTS: Variants = {
   unchecked: {
     backgroundColor: "#fff",
     borderColor: "#cbd5e1",
@@ -71,7 +71,7 @@ const BOX_VARIANTS: Variants = {
   }
 }
 
-export interface ZCheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
+interface ZCheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
   label?: ReactNode
   labelPlacement?: LabelPlacement
 
@@ -157,7 +157,7 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
   const containerClasses = cn(
     "relative inline-flex items-center",
     labelPlacement === "left" ? "flex-row-reverse" : "flex-row",
-    config.labelGap,
+    config.gap,
     containerClassName
   )
 
@@ -213,7 +213,7 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
 
           <motion.div
             className={boxClasses}
-            variants={BOX_VARIANTS}
+            variants={VARIANTS}
             initial={false}
             animate={variantState}
             whileTap={!disabled ? "tap" : undefined}

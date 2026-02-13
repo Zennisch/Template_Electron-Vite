@@ -1,7 +1,7 @@
-import { motion } from "framer-motion"
 import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useId, useState } from "react"
 import { cn } from "./utils"
 import { ZHelperText } from "./ZHelperText"
+import { motion } from "framer-motion"
 
 type Size = "sm" | "md" | "lg"
 type LabelPlacement = "left" | "right"
@@ -11,52 +11,41 @@ interface RadioSizeConfig {
   dot: string
   label: string
   gap: string
-  helperPaddingLeft: string
-  helperPaddingRight: string
 }
 
-const RADIO_SIZES: Record<Size, RadioSizeConfig> = {
+const SIZES: Record<Size, RadioSizeConfig> = {
   sm: {
     radio: "h-4 w-4",
     dot: "h-2 w-2",
     label: "text-sm",
-    gap: "gap-2",
-    helperPaddingLeft: "pl-6",
-    helperPaddingRight: "pr-6"
+    gap: "gap-0.5"
   },
   md: {
     radio: "h-5 w-5",
     dot: "h-2.5 w-2.5",
     label: "text-base",
-    gap: "gap-2.5",
-    helperPaddingLeft: "pl-7.5",
-    helperPaddingRight: "pr-7.5"
+    gap: "gap-1"
   },
   lg: {
     radio: "h-6 w-6",
     dot: "h-3 w-3",
     label: "text-lg",
-    gap: "gap-3",
-    helperPaddingLeft: "pl-9",
-    helperPaddingRight: "pr-9"
+    gap: "gap-1.5"
   }
 }
 
-const RADIO_THEME = {
-  base: "bg-white border-slate-300",
+const VARIANTS = {
   primary: {
     checked: "checked:bg-indigo-600 checked:border-indigo-600",
     focus: "ring-offset-white focus-visible:ring-indigo-600"
   },
   error: {
     checked: "checked:bg-red-600 checked:border-red-600",
-    focus: "border-red-300 ring-offset-red-50 focus-visible:ring-red-500",
-    text: "text-red-600"
-  },
-  label: "text-slate-700"
+    focus: "border-red-300 ring-offset-red-50 focus-visible:ring-red-500"
+  }
 }
 
-export interface ZRadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
+interface ZRadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
   label?: ReactNode
   labelPlacement?: LabelPlacement
 
@@ -110,36 +99,33 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
   }
 
   const isError = !!error
-  const config = RADIO_SIZES[size]
+  const { radio: radioCls, dot: dotCls, label: labelCls, gap: gapCls } = SIZES[size]
+  const { primary: primaryVar, error: errorVar } = VARIANTS
 
   const containerClasses = cn(
-    "flex",
+    "flex items-center",
     labelPlacement === "left" ? "flex-row-reverse justify-end" : "flex-row",
-    "items-center",
-    config.gap,
+    gapCls,
     containerClassName
   )
+
+  const errorClasses = isError ? cn(errorVar.checked, errorVar.focus) : cn(primaryVar.checked, primaryVar.focus)
 
   const inputClasses = cn(
     "peer appearance-none shrink-0 rounded-full border transition-all cursor-pointer",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
     "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-slate-100",
-    RADIO_THEME.base,
-
-    isError ? RADIO_THEME.error.checked : RADIO_THEME.primary.checked,
-
-    isError ? RADIO_THEME.error.focus : RADIO_THEME.primary.focus,
-
-    config.radio,
+    "bg-white border-slate-300",
+    errorClasses,
+    radioCls,
     className
   )
 
   const labelClasses = cn(
-    "select-none cursor-pointer font-medium",
-    RADIO_THEME.label,
+    "select-none cursor-pointer font-medium text-slate-700",
     disabled && "opacity-50 cursor-not-allowed",
-    isError && RADIO_THEME.error.text,
-    config.label
+    isError && "text-red-600",
+    labelCls
   )
 
   // Determine controlled vs uncontrolled for passing props
@@ -177,7 +163,7 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
               duration: 0.2,
               ease: "easeOut"
             }}
-            className={cn("absolute inset-0 m-auto bg-white rounded-full pointer-events-none", config.dot)}
+            className={cn("absolute inset-0 m-auto bg-white rounded-full pointer-events-none", dotCls)}
           />
         </div>
 
@@ -195,7 +181,7 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
         helpId={helpId}
         textSize="xs"
         defaultErrorMessage="Selection required"
-        className={cn(labelPlacement === "left" ? cn("text-right", config.helperPaddingRight) : config.helperPaddingLeft)}
+        className={labelPlacement === "left" ? "text-right" : ""}
       />
     </div>
   )
