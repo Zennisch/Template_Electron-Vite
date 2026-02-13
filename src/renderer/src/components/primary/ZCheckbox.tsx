@@ -152,25 +152,25 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
   }
 
   const isError = !!error
-  const config = SIZES[size]
+  const { box: boxCls, text: textCls, gap: gapCls } = SIZES[size]
 
   const containerClasses = cn(
     "relative inline-flex items-center",
     labelPlacement === "left" ? "flex-row-reverse" : "flex-row",
-    config.gap,
+    gapCls,
     containerClassName
   )
 
   const labelClasses = cn(
     "cursor-pointer select-none font-medium text-slate-900",
-    config.text,
+    textCls,
     disabled && "opacity-50 cursor-not-allowed",
     isError && "text-red-600"
   )
 
   const boxClasses = cn(
     "flex items-center justify-center border transition-shadow",
-    config.box,
+    boxCls,
     SHADOWS[shadow],
     disabled ? "opacity-50 cursor-not-allowed bg-slate-100" : "cursor-pointer bg-white",
     // Focus ring handled by parent focus-within or manual focus state if simpler

@@ -9,7 +9,7 @@ type LabelPlacement = "left" | "right"
 interface RadioSizeConfig {
   radio: string
   dot: string
-  label: string
+  text: string
   gap: string
 }
 
@@ -17,19 +17,19 @@ const SIZES: Record<Size, RadioSizeConfig> = {
   sm: {
     radio: "h-4 w-4",
     dot: "h-2 w-2",
-    label: "text-sm",
+    text: "text-sm",
     gap: "gap-0.5"
   },
   md: {
     radio: "h-5 w-5",
     dot: "h-2.5 w-2.5",
-    label: "text-base",
+    text: "text-base",
     gap: "gap-1"
   },
   lg: {
     radio: "h-6 w-6",
     dot: "h-3 w-3",
-    label: "text-lg",
+    text: "text-lg",
     gap: "gap-1.5"
   }
 }
@@ -99,7 +99,7 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
   }
 
   const isError = !!error
-  const { radio: radioCls, dot: dotCls, label: labelCls, gap: gapCls } = SIZES[size]
+  const { radio: radioCls, dot: dotCls, text: textCls, gap: gapCls } = SIZES[size]
   const { primary: primaryVar, error: errorVar } = VARIANTS
 
   const containerClasses = cn(
@@ -125,7 +125,7 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
     "select-none cursor-pointer font-medium text-slate-700",
     disabled && "opacity-50 cursor-not-allowed",
     isError && "text-red-600",
-    labelCls
+    textCls
   )
 
   // Determine controlled vs uncontrolled for passing props
