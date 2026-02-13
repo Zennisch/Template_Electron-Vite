@@ -167,7 +167,7 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
 
   const isDisabled = disabled || loading
 
-  const sizeConfig = SIZES[size]
+  const config = SIZES[size]
 
   const baseClasses = `
       relative inline-flex items-center justify-center
@@ -181,8 +181,8 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
 
   const classes = cn(
     baseClasses,
-    sizeConfig.base,
-    sizeConfig.padding,
+    config.base,
+    config.padding,
     VARIANTS[variant],
     SHAPES[shape],
     SHADOWS[shadow],
@@ -214,7 +214,7 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
     onPointerDown?.(e as any)
   }
 
-  const Spinner = loadingComponent || <DefaultSpinnerIcon className={cn("animate-spin", sizeConfig.spinner)} />
+  const Spinner = loadingComponent || <DefaultSpinnerIcon className={cn("animate-spin", config.spinner)} />
 
   const content =
     loading && loadingText ? (
@@ -253,7 +253,7 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
         />
       )}
 
-      <span className={cn("flex items-center relative z-10", sizeConfig.gap)}>{content}</span>
+      <span className={cn("flex items-center relative z-10", config.gap)}>{content}</span>
     </MotionComponent>
   )
 })
