@@ -12,28 +12,44 @@ import {
   useMemo,
   useState
 } from "react"
+import { Shadow, Size } from "./types/text-input"
 import { cn } from "./utils"
 import { ZHelperText } from "./ZHelperText"
 
-type Size = "sm" | "md" | "lg" | "xl"
-type Shadow = "none" | "sm" | "md" | "lg" | "xl"
+const THEME = {
+  colors: {
+    primary: "#4f46e5",
+    primaryLight: "rgba(79, 70, 229, 0.1)",
+    error: "#dc2626",
+    errorLight: "rgba(220, 38, 38, 0.1)",
+    border: "#e2e8f0",
+    borderHover: "#cbd5e1",
+    white: "#ffffff",
+    disabled: "#f8fafc",
+    textPrimary: "#0f172a",
+    textSecondary: "#64748b",
+    textDisabled: "#94a3b8",
+    placeholder: "#94a3b8",
+    icon: "#64748b"
+  }
+} as const
 
 interface TextInputSizeConfig {
   text: string
   padding: string
   label: string
-  iconPadValue: string
+  iconPadding: string
   floatY: number
   gap: string
   helperMargin: string
 }
 
-const TEXT_INPUT_SIZES: Record<Size, TextInputSizeConfig> = {
+const SIZES: Record<Size, TextInputSizeConfig> = {
   sm: {
     text: "text-sm",
     padding: "px-2.5 py-1.5",
     label: "top-1.5 left-1.5 text-sm",
-    iconPadValue: "24px",
+    iconPadding: "24px",
     floatY: -16,
     gap: "gap-1.5",
     helperMargin: "ml-0.5"
@@ -42,7 +58,7 @@ const TEXT_INPUT_SIZES: Record<Size, TextInputSizeConfig> = {
     text: "text-base",
     padding: "px-3 py-2.5",
     label: "top-2.5 left-2 text-base",
-    iconPadValue: "28px",
+    iconPadding: "28px",
     floatY: -22,
     gap: "gap-2",
     helperMargin: "ml-1"
@@ -51,7 +67,7 @@ const TEXT_INPUT_SIZES: Record<Size, TextInputSizeConfig> = {
     text: "text-lg",
     padding: "px-4 py-3",
     label: "top-3 left-3 text-lg",
-    iconPadValue: "32px",
+    iconPadding: "32px",
     floatY: -26,
     gap: "gap-2.5",
     helperMargin: "ml-1.5"
@@ -60,14 +76,14 @@ const TEXT_INPUT_SIZES: Record<Size, TextInputSizeConfig> = {
     text: "text-xl",
     padding: "px-5 py-3.5",
     label: "top-3.5 left-4 text-xl",
-    iconPadValue: "36px",
+    iconPadding: "36px",
     floatY: -28,
     gap: "gap-3",
     helperMargin: "ml-2"
   }
 }
 
-const SHADOW_CLASSES: Record<Shadow, string> = {
+const SHADOWS: Record<Shadow, string> = {
   none: "shadow-none",
   sm: "shadow-sm",
   md: "shadow",
@@ -83,25 +99,13 @@ const SHADOW_VALUES: Record<Shadow, string> = {
   xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
 }
 
-const COLORS: Record<string, string> = {
-  borderDefault: "#e2e8f0",
-  borderHover: "#cbd5e1",
-  borderFocus: "#4f46e5",
-  borderError: "#dc2626",
-  textDefault: "#64748b",
-  textFocus: "#4f46e5",
-  textError: "#dc2626",
-  shadowFocus: "rgba(79, 70, 229, 0.1)",
-  shadowError: "rgba(220, 38, 38, 0.1)"
-}
-
-const ANIMATION_CONFIG = {
-  LABEL_SCALE: 0.85,
-  LABEL_PADDING_LEFT: "4px",
-  RING_WIDTH: "4px",
-  ERROR_SHAKE_DURATION: 0.4,
-  TRANSITION_DURATION: 0.2,
-  SHAKE_DISTANCE: 4
+const ANIMATION = {
+  labelScale: 0.85,
+  labelPadding: "4px",
+  ringWidth: "4px",
+  shakeDuration: 0.4,
+  transitionDuration: 0.2,
+  shakeDistance: 4
 }
 
 const LABEL_VARIANTS: Variants = {
@@ -110,31 +114,53 @@ const LABEL_VARIANTS: Variants = {
     y: 0,
     scale: 1,
     paddingLeft: custom.paddingStart,
-    color: COLORS.textDefault,
+    color: THEME.colors.textSecondary,
     backgroundColor: "rgba(255, 255, 255, 0)"
   }),
-  float: (custom: { y: number; error: boolean; hasIcon: boolean; bgColor: string; paddingStart: string }) => ({
+  float: (custom: { y: number; hasError: boolean; bgColor: string }) => ({
     x: 0,
     y: custom.y,
-    scale: ANIMATION_CONFIG.LABEL_SCALE,
-    paddingLeft: ANIMATION_CONFIG.LABEL_PADDING_LEFT,
+    scale: ANIMATION.labelScale,
+    paddingLeft: ANIMATION.labelPadding,
     backgroundColor: custom.bgColor,
-    color: custom.error ? COLORS.textError : COLORS.textFocus
+    color: custom.hasError ? THEME.colors.error : THEME.colors.primary
   })
 }
 
 const BORDER_VARIANTS: Variants = {
-  initial: (shadow) => ({ borderColor: COLORS.borderDefault, boxShadow: shadow }),
-
+  initial: (shadow) => ({
+    borderColor: THEME.colors.border,
+    boxShadow: shadow
+  }),
   focus: (shadow) => ({
-    borderColor: COLORS.borderFocus,
-    boxShadow: `0px 0px 0px ${ANIMATION_CONFIG.RING_WIDTH} ${COLORS.shadowFocus}, ${shadow}`
+    borderColor: THEME.colors.primary,
+    boxShadow: `0px 0px 0px ${ANIMATION.ringWidth} ${THEME.colors.primaryLight}, ${shadow}`
   }),
   error: (shadow) => ({
-    borderColor: COLORS.borderError,
-    boxShadow: `0px 0px 0px ${ANIMATION_CONFIG.RING_WIDTH} ${COLORS.shadowError}, ${shadow}`
+    borderColor: THEME.colors.error,
+    boxShadow: `0px 0px 0px ${ANIMATION.ringWidth} ${THEME.colors.errorLight}, ${shadow}`
   }),
-  hover: { borderColor: COLORS.borderHover }
+  hover: {
+    borderColor: THEME.colors.borderHover
+  }
+}
+
+const getBorderVariant = (isFocused: boolean, hasError: boolean): "initial" | "focus" | "error" => {
+  if (hasError) return "error"
+  if (isFocused) return "focus"
+  return "initial"
+}
+
+const getIconPaddingValue = (hasIcon: boolean, sizeConfig: TextInputSizeConfig): string => {
+  return hasIcon ? sizeConfig.iconPadding : ANIMATION.labelPadding
+}
+
+const getInputTextColor = (disabled: boolean): string => {
+  return disabled ? "text-slate-400" : "text-slate-900"
+}
+
+const getPlaceholderColor = (): string => {
+  return "placeholder:text-slate-400"
 }
 
 type BaseProps = {
@@ -148,7 +174,6 @@ type BaseProps = {
   size?: Size
   shadow?: Shadow
   fullWidth?: boolean
-  backgroundColor?: string
 
   multiline?: boolean
   rows?: number
@@ -174,7 +199,6 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
     iconEnd,
 
     size = "md",
-    backgroundColor = "#ffffff",
     shadow = "none",
     fullWidth = false,
 
@@ -204,6 +228,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
 
   const isControlled = value !== undefined
   const actualValue = isControlled ? value : internalValue
+  const hasError = !!error
 
   const hasValue = actualValue !== "" && actualValue !== null && actualValue !== undefined
   const shouldFloat = isFocused || hasValue || !!placeholder
@@ -211,14 +236,14 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
   const controls = useAnimation()
 
   useEffect(() => {
-    if (error) {
-      const dist = ANIMATION_CONFIG.SHAKE_DISTANCE
+    if (hasError) {
+      const dist = ANIMATION.shakeDistance
       controls.start({
         x: [0, -dist, dist, -dist, dist, 0],
-        transition: { duration: ANIMATION_CONFIG.ERROR_SHAKE_DURATION }
+        transition: { duration: ANIMATION.shakeDuration }
       })
     }
-  }, [error, controls])
+  }, [hasError, controls])
 
   const handleFocus = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setIsFocused(true)
@@ -237,40 +262,54 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
     onChange?.(e)
   }
 
-  const config = TEXT_INPUT_SIZES[size]
+  const sizeConfig = SIZES[size]
+  const shadowCls = SHADOWS[shadow]
+  const shadowValue = SHADOW_VALUES[shadow]
 
-  const containerClasses = cn("relative mt-6 mb-2", fullWidth ? "w-full" : "max-w-md w-auto", containerClassName)
+  const borderVariantState = getBorderVariant(isFocused, hasError)
+  const iconPaddingValue = getIconPaddingValue(!!iconStart, sizeConfig)
+
+  const widthCls = fullWidth ? "w-full" : "max-w-md w-auto"
+  const disabledCls = disabled ? "opacity-50 cursor-not-allowed" : ""
+  const disabledBgCls = disabled ? "bg-slate-50" : "bg-white"
+
+  const containerClasses = cn("relative mt-6 mb-2", widthCls, containerClassName)
 
   const wrapperClasses = cn(
     "relative flex items-center rounded-lg border",
-    "bg-white",
-    config.gap,
-    config.padding,
-    SHADOW_CLASSES[shadow],
-    disabled && "opacity-60 cursor-not-allowed bg-slate-50"
+    disabledBgCls,
+    sizeConfig.gap,
+    sizeConfig.padding,
+    shadowCls,
+    disabledCls
   )
 
   const inputBaseClasses = cn(
-    "w-full bg-transparent outline-none text-slate-900 placeholder:text-slate-400 z-10",
-    "disabled:cursor-not-allowed resize-none",
-    config.text,
+    "w-full bg-transparent outline-none disabled:cursor-not-allowed resize-none z-10",
+    sizeConfig.text,
+    getInputTextColor(!!disabled),
+    getPlaceholderColor(),
     className
   )
 
   const labelClasses = cn(
     "absolute pointer-events-none bg-transparent px-1 font-medium origin-top-left whitespace-nowrap z-20",
-    config.label
+    sizeConfig.label
+  )
+
+  const iconClasses = cn(
+    "shrink-0 flex items-center justify-center pointer-events-none",
+    disabled ? "text-slate-400" : "text-slate-500"
   )
 
   const labelCustom = useMemo(
     () => ({
-      y: config.floatY,
-      error: !!error,
-      hasIcon: !!iconStart,
-      bgColor: backgroundColor,
-      paddingStart: iconStart ? config.iconPadValue : ANIMATION_CONFIG.LABEL_PADDING_LEFT
+      y: sizeConfig.floatY,
+      hasError,
+      bgColor: THEME.colors.white,
+      paddingStart: iconPaddingValue
     }),
-    [config.floatY, error, iconStart, backgroundColor, config.iconPadValue]
+    [sizeConfig.floatY, hasError, iconPaddingValue]
   )
 
   return (
@@ -280,14 +319,12 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
           className={wrapperClasses}
           variants={BORDER_VARIANTS}
           initial="initial"
-          custom={SHADOW_VALUES[shadow]}
-          animate={error ? "error" : isFocused ? "focus" : "initial"}
-          whileHover={!isFocused && !error && !disabled ? "hover" : undefined}
-          transition={{ duration: ANIMATION_CONFIG.TRANSITION_DURATION }}
+          custom={shadowValue}
+          animate={borderVariantState}
+          whileHover={!isFocused && !hasError && !disabled ? "hover" : undefined}
+          transition={{ duration: ANIMATION.transitionDuration }}
         >
-          {iconStart && (
-            <div className="text-slate-500 shrink-0 flex items-center justify-center pointer-events-none">{iconStart}</div>
-          )}
+          {iconStart && <div className={iconClasses}>{iconStart}</div>}
 
           {multiline ? (
             <textarea
@@ -301,8 +338,8 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
               placeholder={placeholder}
               rows={rows}
               className={cn(inputBaseClasses, "block")}
-              aria-invalid={!!error}
-              aria-describedby={error ? errorId : helpText ? helpId : undefined}
+              aria-invalid={hasError}
+              aria-describedby={hasError ? errorId : helpText ? helpId : undefined}
               {...(rest as TextareaHTMLAttributes<HTMLTextAreaElement>)}
             />
           ) : (
@@ -317,15 +354,13 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
               disabled={disabled}
               placeholder={placeholder}
               className={inputBaseClasses}
-              aria-invalid={!!error}
-              aria-describedby={error ? errorId : helpText ? helpId : undefined}
+              aria-invalid={hasError}
+              aria-describedby={hasError ? errorId : helpText ? helpId : undefined}
               {...(rest as InputHTMLAttributes<HTMLInputElement>)}
             />
           )}
 
-          {iconEnd && (
-            <div className="text-slate-500 shrink-0 flex items-center justify-center pointer-events-none">{iconEnd}</div>
-          )}
+          {iconEnd && <div className={iconClasses}>{iconEnd}</div>}
 
           {label && (
             <motion.label
@@ -335,7 +370,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
               initial="initial"
               animate={shouldFloat ? "float" : "initial"}
               custom={labelCustom}
-              transition={{ duration: ANIMATION_CONFIG.TRANSITION_DURATION, ease: "easeOut" }}
+              transition={{ duration: ANIMATION.transitionDuration, ease: "easeOut" }}
             >
               {label}
             </motion.label>
@@ -343,7 +378,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
         </motion.div>
       </motion.div>
 
-      <ZHelperText error={error} helpText={helpText} errorId={errorId} helpId={helpId} className={config.helperMargin} />
+      <ZHelperText error={error} helpText={helpText} errorId={errorId} helpId={helpId} className={sizeConfig.helperMargin} />
     </div>
   )
 })
