@@ -1,7 +1,5 @@
 import { HTMLMotionProps, motion } from "framer-motion"
 import { ElementType, forwardRef, MouseEvent, PointerEvent, ReactNode, useMemo, useState } from "react"
-import { cn, DefaultSpinnerIcon } from "./utils"
-import { RippleEffect } from "./ZButtonRipple"
 import {
   PressAnimationDuration,
   PressAnimationStrength,
@@ -11,6 +9,8 @@ import {
   Size,
   Variant
 } from "./types/button"
+import { cn, DefaultSpinnerIcon } from "./utils"
+import { RippleEffect } from "./ZButtonRipple"
 
 interface SizeConfig {
   base: string

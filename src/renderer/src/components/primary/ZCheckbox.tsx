@@ -1,8 +1,8 @@
+import { AnimatePresence, motion, Variants } from "framer-motion"
 import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useEffect, useId, useRef, useState } from "react"
+import { LabelPlacement, Shadow, Size } from "./types/checkbox"
 import { AnimatedCheckIcon, AnimatedIndeterminateIcon, cn } from "./utils"
 import { ZHelperText } from "./ZHelperText"
-import { AnimatePresence, motion, Variants } from "framer-motion"
-import { LabelPlacement, Shadow, Size } from "./types/checkbox"
 
 const THEME = {
   colors: {

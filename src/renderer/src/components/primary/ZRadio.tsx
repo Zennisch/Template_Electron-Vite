@@ -1,10 +1,24 @@
-import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useId, useState } from "react"
+import { motion, Variants } from "framer-motion"
+import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useId, useRef, useState } from "react"
+import { LabelPlacement, Shadow, Size } from "./types/radio"
 import { cn } from "./utils"
 import { ZHelperText } from "./ZHelperText"
-import { motion } from "framer-motion"
 
-type Size = "sm" | "md" | "lg"
-type LabelPlacement = "left" | "right"
+const THEME = {
+  colors: {
+    primary: "#4444ee",
+    primaryHover: "#3333dd",
+    error: "#dd2222",
+    errorLight: "#ffeeee",
+    errorText: "#991111",
+    border: "#ccddee",
+    borderHover: "#aabbdd",
+    white: "#ffffff",
+    disabled: "#f1f1f1",
+    textPrimary: "#001122",
+    textDisabled: "#99aabb"
+  }
+} as const
 
 interface RadioSizeConfig {
   radio: string
@@ -34,29 +48,86 @@ const SIZES: Record<Size, RadioSizeConfig> = {
   }
 }
 
-const VARIANTS = {
-  primary: {
-    checked: "checked:bg-indigo-600 checked:border-indigo-600",
-    focus: "ring-offset-white focus-visible:ring-indigo-600"
+const SHADOWS: Record<Shadow, string> = {
+  none: "shadow-none",
+  sm: "shadow-sm",
+  md: "shadow",
+  lg: "shadow-lg"
+}
+
+const RADIO_VARIANTS: Variants = {
+  unchecked: {
+    borderColor: THEME.colors.border,
+    backgroundColor: THEME.colors.white,
+    scale: 1
+  },
+  checked: {
+    borderColor: THEME.colors.primary,
+    backgroundColor: THEME.colors.primary,
+    scale: 1
   },
   error: {
-    checked: "checked:bg-red-600 checked:border-red-600",
-    focus: "border-red-300 ring-offset-red-50 focus-visible:ring-red-500"
+    borderColor: THEME.colors.error,
+    backgroundColor: THEME.colors.errorLight,
+    scale: 1
+  },
+  errorChecked: {
+    borderColor: THEME.colors.error,
+    backgroundColor: THEME.colors.error,
+    scale: 1
+  },
+  tap: {
+    scale: 0.9
   }
+}
+
+const DOT_VARIANTS: Variants = {
+  unchecked: {
+    scale: 0,
+    opacity: 0
+  },
+  checked: {
+    scale: 1,
+    opacity: 1
+  }
+}
+
+const FOCUS_RING_STYLE = {
+  normal: `0 0 0 2px ${THEME.colors.white}, 0 0 0 4px ${THEME.colors.primary}`,
+  error: `0 0 0 2px ${THEME.colors.white}, 0 0 0 4px ${THEME.colors.error}`
+}
+
+const getVariantState = (checked: boolean, hasError: boolean): "unchecked" | "checked" | "error" | "errorChecked" => {
+  if (hasError) {
+    return checked ? "errorChecked" : "error"
+  }
+  return checked ? "checked" : "unchecked"
+}
+
+const getDotVariantState = (checked: boolean): "unchecked" | "checked" => {
+  return checked ? "checked" : "unchecked"
+}
+
+const getFocusRingStyle = (isFocused: boolean, hasError: boolean): string | undefined => {
+  if (!isFocused) return undefined
+  return hasError ? FOCUS_RING_STYLE.error : FOCUS_RING_STYLE.normal
 }
 
 interface ZRadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
   label?: ReactNode
   labelPlacement?: LabelPlacement
 
+  checked?: boolean
+
   error?: boolean | string
   helpText?: string
 
   size?: Size
+  shadow?: Shadow
 
   containerClassName?: string
 
-  onChange?: (checked: boolean, event: ChangeEvent<HTMLInputElement>) => void
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
@@ -69,7 +140,9 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
 
     error,
     helpText,
+
     size = "md",
+    shadow = "none",
 
     disabled,
     className,
@@ -78,93 +151,109 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
     value,
 
     onChange,
-    onBlur,
     onFocus,
+    onBlur,
     ...rest
   } = props
 
-  const [internalChecked, setInternalChecked] = useState(defaultChecked ?? false)
-  const isChecked = checked !== undefined ? checked : internalChecked
-
+  const inputRef = useRef<HTMLInputElement>(null)
   const generatedId = useId()
   const inputId = id || generatedId
   const errorId = `${inputId}-error`
   const helpId = `${inputId}-help`
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (checked === undefined) {
-      setInternalChecked(e.target.checked)
-    }
-    onChange?.(e.target.checked, e)
-  }
+  const [internalChecked, setInternalChecked] = useState(defaultChecked ?? false)
+  const [isFocused, setIsFocused] = useState(false)
 
-  const isError = !!error
+  const isControlled = checked !== undefined
+  const isChecked = isControlled ? checked : internalChecked
+  const hasError = !!error
+
   const { radio: radioCls, dot: dotCls, text: textCls, gap: gapCls } = SIZES[size]
-  const { primary: primaryVar, error: errorVar } = VARIANTS
+  const shadowCls = SHADOWS[shadow]
 
-  const containerClasses = cn(
-    "flex items-center",
-    labelPlacement === "left" ? "flex-row-reverse justify-end" : "flex-row",
-    gapCls,
-    containerClassName
-  )
+  const placementCls = labelPlacement === "left" ? "flex-row-reverse justify-end" : "flex-row"
+  const disabledCls = disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+  const labelColorCls = hasError ? "text-red-900" : "text-slate-700"
+  const radioBgCls = disabled ? "bg-slate-100" : "bg-white"
 
-  const errorClasses = isError ? cn(errorVar.checked, errorVar.focus) : cn(primaryVar.checked, primaryVar.focus)
+  const containerClasses = cn("flex items-center", placementCls, gapCls, containerClassName)
 
-  const inputClasses = cn(
-    "peer appearance-none shrink-0 rounded-full border transition-all cursor-pointer",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-    "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-slate-100",
-    "bg-white border-slate-300",
-    errorClasses,
+  const labelClasses = cn("select-none font-medium", textCls, disabledCls, labelColorCls)
+
+  const radioClasses = cn(
+    "flex items-center justify-center rounded-full border transition-shadow",
     radioCls,
+    shadowCls,
+    radioBgCls,
+    disabledCls,
     className
   )
 
-  const labelClasses = cn(
-    "select-none cursor-pointer font-medium text-slate-700",
-    disabled && "opacity-50 cursor-not-allowed",
-    isError && "text-red-600",
-    textCls
-  )
+  const variantState = getVariantState(isChecked, hasError)
+  const dotVariantState = getDotVariantState(isChecked)
+  const focusRingStyle = getFocusRingStyle(isFocused, hasError)
 
-  // Determine controlled vs uncontrolled for passing props
-  // React allows passing 'checked' if it's controlled, or 'defaultChecked' if not.
-  // Passing 'undefined' for checked is safe if input is uncontrolled.
-  const inputProps = checked !== undefined ? { checked } : { defaultChecked }
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (disabled) return
+    if (!isControlled) {
+      setInternalChecked(e.target.checked)
+    }
+    onChange?.(e)
+  }
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(true)
+    onFocus?.(e)
+  }
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(false)
+    onBlur?.(e)
+  }
+
+  const handleRadioClick = () => {
+    inputRef.current?.click()
+  }
 
   return (
     <div className="flex flex-col w-max">
       <div className={containerClasses}>
         <div className="relative flex items-center justify-center">
           <input
-            ref={ref}
+            ref={ref || inputRef}
             type="radio"
             id={inputId}
+            className="peer sr-only"
+            checked={isChecked}
             disabled={disabled}
-            onChange={handleChange}
-            onBlur={onBlur}
-            onFocus={onFocus}
             value={value}
-            className={inputClasses}
-            aria-invalid={isError}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            aria-invalid={hasError}
             aria-describedby={error ? errorId : helpText ? helpId : undefined}
-            {...inputProps}
             {...rest}
           />
 
           <motion.div
+            className={radioClasses}
+            variants={RADIO_VARIANTS}
             initial={false}
-            animate={{
-              scale: isChecked ? 1 : 0,
-              opacity: isChecked ? 1 : 0
-            }}
-            transition={{
-              duration: 0.2,
-              ease: "easeOut"
-            }}
-            className={cn("absolute inset-0 m-auto bg-white rounded-full pointer-events-none", dotCls)}
-          />
+            animate={variantState}
+            whileTap={!disabled ? "tap" : undefined}
+            transition={{ duration: 0.15 }}
+            onClick={handleRadioClick}
+            style={{ boxShadow: focusRingStyle }}
+          >
+            <motion.div
+              className={cn("bg-white rounded-full pointer-events-none", dotCls)}
+              variants={DOT_VARIANTS}
+              initial={false}
+              animate={dotVariantState}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            />
+          </motion.div>
         </div>
 
         {label && (

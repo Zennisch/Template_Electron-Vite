@@ -16,7 +16,7 @@ const ANIMATION_CONFIG = {
   transition: { duration: 0.2 }
 }
 
-const HELPER_THEME = {
+const THEME = {
   default: "font-normal text-slate-500",
   error: "font-medium text-red-600"
 }
@@ -32,7 +32,7 @@ interface ZHelperTextProps {
 }
 
 const HelperTextContent = ({ isError, message, id, size }) => {
-  const themeCls = isError ? HELPER_THEME.error : HELPER_THEME.default
+  const themeCls = isError ? THEME.error : THEME.default
   const sizeCls = SIZES[size]
 
   return (
