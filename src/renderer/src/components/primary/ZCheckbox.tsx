@@ -4,6 +4,22 @@ import { ZHelperText } from "./ZHelperText"
 import { AnimatePresence, motion, Variants } from "framer-motion"
 import { LabelPlacement, Shadow, Size } from "./types/checkbox"
 
+const THEME = {
+  colors: {
+    primary: "#4444ee",
+    primaryHover: "#3333dd",
+    error: "#dd2222",
+    errorLight: "#ffeeee",
+    errorText: "#991111",
+    border: "#ccddee",
+    borderHover: "#aabbdd",
+    white: "#ffffff",
+    disabled: "#f1f1f1",
+    textPrimary: "#001122",
+    textDisabled: "#99aabb"
+  }
+} as const
+
 interface CheckboxSizeConfig {
   box: string
   text: string
@@ -35,37 +51,51 @@ const SHADOWS: Record<Shadow, string> = {
   lg: "shadow-lg"
 }
 
-const COLORS = {
-  FOCUS_RING: "#4444ee",
-  ERROR_RING: "#ee4444",
-  WHITE_RING: "#ffffff"
-}
-
-const VARIANTS: Variants = {
+const BOX_VARIANTS: Variants = {
   unchecked: {
-    borderColor: "#ccddee",
-    backgroundColor: "#ffffff",
+    borderColor: THEME.colors.border,
+    backgroundColor: THEME.colors.white,
     scale: 1
   },
   checked: {
-    borderColor: "#4444ee",
-    backgroundColor: "#4444ee",
+    borderColor: THEME.colors.primary,
+    backgroundColor: THEME.colors.primary,
     scale: 1
   },
   error: {
-    borderColor: "#dd2222",
-    backgroundColor: "#ffeeee"
+    borderColor: THEME.colors.error,
+    backgroundColor: THEME.colors.errorLight,
+    scale: 1
   },
   errorChecked: {
-    borderColor: "#dd2222",
-    backgroundColor: "#dd2222"
-  },
-  hover: {
-    borderColor: "#4444ee"
+    borderColor: THEME.colors.error,
+    backgroundColor: THEME.colors.error,
+    scale: 1
   },
   tap: {
     scale: 0.9
   }
+}
+
+const FOCUS_RING_STYLE = {
+  normal: `0 0 0 2px ${THEME.colors.white}, 0 0 0 4px ${THEME.colors.primary}`,
+  error: `0 0 0 2px ${THEME.colors.white}, 0 0 0 4px ${THEME.colors.error}`
+}
+
+const getVariantState = (
+  checked: boolean,
+  indeterminate: boolean,
+  hasError: boolean
+): "unchecked" | "checked" | "error" | "errorChecked" => {
+  if (hasError) {
+    return checked || indeterminate ? "errorChecked" : "error"
+  }
+  return checked || indeterminate ? "checked" : "unchecked"
+}
+
+const getFocusRingStyle = (isFocused: boolean, hasError: boolean): string | undefined => {
+  if (!isFocused) return undefined
+  return hasError ? FOCUS_RING_STYLE.error : FOCUS_RING_STYLE.normal
 }
 
 interface ZCheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
@@ -83,7 +113,7 @@ interface ZCheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "si
 
   containerClassName?: string
 
-  onChange?: (checked: boolean, event: ChangeEvent<HTMLInputElement>) => void
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
@@ -112,7 +142,7 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
     ...rest
   } = props
 
-  const innerRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const generatedId = useId()
   const inputId = id || generatedId
   const errorId = `${inputId}-error`
@@ -123,26 +153,44 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
 
   const isControlled = checked !== undefined
   const isChecked = isControlled ? checked : internalChecked
+  const hasError = !!error
 
   useEffect(() => {
-    if (!ref) return
-    if (typeof ref === "function") {
-      ref(innerRef.current)
-    } else {
-      ref.current = innerRef.current
-    }
-  }, [ref])
-
-  useEffect(() => {
-    if (innerRef.current) {
-      innerRef.current.indeterminate = indeterminate
+    if (inputRef.current) {
+      inputRef.current.indeterminate = indeterminate
     }
   }, [indeterminate])
 
+  const { box: boxCls, text: textCls, gap: gapCls } = SIZES[size]
+  const shadowCls = SHADOWS[shadow]
+
+  const placementCls = labelPlacement === "left" ? "flex-row-reverse" : "flex-row"
+  const disabledCls = disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+  const labelColorCls = hasError ? "text-red-900" : "text-slate-900"
+  const boxBgCls = disabled ? "bg-slate-100" : "bg-white"
+
+  const containerClasses = cn("relative inline-flex items-center", placementCls, gapCls, containerClassName)
+
+  const labelClasses = cn("select-none font-medium", textCls, disabledCls, labelColorCls)
+
+  const boxClasses = cn(
+    "flex items-center justify-center border transition-shadow",
+    boxCls,
+    shadowCls,
+    boxBgCls,
+    disabledCls,
+    className
+  )
+
+  const variantState = getVariantState(isChecked, indeterminate, hasError)
+  const focusRingStyle = getFocusRingStyle(isFocused, hasError)
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (disabled) return
-    if (!isControlled) setInternalChecked(e.target.checked)
-    onChange?.(e.target.checked, e)
+    if (!isControlled) {
+      setInternalChecked(e.target.checked)
+    }
+    onChange?.(e)
   }
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -155,52 +203,16 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
     onBlur?.(e)
   }
 
-  const isError = !!error
-  const { box: boxCls, text: textCls, gap: gapCls } = SIZES[size]
-  const shadowCls = SHADOWS[shadow]
-
-  const containerClasses = cn(
-    "relative inline-flex items-center",
-    labelPlacement === "left" ? "flex-row-reverse" : "flex-row",
-    gapCls,
-    containerClassName
-  )
-
-  const labelClasses = cn(
-    "cursor-pointer select-none font-medium",
-    textCls,
-    disabled && "opacity-50 cursor-not-allowed",
-    isError ? "text-red-900" : "text-slate-900"
-  )
-
-  const boxClasses = cn(
-    "flex items-center justify-center border transition-shadow",
-    boxCls,
-    shadowCls,
-    disabled ? "opacity-50 cursor-not-allowed bg-slate-100" : "cursor-pointer bg-white",
-    // Focus ring handled by parent focus-within or manual focus state if simpler
-    // We'll use focus-visible on the hidden input to trigger a ring on this box via sibling selector?
-    // Actually easier to wrap input and box.
-    className
-  )
-
-  let variantState: string
-  if (isError) {
-    variantState = isChecked || indeterminate ? "errorChecked" : "error"
-  } else {
-    variantState = isChecked || indeterminate ? "checked" : "unchecked"
+  const handleBoxClick = () => {
+    inputRef.current?.click()
   }
-
-  const boxShadowStyle = isFocused
-    ? `0 0 0 2px ${COLORS.WHITE_RING}, 0 0 0 4px ${isError ? COLORS.ERROR_RING : COLORS.FOCUS_RING}`
-    : undefined
 
   return (
     <div className="flex flex-col">
       <div className={containerClasses}>
         <div className="relative flex items-center">
           <input
-            ref={innerRef}
+            ref={ref || inputRef}
             type="checkbox"
             id={inputId}
             className="peer sr-only"
@@ -209,26 +221,26 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            aria-invalid={isError}
+            aria-invalid={hasError}
             aria-describedby={error ? errorId : helpText ? helpId : undefined}
             {...rest}
           />
 
           <motion.div
             className={boxClasses}
-            variants={VARIANTS}
+            variants={BOX_VARIANTS}
             initial={false}
             animate={variantState}
             whileTap={!disabled ? "tap" : undefined}
             transition={{ duration: 0.15 }}
-            onClick={() => innerRef.current?.click()}
-            style={{ boxShadow: boxShadowStyle }}
+            onClick={handleBoxClick}
+            style={{ boxShadow: focusRingStyle }}
           >
             <AnimatePresence mode="wait">
               {indeterminate ? (
-                <AnimatedIndeterminateIcon key="indeterminate" className={"text-white"} />
+                <AnimatedIndeterminateIcon key="indeterminate" className="text-white" />
               ) : isChecked ? (
-                <AnimatedCheckIcon key="checked" className={"text-white"} />
+                <AnimatedCheckIcon key="checked" className="text-white" />
               ) : null}
             </AnimatePresence>
           </motion.div>
