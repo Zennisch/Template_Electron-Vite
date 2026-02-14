@@ -3,27 +3,22 @@ import { cn } from "./utils"
 
 type TextSize = "xs" | "sm" | "base"
 
-const HELPER_SIZES: Record<TextSize, string> = {
-  xs: "text-xs",
-  sm: "text-sm",
-  base: "text-base"
+const SIZES: Record<TextSize, string> = {
+  xs: "text-xs mt-0.5",
+  sm: "text-sm mt-1",
+  base: "text-base mt-1.5"
 }
 
 const ANIMATION_CONFIG = {
-  INITIAL: { opacity: 0, height: 0, y: -5 },
-  ANIMATE: { opacity: 1, height: "auto", y: 0 },
-  EXIT: { opacity: 0, height: 0, y: -5 },
-  TRANSITION: { duration: 0.2 }
-}
-
-const HELPER_LAYOUT = {
-  MARGIN_TOP: "mt-1",
-  CONTAINER: "overflow-hidden"
+  initial: { opacity: 0, height: 0, y: -5 },
+  animate: { opacity: 1, height: "auto", y: 0 },
+  exit: { opacity: 0, height: 0, y: -5 },
+  transition: { duration: 0.2 }
 }
 
 const HELPER_THEME = {
-  ERROR: "font-medium text-red-600",
-  DEFAULT: "text-slate-500"
+  default: "font-normal text-slate-500",
+  error: "font-medium text-red-600"
 }
 
 interface ZHelperTextProps {
@@ -34,6 +29,17 @@ interface ZHelperTextProps {
   className?: string
   textSize?: TextSize
   defaultErrorMessage?: string
+}
+
+const HelperTextContent = ({ isError, message, id, size }) => {
+  const themeCls = isError ? HELPER_THEME.error : HELPER_THEME.default
+  const sizeCls = SIZES[size]
+
+  return (
+    <p className={cn(themeCls, sizeCls)} id={id}>
+      {message}
+    </p>
+  )
 }
 
 export const ZHelperText = ({
@@ -53,27 +59,18 @@ export const ZHelperText = ({
       {(isError || helpText) && (
         <motion.div
           key={isError ? "error" : "help"}
-          initial={ANIMATION_CONFIG.INITIAL}
-          animate={ANIMATION_CONFIG.ANIMATE}
-          exit={ANIMATION_CONFIG.EXIT}
-          transition={ANIMATION_CONFIG.TRANSITION}
-          className={cn(HELPER_LAYOUT.CONTAINER, className)}
+          initial={ANIMATION_CONFIG.initial}
+          animate={ANIMATION_CONFIG.animate}
+          exit={ANIMATION_CONFIG.exit}
+          transition={ANIMATION_CONFIG.transition}
+          className={cn("overflow-hidden", className)}
         >
-          {isError ? (
-            <p
-              className={cn(HELPER_LAYOUT.MARGIN_TOP, HELPER_THEME.ERROR, HELPER_SIZES[textSize])}
-              id={errorId}
-            >
-              {errorMessage}
-            </p>
-          ) : (
-            <p
-              className={cn(HELPER_LAYOUT.MARGIN_TOP, HELPER_THEME.DEFAULT, HELPER_SIZES[textSize])}
-              id={helpId}
-            >
-              {helpText}
-            </p>
-          )}
+          <HelperTextContent
+            isError={isError}
+            message={isError ? errorMessage : helpText}
+            id={isError ? errorId : helpId}
+            size={textSize}
+          />
         </motion.div>
       )}
     </AnimatePresence>
