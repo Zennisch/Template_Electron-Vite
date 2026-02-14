@@ -12,10 +12,10 @@ const THEME = {
     errorLight: "rgba(220, 38, 38, 0.1)",
     overlay: "rgba(15, 23, 42, 0.6)",
     white: "#ffffff",
-    border: "#e2e8f0",
-    textPrimary: "#0f172a",
-    textSecondary: "#64748b",
-    disabled: "#cbd5e1"
+    border: "#eeeeff",
+    textPrimary: "#0011ee",
+    textSecondary: "#667788",
+    disabled: "#ccddee"
   },
   backdrop: "bg-slate-900/60 backdrop-blur-sm",
   container: "bg-white ring-1 ring-slate-900/5 shadow-2xl",
