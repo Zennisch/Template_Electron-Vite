@@ -33,12 +33,12 @@ const THEME = {
 } as const
 
 const SIZES: Record<Size, string> = {
-  sm: "max-w-sm",
-  md: "max-w-md",
-  lg: "max-w-lg",
-  xl: "max-w-xl",
-  "2xl": "max-w-2xl",
-  full: "max-w-[calc(100vw-2rem)]"
+  sm: "w-full max-w-sm",
+  md: "w-full max-w-md",
+  lg: "w-full max-w-lg",
+  xl: "w-full max-w-xl",
+  "2xl": "w-full max-w-2xl",
+  full: "w-full max-w-[calc(100vw-2rem)]"
 }
 
 const POSITIONS: Record<Position, string> = {
