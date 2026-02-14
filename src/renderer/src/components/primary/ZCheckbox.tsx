@@ -2,10 +2,7 @@ import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactNode, useEffect, use
 import { AnimatedCheckIcon, AnimatedIndeterminateIcon, cn } from "./utils"
 import { ZHelperText } from "./ZHelperText"
 import { AnimatePresence, motion, Variants } from "framer-motion"
-
-type Size = "sm" | "md" | "lg"
-type LabelPlacement = "left" | "right"
-type Shadow = "none" | "sm" | "md" | "lg"
+import { LabelPlacement, Shadow, Size } from "./types/checkbox"
 
 interface CheckboxSizeConfig {
   box: string
@@ -194,6 +191,10 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
     variantState = isChecked || indeterminate ? "checked" : "unchecked"
   }
 
+  const boxShadowStyle = isFocused
+    ? `0 0 0 2px ${COLORS.WHITE_RING}, 0 0 0 4px ${isError ? COLORS.ERROR_RING : COLORS.FOCUS_RING}`
+    : undefined
+
   return (
     <div className="flex flex-col">
       <div className={containerClasses}>
@@ -221,11 +222,7 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
             whileTap={!disabled ? "tap" : undefined}
             transition={{ duration: 0.15 }}
             onClick={() => innerRef.current?.click()}
-            style={{
-              boxShadow: isFocused
-                ? `0 0 0 2px ${COLORS.WHITE_RING}, 0 0 0 4px ${isError ? COLORS.ERROR_RING : COLORS.FOCUS_RING}`
-                : undefined
-            }}
+            style={{ boxShadow: boxShadowStyle }}
           >
             <AnimatePresence mode="wait">
               {indeterminate ? (
