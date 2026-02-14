@@ -32,7 +32,8 @@ export default defineConfig({
         '@pages': resolve(__dirname, 'src/renderer/src/pages'),
         '@utils': resolve(__dirname, 'src/renderer/src/utils'),
         '@preload': resolve(__dirname, 'src/preload'),
-        '@shared': resolve(__dirname, 'src/shared')
+        '@shared': resolve(__dirname, 'src/shared'),
+        '@renderer': resolve(__dirname, 'src/renderer/src'),
       }
     },
     plugins: [react(), tailwindcss()]
