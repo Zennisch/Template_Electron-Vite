@@ -1,73 +1,126 @@
 import { motion, Transition } from "framer-motion"
 import { ChangeEvent, FocusEvent, forwardRef, InputHTMLAttributes, useId, useRef, useState } from "react"
+import { LabelPlacement, Shadow, Size } from "./types/slider"
 import { cn } from "./utils"
 import { ZHelperText } from "./ZHelperText"
 
-type Size = "sm" | "md" | "lg"
+const THEME = {
+  colors: {
+    primary: "#4444ee",
+    primaryHover: "#3333dd",
+    error: "#dd2222",
+    errorLight: "#ffeeee",
+    border: "#ccddee",
+    borderHover: "#aabbdd",
+    white: "#ffffff",
+    disabled: "#f1f1f1",
+    textPrimary: "#001122",
+    textDisabled: "#99aabb",
+    track: "#e2e8f0",
+    trackFill: "#4444ee",
+    trackFillError: "#dd2222"
+  }
+} as const
 
 interface SliderSizeConfig {
   trackHeight: string
   thumbSize: number
-  label: string
-  containerGap: string
+  text: string
+  gap: string
   labelMargin: string
   height: string
 }
 
-const SLIDER_SIZES: Record<Size, SliderSizeConfig> = {
+const SIZES: Record<Size, SliderSizeConfig> = {
   sm: {
     trackHeight: "h-1",
     thumbSize: 12,
-    label: "text-sm",
-    containerGap: "gap-1.5",
+    text: "text-sm",
+    gap: "gap-1.5",
     labelMargin: "mb-1",
     height: "h-4"
   },
   md: {
     trackHeight: "h-2",
     thumbSize: 16,
-    label: "text-base",
-    containerGap: "gap-2",
+    text: "text-base",
+    gap: "gap-2",
     labelMargin: "mb-1.5",
     height: "h-5"
   },
   lg: {
     trackHeight: "h-3",
     thumbSize: 24,
-    label: "text-lg",
-    containerGap: "gap-2.5",
+    text: "text-lg",
+    gap: "gap-2.5",
     labelMargin: "mb-2",
     height: "h-6"
   }
 }
 
-const LAYOUT = {
-  DEFAULT_WIDTH: "w-64",
-  INPUT_RESET: "m-0 p-0 appearance-none"
+const SHADOWS: Record<Shadow, string> = {
+  none: "shadow-none",
+  sm: "shadow-sm",
+  md: "shadow",
+  lg: "shadow-lg"
 }
 
-const ANIMATION_CONFIG = {
-  SCALE: {
-    PRESSED: 1.15,
-    FOCUSED: 1.05,
-    NORMAL: 1
+const ANIMATION = {
+  duration: {
+    drag: 0,
+    jump: 0.2,
+    scale: 0.1,
+    shadow: 0.2
   },
-  DURATION: {
-    DRAG: 0,
-    JUMP: 0.2,
-    SCALE: 0.1,
-    SHADOW: 0.2
+  scale: {
+    pressed: 1.15,
+    focused: 1.05,
+    normal: 1
   }
 }
 
-const COLORS = {
-  PRIMARY_SHADOW: "rgba(79, 70, 229, 0.2)",
-  ERROR_SHADOW: "rgba(220, 38, 38, 0.2)",
-  DEFAULT_SHADOW: "0 1px 3px 0 rgb(0 0 0 / 0.1)"
+const FOCUS_RING_STYLE = {
+  normal: `0 0 0 4px rgba(68, 68, 238, 0.2)`,
+  error: `0 0 0 4px rgba(221, 34, 34, 0.2)`
+}
+
+const DEFAULT_SHADOW = "0 1px 3px 0 rgb(0 0 0 / 0.1)"
+
+const getTrackFillColor = (hasError: boolean): string => {
+  return hasError ? THEME.colors.trackFillError : THEME.colors.trackFill
+}
+
+const getThumbBorderColor = (hasError: boolean): string => {
+  return hasError ? "border-red-600" : "border-indigo-600"
+}
+
+const getThumbScale = (isPressed: boolean, isFocused: boolean): number => {
+  if (isPressed) return ANIMATION.scale.pressed
+  if (isFocused) return ANIMATION.scale.focused
+  return ANIMATION.scale.normal
+}
+
+const getThumbShadow = (isFocused: boolean, hasError: boolean): string => {
+  if (!isFocused) return DEFAULT_SHADOW
+  return hasError ? FOCUS_RING_STYLE.error : FOCUS_RING_STYLE.normal
+}
+
+const getTextColor = (hasError: boolean): string => {
+  return hasError ? "text-red-600" : "text-slate-900"
+}
+
+const getValueTextColor = (hasError: boolean): string => {
+  return hasError ? "text-red-600" : "text-slate-700"
+}
+
+const getHelperTextAlignment = (labelPlacement: LabelPlacement): string => {
+  return labelPlacement === "left" ? "text-right" : ""
 }
 
 interface ZSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange" | "value" | "defaultValue"> {
   label?: string
+  labelPlacement?: LabelPlacement
+
   error?: string | boolean
   helpText?: string
 
@@ -79,6 +132,7 @@ interface ZSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size
   defaultValue?: number
 
   size?: Size
+  shadow?: Shadow
   fullWidth?: boolean
   showValue?: boolean
 
@@ -90,6 +144,8 @@ interface ZSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size
 const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
   const {
     label,
+    labelPlacement = "right",
+
     min = 0,
     max = 100,
     step = 1,
@@ -100,6 +156,7 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
     helpText,
 
     size = "md",
+    shadow = "none",
     fullWidth = false,
     showValue = false,
     disabled = false,
@@ -110,6 +167,8 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
 
     onChange,
     valueFormatter = (val) => val.toString(),
+    onFocus,
+    onBlur,
     ...rest
   } = props
 
@@ -119,16 +178,47 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
   const helpId = `${sliderId}-help`
 
   const [internalValue, setInternalValue] = useState<number>(defaultValue ?? min)
-  const isControlled = value !== undefined
-  const currentValue = isControlled ? value : internalValue
-
   const [isDragging, setIsDragging] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
   const [isPressed, setIsPressed] = useState(false)
   const isPressedRef = useRef(false)
 
-  const config = SLIDER_SIZES[size]
-  const percentage = ((currentValue! - min) / (max - min)) * 100
+  const isControlled = value !== undefined
+  const currentValue = isControlled ? value : internalValue
+  const hasError = !!error
+
+  const sizeConfig = SIZES[size]
+  const shadowCls = SHADOWS[shadow]
+  const percentage = ((currentValue - min) / (max - min)) * 100
+
+  const placementCls = labelPlacement === "left" ? "flex-row-reverse justify-between" : "flex-row justify-between"
+  const disabledCls = disabled ? "opacity-50 cursor-not-allowed" : ""
+  const widthCls = fullWidth ? "w-full" : "w-64"
+
+  const containerClasses = cn("flex flex-col relative touch-none", widthCls, disabledCls, sizeConfig.gap, containerClassName)
+
+  const labelClasses = cn("block font-medium leading-6", sizeConfig.text, getTextColor(hasError))
+
+  const trackClasses = cn("absolute w-full rounded-full bg-slate-200 overflow-hidden", sizeConfig.trackHeight)
+
+  const thumbClasses = cn(
+    "absolute top-1/2 -translate-y-1/2 bg-white rounded-full border flex items-center justify-center pointer-events-none z-10",
+    getThumbBorderColor(hasError),
+    shadowCls
+  )
+
+  const inputClasses = cn("absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20 m-0 p-0 appearance-none")
+
+  const valueTextClasses = cn("text-sm font-medium tabular-nums", getValueTextColor(hasError))
+
+  const helperAlignment = getHelperTextAlignment(labelPlacement)
+  const thumbScale = getThumbScale(isPressed, isFocused)
+  const thumbShadow = getThumbShadow(isFocused, hasError)
+  const trackFillColor = getTrackFillColor(hasError)
+
+  const transitionSettings: Transition = isDragging
+    ? { type: "tween", duration: ANIMATION.duration.drag }
+    : { type: "tween", ease: "easeOut", duration: ANIMATION.duration.jump }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = parseFloat(e.target.value)
@@ -157,49 +247,30 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
 
   const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
     setIsFocused(true)
-    props.onFocus?.(e)
+    onFocus?.(e)
   }
 
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
     setIsFocused(false)
-    props.onBlur?.(e)
+    onBlur?.(e)
   }
-
-  const isError = !!error
-
-  const containerClasses = cn(
-    "flex flex-col relative touch-none",
-    fullWidth ? "w-full" : LAYOUT.DEFAULT_WIDTH,
-    disabled && "opacity-60 cursor-not-allowed",
-    config.containerGap,
-    containerClassName
-  )
-
-  const labelClasses = cn("block font-medium leading-6", config.label, isError ? "text-red-600" : "text-slate-900")
-
-  const transitionSettings: Transition = isDragging
-    ? { type: "tween", duration: ANIMATION_CONFIG.DURATION.DRAG }
-    : { type: "tween", ease: "easeOut", duration: ANIMATION_CONFIG.DURATION.JUMP }
 
   return (
     <div className={containerClasses}>
-      <div className={cn("flex justify-between items-center", config.labelMargin)}>
+      <div className={cn("flex items-center", placementCls, sizeConfig.labelMargin)}>
         {label && (
           <label htmlFor={sliderId} className={labelClasses}>
             {label}
           </label>
         )}
-        {showValue && (
-          <span className={cn("text-sm font-medium tabular-nums", isError ? "text-red-600" : "text-slate-700")}>
-            {valueFormatter(currentValue!)}
-          </span>
-        )}
+        {showValue && <span className={valueTextClasses}>{valueFormatter(currentValue)}</span>}
       </div>
 
-      <div className={cn("relative flex items-center select-none", config.height, className)}>
-        <div className={cn("absolute w-full rounded-full bg-slate-200 overflow-hidden", config.trackHeight)}>
+      <div className={cn("relative flex items-center select-none", sizeConfig.height, className)}>
+        <div className={trackClasses}>
           <motion.div
-            className={cn("h-full rounded-full", isError ? "bg-red-600" : "bg-indigo-600")}
+            className="h-full rounded-full"
+            style={{ backgroundColor: trackFillColor }}
             initial={false}
             animate={{ width: `${percentage}%` }}
             transition={transitionSettings}
@@ -207,31 +278,24 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
         </div>
 
         <motion.div
-          className={cn(
-            "absolute top-1/2 -translate-y-1/2 bg-white rounded-full border shadow-sm z-10 flex items-center justify-center pointer-events-none",
-            isError ? "border-red-600" : "border-indigo-600"
-          )}
+          className={thumbClasses}
           style={{
             left: `${percentage}%`,
-            width: config.thumbSize,
-            height: config.thumbSize,
+            width: sizeConfig.thumbSize,
+            height: sizeConfig.thumbSize,
             x: "-50%"
           }}
           initial={false}
           animate={{
-            scale: isPressed
-              ? ANIMATION_CONFIG.SCALE.PRESSED
-              : isFocused
-                ? ANIMATION_CONFIG.SCALE.FOCUSED
-                : ANIMATION_CONFIG.SCALE.NORMAL,
-            boxShadow: isFocused ? `0 0 0 4px ${isError ? COLORS.ERROR_SHADOW : COLORS.PRIMARY_SHADOW}` : COLORS.DEFAULT_SHADOW
+            scale: thumbScale,
+            boxShadow: thumbShadow
           }}
           transition={{
             left: transitionSettings,
-            scale: { duration: ANIMATION_CONFIG.DURATION.SCALE },
-            boxShadow: { duration: ANIMATION_CONFIG.DURATION.SHADOW }
+            scale: { duration: ANIMATION.duration.scale },
+            boxShadow: { duration: ANIMATION.duration.shadow }
           }}
-        ></motion.div>
+        />
 
         <input
           ref={ref}
@@ -248,14 +312,22 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
           onPointerMove={handlePointerMove}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          className={cn("absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20", LAYOUT.INPUT_RESET)}
-          aria-invalid={isError}
-          aria-describedby={isError ? errorId : helpText ? helpId : undefined}
+          className={inputClasses}
+          aria-invalid={hasError}
+          aria-describedby={hasError ? errorId : helpText ? helpId : undefined}
           {...rest}
         />
       </div>
 
-      <ZHelperText error={error} helpText={helpText} errorId={errorId} helpId={helpId} defaultErrorMessage="Invalid value" />
+      <ZHelperText
+        error={error}
+        helpText={helpText}
+        errorId={errorId}
+        helpId={helpId}
+        textSize="xs"
+        defaultErrorMessage="Invalid value"
+        className={helperAlignment}
+      />
     </div>
   )
 })
