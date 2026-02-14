@@ -113,7 +113,7 @@ interface ZCheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "si
 
   containerClassName?: string
 
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void
+  onChange?: (checked: boolean, event: ChangeEvent<HTMLInputElement>) => void
 }
 
 const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
@@ -190,7 +190,7 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
     if (!isControlled) {
       setInternalChecked(e.target.checked)
     }
-    onChange?.(e)
+    onChange?.(e.target.checked, e)
   }
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
