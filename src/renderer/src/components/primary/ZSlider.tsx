@@ -16,7 +16,7 @@ const THEME = {
     disabled: "#f1f1f1",
     textPrimary: "#001122",
     textDisabled: "#99aabb",
-    track: "#e2e8f0",
+    track: "#eeeeff",
     trackFill: "#4444ee",
     trackFillError: "#dd2222"
   }
@@ -33,10 +33,10 @@ interface SliderSizeConfig {
 
 const SIZES: Record<Size, SliderSizeConfig> = {
   sm: {
-    trackHeight: "h-1",
+    trackHeight: "h-1.5",
     thumbSize: 12,
     text: "text-sm",
-    gap: "gap-1.5",
+    gap: "gap-1",
     labelMargin: "mb-1",
     height: "h-4"
   },
@@ -44,7 +44,7 @@ const SIZES: Record<Size, SliderSizeConfig> = {
     trackHeight: "h-2",
     thumbSize: 16,
     text: "text-base",
-    gap: "gap-2",
+    gap: "gap-1.25",
     labelMargin: "mb-1.5",
     height: "h-5"
   },
@@ -52,7 +52,7 @@ const SIZES: Record<Size, SliderSizeConfig> = {
     trackHeight: "h-3",
     thumbSize: 24,
     text: "text-lg",
-    gap: "gap-2.5",
+    gap: "gap-1.5",
     labelMargin: "mb-2",
     height: "h-6"
   }
