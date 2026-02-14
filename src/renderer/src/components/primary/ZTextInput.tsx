@@ -18,19 +18,19 @@ import { ZHelperText } from "./ZHelperText"
 
 const THEME = {
   colors: {
-    primary: "#4f46e5",
+    primary: "#4444ee",
     primaryLight: "rgba(79, 70, 229, 0.1)",
-    error: "#dc2626",
+    error: "#dd2222",
     errorLight: "rgba(220, 38, 38, 0.1)",
-    border: "#e2e8f0",
-    borderHover: "#cbd5e1",
+    border: "#ccddee",
+    borderHover: "#aabbdd",
     white: "#ffffff",
-    disabled: "#f8fafc",
-    textPrimary: "#0f172a",
-    textSecondary: "#64748b",
-    textDisabled: "#94a3b8",
-    placeholder: "#94a3b8",
-    icon: "#64748b"
+    disabled: "#f1f1f1",
+    textPrimary: "#001122",
+    textSecondary: "#667788",
+    textDisabled: "#99aabb",
+    placeholder: "#99aabb",
+    icon: "#667788"
   }
 } as const
 
