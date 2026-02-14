@@ -6,18 +6,17 @@ import { LabelPlacement, Shadow, Size } from "./types/switch"
 
 const THEME = {
   colors: {
-    primary: "#4f46e5",
-    primaryHover: "#4338ca",
-    error: "#dc2626",
-    errorLight: "#fef2f2",
-    unchecked: "#e2e8f0",
-    uncheckedHover: "#cbd5e1",
+    primary: "#4444ee",
+    primaryHover: "#3333dd",
+    error: "#dd2222",
+    errorLight: "#ffeeee",
+    border: "#ccddee",
+    borderHover: "#aabbdd",
     white: "#ffffff",
-    disabled: "#f1f5f9",
-    textPrimary: "#0f172a",
-    textError: "#dc2626",
-    textDisabled: "#94a3b8",
-    shadow: "rgba(0, 0, 0, 0.1)"
+    disabled: "#f1f1f1",
+    textPrimary: "#001122",
+    textDisabled: "#99aabb",
+    unchecked: "#eeeeff",
   }
 } as const
 
@@ -33,19 +32,19 @@ const SIZES: Record<Size, SwitchSizeConfig> = {
     track: "w-7 h-4",
     thumb: "w-3 h-3",
     label: "text-sm",
-    gap: "gap-2"
+    gap: "gap-1"
   },
   md: {
     track: "w-11 h-6",
     thumb: "w-5 h-5",
-    label: "text-sm",
-    gap: "gap-3"
+    label: "text-base",
+    gap: "gap-1.5"
   },
   lg: {
     track: "w-14 h-7",
     thumb: "w-6 h-6",
-    label: "text-base",
-    gap: "gap-3"
+    label: "text-lg",
+    gap: "gap-2"
   }
 }
 
@@ -116,16 +115,8 @@ const getFocusRingStyle = (isFocused: boolean, hasError: boolean): string | unde
   return hasError ? FOCUS_RING_STYLE.error : FOCUS_RING_STYLE.normal
 }
 
-const getHelperTextAlignment = (labelPlacement: LabelPlacement, size: Size): string => {
-  if (labelPlacement === "left") {
-    return "text-right"
-  }
-  const paddingMap = {
-    sm: "pl-9",
-    md: "pl-14",
-    lg: "pl-17"
-  }
-  return paddingMap[size]
+const getHelperTextAlignment = (labelPlacement: LabelPlacement): string => {
+  return labelPlacement === "left" ? "text-right" : ""
 }
 
 export interface ZSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> {
@@ -145,9 +136,6 @@ export interface ZSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
-// ============================================================================
-// COMPONENT
-// ============================================================================
 const ZSwitch = forwardRef<HTMLInputElement, ZSwitchProps>((props, ref) => {
   const {
     label,
@@ -216,7 +204,7 @@ const ZSwitch = forwardRef<HTMLInputElement, ZSwitchProps>((props, ref) => {
   const variantState = getVariantState(isChecked, hasError)
   const thumbVariantState = getThumbVariantState(isChecked)
   const focusRingStyle = getFocusRingStyle(isFocused, hasError)
-  const helperAlignment = getHelperTextAlignment(labelPlacement, size)
+  const helperAlignment = getHelperTextAlignment(labelPlacement)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (disabled) return

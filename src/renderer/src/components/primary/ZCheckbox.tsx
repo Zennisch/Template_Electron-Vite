@@ -10,7 +10,6 @@ const THEME = {
     primaryHover: "#3333dd",
     error: "#dd2222",
     errorLight: "#ffeeee",
-    errorText: "#991111",
     border: "#ccddee",
     borderHover: "#aabbdd",
     white: "#ffffff",
@@ -30,17 +29,17 @@ const SIZES: Record<Size, CheckboxSizeConfig> = {
   sm: {
     box: "h-4 w-4 rounded",
     text: "text-sm",
-    gap: "gap-0.5"
+    gap: "gap-1"
   },
   md: {
     box: "h-5 w-5 rounded",
     text: "text-base",
-    gap: "gap-1"
+    gap: "gap-1.5"
   },
   lg: {
     box: "h-6 w-6 rounded",
     text: "text-lg",
-    gap: "gap-1.5"
+    gap: "gap-2"
   }
 }
 
