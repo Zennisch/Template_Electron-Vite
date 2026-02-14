@@ -27,7 +27,6 @@ interface SliderSizeConfig {
   thumbSize: number
   text: string
   gap: string
-  labelMargin: string
   height: string
 }
 
@@ -37,7 +36,6 @@ const SIZES: Record<Size, SliderSizeConfig> = {
     thumbSize: 12,
     text: "text-sm",
     gap: "gap-1",
-    labelMargin: "mb-1",
     height: "h-4"
   },
   md: {
@@ -45,7 +43,6 @@ const SIZES: Record<Size, SliderSizeConfig> = {
     thumbSize: 16,
     text: "text-base",
     gap: "gap-1.25",
-    labelMargin: "mb-1.5",
     height: "h-5"
   },
   lg: {
@@ -53,7 +50,6 @@ const SIZES: Record<Size, SliderSizeConfig> = {
     thumbSize: 24,
     text: "text-lg",
     gap: "gap-1.5",
-    labelMargin: "mb-2",
     height: "h-6"
   }
 }
@@ -257,7 +253,7 @@ const ZSlider = forwardRef<HTMLInputElement, ZSliderProps>((props, ref) => {
 
   return (
     <div className={containerClasses}>
-      <div className={cn("flex items-center", placementCls, sizeConfig.labelMargin)}>
+      <div className={cn("flex items-center", placementCls)}>
         {label && (
           <label htmlFor={sliderId} className={labelClasses}>
             {label}
