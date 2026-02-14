@@ -2,14 +2,15 @@ import { HTMLMotionProps, motion } from "framer-motion"
 import { ElementType, forwardRef, MouseEvent, ReactNode, useMemo, useState } from "react"
 import { cn, DefaultSpinnerIcon } from "./utils"
 import { RippleEffect } from "./ZButtonRipple"
-
-type Variant = "primary" | "secondary" | "tertiary" | "ghost"
-type Size = "xs" | "sm" | "md" | "lg" | "xl"
-type Shape = "rounded" | "square" | "pill"
-type Shadow = "none" | "sm" | "md" | "lg" | "xl"
-export type PressAnimationStyle = "none" | "scale" | "ripple"
-export type PressAnimationDuration = "short" | "medium" | "long"
-export type PressAnimationStrength = "light" | "medium" | "strong"
+import {
+  PressAnimationDuration,
+  PressAnimationStrength,
+  PressAnimationStyle,
+  Shadow,
+  Shape,
+  Size,
+  Variant
+} from "./types/button"
 
 interface SizeConfig {
   base: string
@@ -52,27 +53,10 @@ const SIZES: Record<Size, SizeConfig> = {
 }
 
 const VARIANTS: Record<Variant, string> = {
-  primary: `
-      bg-indigo-600
-      text-white
-      hover:bg-indigo-700
-      focus-visible:ring-indigo-600`,
-  secondary: `
-      bg-white
-      text-indigo-700
-      border border-indigo-200
-      hover:bg-indigo-50
-      focus-visible:ring-indigo-600`,
-  tertiary: `
-      bg-indigo-100
-      text-indigo-900
-      hover:bg-indigo-200
-      focus-visible:ring-indigo-600`,
-  ghost: `
-      bg-transparent
-      text-indigo-700
-      hover:bg-transparent
-      focus-visible:ring-indigo-600`
+  primary: "bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:ring-indigo-600",
+  secondary: "bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-50 focus-visible:ring-indigo-600",
+  tertiary: "bg-indigo-100 text-indigo-900 hover:bg-indigo-200 focus-visible:ring-indigo-600",
+  ghost: "bg-transparent text-indigo-700 hover:bg-transparent focus-visible:ring-indigo-600"
 }
 
 const SHAPES: Record<Shape, string> = {
