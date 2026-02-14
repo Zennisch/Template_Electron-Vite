@@ -12,14 +12,14 @@ interface TriggerSizeConfig {
   padding: string
 }
 
-const TRIGGER_SIZES: Record<Size, TriggerSizeConfig> = {
+const SIZES: Record<Size, TriggerSizeConfig> = {
   sm: { height: "min-h-9", py: "py-1", text: "text-sm", padding: "pl-3 pr-8" },
   md: { height: "min-h-10", py: "py-2", text: "text-sm", padding: "pl-3 pr-10" },
   lg: { height: "min-h-11", py: "py-2", text: "text-base", padding: "pl-3 pr-10" },
   xl: { height: "min-h-12", py: "py-3", text: "text-lg", padding: "pl-3 pr-12" }
 }
 
-const TRIGGER_SHADOWS: Record<Shadow, string> = {
+const SHADOWS: Record<Shadow, string> = {
   none: "shadow-none",
   sm: "shadow-sm",
   md: "shadow",
@@ -27,29 +27,42 @@ const TRIGGER_SHADOWS: Record<Shadow, string> = {
   xl: "shadow-xl"
 }
 
-const TRIGGER_ANIMATION = {
-  TAG: {
-    DURATION: 0.1,
-    INITIAL_SCALE: 0.8,
-    EXIT_SCALE: 0.5
+const ANIMATION = {
+  tag: {
+    duration: 0.1,
+    scale: {
+      initial: 0.8,
+      exit: 0.5,
+      normal: 1
+    }
   },
-  ICON: {
-    DURATION: 200 // ms
+  icon: {
+    duration: 0.2
   }
-}
+} as const
 
-const TRIGGER_LAYOUT = {
-  ICON_START_PADDING: "pl-10",
-  MULTIPLE_GAP: "gap-1.5",
-  TAG_PADDING: "px-2 py-0.5",
-  MULTIPLE_CONTAINER_MARGIN_LEFT: "-ml-1",
-  TAG_GAP: "gap-1",
-  PLACEHOLDER_MARGIN_LEFT: "ml-1",
-  ICON_START_position: "pl-3",
-  CHEVRON_CONTAINER_PADDING: "pr-2",
-  CHEVRON_SIZE: "h-5 w-5",
-  TAG_REMOVE_ICON_SIZE: "h-3 w-3"
-}
+const LAYOUT = {
+  trigger: {
+    padding: {
+      iconStart: "pl-10",
+      chevron: "pr-2"
+    },
+    gap: "gap-1.5"
+  },
+  tag: {
+    padding: "px-2 py-0.5",
+    gap: "gap-1",
+    marginLeft: "-ml-1"
+  },
+  icon: {
+    chevron: "h-5 w-5",
+    remove: "h-3 w-3",
+    start: "pl-3"
+  },
+  placeholder: {
+    marginLeft: "ml-1"
+  }
+} as const
 
 export interface ZSelectTriggerProps<T extends string | number> {
   id?: string
@@ -90,7 +103,7 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
     onKeyDown
   } = props
 
-  const config = TRIGGER_SIZES[size]
+  const config = SIZES[size]
 
   const triggerClasses = cn(
     "relative w-full cursor-default rounded-md border text-left transition-all",
@@ -106,9 +119,9 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
     config.py,
     config.text,
     config.padding,
-    TRIGGER_SHADOWS[shadow],
-    iconStart && !multiple ? TRIGGER_LAYOUT.ICON_START_PADDING : "",
-    multiple ? cn("h-auto flex flex-wrap items-center", TRIGGER_LAYOUT.MULTIPLE_GAP) : "",
+    SHADOWS[shadow],
+    iconStart && !multiple ? LAYOUT.trigger.padding.iconStart : "",
+    multiple ? cn("h-auto flex flex-wrap items-center", LAYOUT.trigger.gap) : "",
     className
   )
 
@@ -116,21 +129,21 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
     if (multiple) {
       return (
         <div
-          className={cn("flex flex-wrap w-full", TRIGGER_LAYOUT.MULTIPLE_CONTAINER_MARGIN_LEFT, TRIGGER_LAYOUT.MULTIPLE_GAP)}
+          className={cn("flex flex-wrap w-full", LAYOUT.tag.marginLeft, LAYOUT.trigger.gap)}
         >
           <AnimatePresence mode="popLayout">
             {selectedValues.map((val) => (
               <motion.span
                 layout
-                initial={{ opacity: 0, scale: TRIGGER_ANIMATION.TAG.INITIAL_SCALE }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: TRIGGER_ANIMATION.TAG.EXIT_SCALE }}
-                transition={{ duration: TRIGGER_ANIMATION.TAG.DURATION }}
+                initial={{ opacity: 0, scale: ANIMATION.tag.scale.initial }}
+                animate={{ opacity: 1, scale: ANIMATION.tag.scale.normal }}
+                exit={{ opacity: 0, scale: ANIMATION.tag.scale.exit }}
+                transition={{ duration: ANIMATION.tag.duration }}
                 key={val}
                 className={cn(
                   "inline-flex items-center rounded bg-indigo-100 text-indigo-700 text-xs font-medium border border-indigo-200",
-                  TRIGGER_LAYOUT.TAG_GAP,
-                  TRIGGER_LAYOUT.TAG_PADDING
+                  LAYOUT.tag.gap,
+                  LAYOUT.tag.padding
                 )}
               >
                 {getLabel(val)}
@@ -140,13 +153,13 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
                   disabled={disabled}
                   className="hover:text-indigo-900 focus:outline-none"
                 >
-                  <XMarkIcon className={TRIGGER_LAYOUT.TAG_REMOVE_ICON_SIZE} />
+                  <XMarkIcon className={LAYOUT.icon.remove} />
                 </button>
               </motion.span>
             ))}
           </AnimatePresence>
           {selectedValues.length === 0 && (
-            <span className={cn("text-slate-400", TRIGGER_LAYOUT.PLACEHOLDER_MARGIN_LEFT)}>{placeholder}</span>
+            <span className={cn("text-slate-400", LAYOUT.placeholder.marginLeft)}>{placeholder}</span>
           )}
         </div>
       )
@@ -177,7 +190,7 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
         <span
           className={cn(
             "absolute inset-y-0 left-0 flex items-center pointer-events-none text-slate-500",
-            TRIGGER_LAYOUT.ICON_START_position
+            LAYOUT.icon.start
           )}
         >
           {iconStart}
@@ -189,14 +202,14 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
       <span
         className={cn(
           "absolute inset-y-0 right-0 flex items-center pointer-events-none",
-          TRIGGER_LAYOUT.CHEVRON_CONTAINER_PADDING
+          LAYOUT.trigger.padding.chevron
         )}
       >
         <ChevronDownIcon
           className={cn(
             "text-slate-400 transition-transform",
-            TRIGGER_LAYOUT.CHEVRON_SIZE,
-            `duration-${TRIGGER_ANIMATION.ICON.DURATION}`,
+            LAYOUT.icon.chevron,
+            `duration-${Math.round(ANIMATION.icon.duration * 1000)}`,
             isOpen && "transform rotate-180"
           )}
         />

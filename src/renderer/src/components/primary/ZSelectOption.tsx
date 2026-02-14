@@ -9,7 +9,7 @@ export interface ZSelectOptionProps<T extends string | number> {
   onSelect: (value: T) => void
 }
 
-const OPTION_LAYOUT = {
+const LAYOUT = {
   container: "py-2.5 pl-3 pr-9",
   checkIconPadding: "pr-3",
   contentGap: "gap-2",
@@ -31,7 +31,7 @@ export const ZSelectOption = <T extends string | number>({
     <li
       className={cn(
         "relative cursor-default select-none transition-colors",
-        OPTION_LAYOUT.container,
+        LAYOUT.container,
         option.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-indigo-100 hover:text-indigo-900",
         isSelected && !multiple ? "bg-indigo-50 text-indigo-900 font-medium" : "text-slate-900",
         isSelected && multiple ? "bg-indigo-50/50" : "",
@@ -44,16 +44,16 @@ export const ZSelectOption = <T extends string | number>({
         !option.disabled && onSelect(option.value)
       }}
     >
-      <div className={cn("flex items-center", OPTION_LAYOUT.contentGap)}>
+      <div className={cn("flex items-center", LAYOUT.contentGap)}>
         {multiple && (
           <div
             className={cn(
               "flex shrink-0 items-center justify-center rounded border transition-colors",
-              OPTION_LAYOUT.icons.checkboxBox,
+              LAYOUT.icons.checkboxBox,
               isSelected ? "bg-indigo-600 border-indigo-600 text-white" : "border-slate-300 bg-white"
             )}
           >
-            {isSelected && <AnimatedCheckIcon className={OPTION_LAYOUT.icons.checkboxCheck} />}
+            {isSelected && <AnimatedCheckIcon className={LAYOUT.icons.checkboxCheck} />}
           </div>
         )}
 
@@ -62,8 +62,8 @@ export const ZSelectOption = <T extends string | number>({
       </div>
 
       {isSelected && !multiple && (
-        <span className={cn("absolute inset-y-0 right-0 flex items-center text-indigo-600", OPTION_LAYOUT.checkIconPadding)}>
-          <AnimatedCheckIcon className={OPTION_LAYOUT.icons.singleCheck} />
+        <span className={cn("absolute inset-y-0 right-0 flex items-center text-indigo-600", LAYOUT.checkIconPadding)}>
+          <AnimatedCheckIcon className={LAYOUT.icons.singleCheck} />
         </span>
       )}
     </li>
