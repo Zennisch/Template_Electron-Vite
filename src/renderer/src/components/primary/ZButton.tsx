@@ -1,5 +1,5 @@
 import { HTMLMotionProps, motion } from "framer-motion"
-import { ElementType, forwardRef, MouseEvent, ReactNode, useMemo, useState } from "react"
+import { ElementType, forwardRef, MouseEvent, PointerEvent, ReactNode, useMemo, useState } from "react"
 import { cn, DefaultSpinnerIcon } from "./utils"
 import { RippleEffect } from "./ZButtonRipple"
 import {
@@ -161,18 +161,18 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
   const fullWidthCls = fullWidth ? "w-full" : ""
   const pressAnimationCls = pressAnimationStyle === "ripple" ? "overflow-hidden transform-gpu" : ""
 
-  const baseClasses = `
-      relative inline-flex items-center justify-center
-      whitespace-nowrap font-medium
-      outline-none focus-visible:outline-none
-      focus-visible:ring-2 focus-visible:ring-offset-2 ring-offset-white
-      disabled:pointer-events-none disabled:opacity-70
-      select-none
-      transition-colors
-    `
+  const baseButtonClasses = cn(
+    "relative inline-flex items-center justify-center",
+    "whitespace-nowrap select-none",
+    "font-medium",
+    "outline-none focus-visible:outline-none",
+    "focus-visible:ring-2 focus-visible:ring-offset-2 ring-offset-white",
+    "transition-colors",
+    "disabled:pointer-events-none disabled:opacity-70"
+  )
 
   const classes = cn(
-    baseClasses,
+    baseButtonClasses,
     baseCls,
     paddingCls,
     variantCls,
@@ -209,7 +209,7 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
       </>
     )
 
-  const handlePointerDown = (e: MouseEvent<HTMLButtonElement>) => {
+  const handlePointerDown = (e: PointerEvent<HTMLButtonElement>) => {
     if (pressAnimationStyle === "ripple" && !isDisabled) {
       const button = e.currentTarget
       const rect = button.getBoundingClientRect()
@@ -219,7 +219,7 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
 
       setRipples((prev) => [...prev, { x, y, size, id: Date.now() }])
     }
-    onPointerDown?.(e as any)
+    onPointerDown?.(e)
   }
 
   const handleClick = (e: MouseEvent<HTMLElement>) => {

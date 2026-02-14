@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { PressAnimationDuration, PressAnimationStrength } from "./ZButton"
+import { PressAnimationDuration, PressAnimationStrength } from "./types/button"
 
 const RIPPLE_OPACITIES: Record<PressAnimationStrength, number> = {
   light: 0.2,
