@@ -1,41 +1,38 @@
 import { AnimatePresence, HTMLMotionProps, motion, useAnimation, Variants } from "framer-motion"
-import { forwardRef, MouseEvent, ReactNode, useEffect, useRef, useState } from "react"
+import { forwardRef, MouseEvent, ReactNode, useEffect, useId, useRef, useState } from "react"
 import { createPortal } from "react-dom"
+import { Position, Shadow, Size } from "./types/modal"
 import { cn, LoadingSpinner, XMarkIcon } from "./utils"
+import { ZHelperText } from "./ZHelperText"
 
-type Size = "sm" | "md" | "lg" | "xl" | "2xl" | "full"
-type Position = "center" | "top"
-
-const ANIMATION_CONFIG = {
-  OVERLAY: {
-    DURATION: 0.2,
-    EXIT_DURATION: 0.15,
-    EXIT_DELAY: 0.1
+const THEME = {
+  colors: {
+    primary: "#4444ee",
+    error: "#dd2222",
+    errorLight: "rgba(220, 38, 38, 0.1)",
+    overlay: "rgba(15, 23, 42, 0.6)",
+    white: "#ffffff",
+    border: "#e2e8f0",
+    textPrimary: "#0f172a",
+    textSecondary: "#64748b",
+    disabled: "#cbd5e1"
   },
-  MODAL: {
-    SCALE_HIDDEN: 0.95,
-    Y_HIDDEN_TOP: -20,
-    Y_HIDDEN_CENTER: 10,
-    SPRING: {
-      TYPE: "spring",
-      DAMPING: 25,
-      STIFFNESS: 300,
-      DURATION: 0.3
-    },
-    EXIT_DURATION: 0.15
+  backdrop: "bg-slate-900/60 backdrop-blur-sm",
+  container: "bg-white ring-1 ring-slate-900/5 shadow-2xl",
+  header: {
+    border: "border-b border-slate-100",
+    text: "text-slate-900"
   },
-  CONTENT: {
-    X_OFFSET: 10,
-    DURATION: 0.2,
-    EXIT_DURATION: 0.15
+  footer: {
+    border: "border-t border-slate-100",
+    bg: "bg-slate-50/50"
   },
-  SHAKE: {
-    X_OFFSET: 6,
-    DURATION: 0.3
-  }
+  loading: "bg-white/60 backdrop-blur-[2px]",
+  closeButton:
+    "bg-transparent text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
 } as const
 
-const MODAL_SIZES: Record<Size, string> = {
+const SIZES: Record<Size, string> = {
   sm: "max-w-sm",
   md: "max-w-md",
   lg: "max-w-lg",
@@ -44,88 +41,129 @@ const MODAL_SIZES: Record<Size, string> = {
   full: "max-w-[calc(100vw-2rem)]"
 }
 
-const MODAL_POSITIONS: Record<Position, string> = {
+const POSITIONS: Record<Position, string> = {
   center: "items-center",
   top: "items-start pt-16"
 }
 
-const MODAL_LAYOUT = {
-  PADDING: {
-    OVERLAY: "p-4",
-    HEADER: "px-6 py-4",
-    BODY: "p-6",
-    FOOTER: "px-6 py-4"
-  },
-  ROUNDED: {
-    CONTAINER: "rounded-xl",
-    FOOTER: "rounded-b-xl"
-  },
-  BUTTON: {
-    SIZE: "h-8 w-8",
-    ICON_SIZE: "h-5 w-5",
-    MARGIN_HEADER: "-mr-2",
-    POSITION_ABSOLUTE: "right-4 top-4"
-  },
-  GAP: "gap-3"
+const SHADOWS: Record<Shadow, string> = {
+  none: "shadow-none",
+  sm: "shadow-sm",
+  md: "shadow",
+  lg: "shadow-lg",
+  xl: "shadow-xl",
+  "2xl": "shadow-2xl"
 }
 
-const MODAL_THEME = {
-  OVERLAY: "bg-slate-900/60 backdrop-blur-sm",
-  CONTAINER: "bg-white ring-1 ring-slate-900/5 shadow-2xl",
-  HEADER: {
-    BORDER: "border-b border-slate-100",
-    TEXT: "text-slate-900"
+const LAYOUT = {
+  padding: {
+    overlay: "p-4",
+    header: "px-6 py-4",
+    body: "p-6",
+    footer: "px-6 py-4"
   },
-  FOOTER: {
-    BORDER: "border-t border-slate-100",
-    BG: "bg-slate-50/50"
+  rounded: {
+    container: "rounded-xl",
+    footer: "rounded-b-xl"
   },
-  LOADING: "bg-white/60 backdrop-blur-[2px]",
-  CLOSE_BUTTON:
-    "bg-transparent text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
-}
+  button: {
+    size: "h-8 w-8",
+    iconSize: "h-5 w-5",
+    marginHeader: "-mr-2",
+    positionAbsolute: "right-4 top-4"
+  },
+  gap: "gap-3"
+} as const
+
+const ANIMATION = {
+  overlay: {
+    duration: 0.2,
+    exitDuration: 0.15,
+    exitDelay: 0.1
+  },
+  modal: {
+    scaleHidden: 0.95,
+    yHiddenTop: -20,
+    yHiddenCenter: 10,
+    spring: {
+      type: "spring" as const,
+      damping: 25,
+      stiffness: 300,
+      duration: 0.3
+    },
+    exitDuration: 0.15
+  },
+  content: {
+    xOffset: 10,
+    duration: 0.2,
+    exitDuration: 0.15
+  },
+  shake: {
+    xOffset: 6,
+    duration: 0.3
+  }
+} as const
 
 const overlayVariants: Variants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: ANIMATION_CONFIG.OVERLAY.DURATION } },
+  visible: {
+    opacity: 1,
+    transition: { duration: ANIMATION.overlay.duration }
+  },
   exit: {
     opacity: 0,
-    transition: { duration: ANIMATION_CONFIG.OVERLAY.EXIT_DURATION, delay: ANIMATION_CONFIG.OVERLAY.EXIT_DELAY }
+    transition: {
+      duration: ANIMATION.overlay.exitDuration,
+      delay: ANIMATION.overlay.exitDelay
+    }
   }
 }
 
 const modalVariants: Variants = {
   hidden: (position: Position) => ({
     opacity: 0,
-    scale: ANIMATION_CONFIG.MODAL.SCALE_HIDDEN,
-    y: position === "top" ? ANIMATION_CONFIG.MODAL.Y_HIDDEN_TOP : ANIMATION_CONFIG.MODAL.Y_HIDDEN_CENTER
+    scale: ANIMATION.modal.scaleHidden,
+    y: position === "top" ? ANIMATION.modal.yHiddenTop : ANIMATION.modal.yHiddenCenter
   }),
   visible: {
     opacity: 1,
     scale: 1,
     y: 0,
     transition: {
-      type: ANIMATION_CONFIG.MODAL.SPRING.TYPE,
-      damping: ANIMATION_CONFIG.MODAL.SPRING.DAMPING,
-      stiffness: ANIMATION_CONFIG.MODAL.SPRING.STIFFNESS,
-      duration: ANIMATION_CONFIG.MODAL.SPRING.DURATION
+      type: ANIMATION.modal.spring.type,
+      damping: ANIMATION.modal.spring.damping,
+      stiffness: ANIMATION.modal.spring.stiffness,
+      duration: ANIMATION.modal.spring.duration
     }
   },
   exit: {
     opacity: 0,
-    scale: ANIMATION_CONFIG.MODAL.SCALE_HIDDEN,
-    y: ANIMATION_CONFIG.MODAL.Y_HIDDEN_CENTER,
-    transition: { duration: ANIMATION_CONFIG.MODAL.EXIT_DURATION }
+    scale: ANIMATION.modal.scaleHidden,
+    y: ANIMATION.modal.yHiddenCenter,
+    transition: { duration: ANIMATION.modal.exitDuration }
   }
 }
 
 const contentVariants: Variants = {
-  initial: { opacity: 0, x: ANIMATION_CONFIG.CONTENT.X_OFFSET },
-  animate: { opacity: 1, x: 0, transition: { duration: ANIMATION_CONFIG.CONTENT.DURATION, ease: "easeOut" } },
+  initial: {
+    opacity: 0,
+    x: ANIMATION.content.xOffset
+  },
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: ANIMATION.content.duration,
+      ease: "easeOut"
+    }
+  },
   exit: {
     opacity: 0,
-    x: -ANIMATION_CONFIG.CONTENT.X_OFFSET,
-    transition: { duration: ANIMATION_CONFIG.CONTENT.EXIT_DURATION, ease: "easeIn" }
+    x: -ANIMATION.content.xOffset,
+    transition: {
+      duration: ANIMATION.content.exitDuration,
+      ease: "easeIn"
+    }
   }
 }
 
@@ -137,16 +175,20 @@ export interface ZModalProps extends HTMLMotionProps<"div"> {
   footer?: ReactNode
   children?: ReactNode
 
+  error?: string | boolean
+  helpText?: string
+
   size?: Size
   position?: Position
+  shadow?: Shadow
+  fullWidth?: boolean
 
   showCloseButton?: boolean
   closeOnBackdropClick?: boolean
   closeOnEscape?: boolean
-  loading?: boolean
+  loading?: boolean | ReactNode
 
   stepKey?: string | number
-
   attentionTrigger?: number
 
   overlayClassName?: string
@@ -154,6 +196,7 @@ export interface ZModalProps extends HTMLMotionProps<"div"> {
   headerClassName?: string
   bodyClassName?: string
   footerClassName?: string
+  helperClassName?: string
 }
 
 const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
@@ -165,8 +208,13 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
     footer,
     children,
 
+    error,
+    helpText,
+
     size = "md",
     position = "center",
+    shadow = "xl",
+    fullWidth = false,
 
     showCloseButton = true,
     closeOnBackdropClick = true,
@@ -181,14 +229,26 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
     headerClassName,
     bodyClassName,
     footerClassName,
+    helperClassName,
     className,
+    id,
     ...rest
   } = props
 
+  const generatedId = useId()
+  const modalId = id || generatedId
+  const errorId = `${modalId}-error`
+  const helpId = `${modalId}-help`
+
   const [mounted, setMounted] = useState(false)
   const controls = useAnimation()
-
   const isFirstRender = useRef(true)
+
+  const hasError = !!error
+  const hasLoading = !!loading
+  const sizeCls = SIZES[size]
+  const positionCls = POSITIONS[position]
+  const shadowCls = SHADOWS[shadow]
 
   useEffect(() => {
     setMounted(true)
@@ -222,15 +282,16 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
       return
     }
     if (attentionTrigger > 0 && isOpen) {
-      const x = ANIMATION_CONFIG.SHAKE.X_OFFSET
+      const x = ANIMATION.shake.xOffset
       controls.start({
         x: [0, -x, x, -x, x, 0],
-        transition: { type: "tween", duration: ANIMATION_CONFIG.SHAKE.DURATION }
+        transition: {
+          type: "tween",
+          duration: ANIMATION.shake.duration
+        }
       })
     }
   }, [attentionTrigger, controls, isOpen])
-
-  if (!mounted) return null
 
   const handleBackdropClick = (e: MouseEvent) => {
     if (closeOnBackdropClick && e.target === e.currentTarget) {
@@ -238,22 +299,62 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
     }
   }
 
+  const widthCls = fullWidth ? "w-full" : "w-auto"
+  const loadingIsCustom = typeof loading !== "boolean"
+
+  const overlayClasses = cn(
+    "fixed inset-0 z-50 flex justify-center overflow-y-auto overflow-x-hidden",
+    LAYOUT.padding.overlay,
+    positionCls,
+    overlayClassName
+  )
+
+  const containerClasses = cn(
+    "relative text-left",
+    widthCls,
+    sizeCls,
+    THEME.container,
+    LAYOUT.rounded.container,
+    shadowCls,
+    containerClassName,
+    className
+  )
+
+  const headerClasses = cn("flex items-center justify-between", THEME.header.border, LAYOUT.padding.header, headerClassName)
+
+  const bodyClasses = cn(LAYOUT.padding.body, bodyClassName)
+
+  const footerClasses = cn(
+    "flex items-center justify-end",
+    LAYOUT.gap,
+    THEME.footer.border,
+    THEME.footer.bg,
+    LAYOUT.padding.footer,
+    LAYOUT.rounded.footer,
+    footerClassName
+  )
+
+  const loadingClasses = cn("absolute inset-0 z-20 flex items-center justify-center", LAYOUT.rounded.container, THEME.loading)
+
+  const closeButtonClasses = cn("inline-flex items-center justify-center rounded-md", LAYOUT.button.size, THEME.closeButton)
+
+  const closeButtonAbsoluteClasses = cn(closeButtonClasses, "absolute z-10", LAYOUT.button.positionAbsolute)
+
+  if (!mounted) return null
+
   const modalContent = (
     <AnimatePresence>
       {isOpen && (
         <div
-          className={cn(
-            "fixed inset-0 z-50 flex justify-center overflow-y-auto overflow-x-hidden",
-            MODAL_LAYOUT.PADDING.OVERLAY,
-            MODAL_POSITIONS[position],
-            overlayClassName
-          )}
+          className={overlayClasses}
           aria-modal="true"
           role="dialog"
+          aria-labelledby={header ? `${modalId}-title` : undefined}
+          aria-describedby={hasError ? errorId : helpText ? helpId : undefined}
           onClick={handleBackdropClick}
         >
           <motion.div
-            className={cn("fixed inset-0 -z-10", MODAL_THEME.OVERLAY)}
+            className={cn("fixed inset-0 -z-10", THEME.backdrop)}
             variants={overlayVariants}
             initial="hidden"
             animate="visible"
@@ -262,83 +363,50 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
 
           <motion.div
             ref={ref}
+            id={modalId}
             custom={position}
             variants={modalVariants}
             initial="hidden"
             animate={controls}
             whileInView="visible"
             exit="exit"
-            className={cn(
-              "relative w-full text-left",
-              MODAL_THEME.CONTAINER,
-              MODAL_LAYOUT.ROUNDED.CONTAINER,
-              MODAL_SIZES[size],
-              containerClassName,
-              className
-            )}
+            className={containerClasses}
             onClick={(e) => e.stopPropagation()}
             {...rest}
           >
             <AnimatePresence>
-              {loading && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className={cn(
-                    "absolute inset-0 z-20 flex items-center justify-center",
-                    MODAL_LAYOUT.ROUNDED.CONTAINER,
-                    MODAL_THEME.LOADING
-                  )}
-                >
-                  <LoadingSpinner className="h-8 w-8 animate-spin text-indigo-600" />
+              {hasLoading && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={loadingClasses}>
+                  {loadingIsCustom ? loading : <LoadingSpinner className="h-8 w-8 animate-spin text-indigo-600" />}
                 </motion.div>
               )}
             </AnimatePresence>
 
             {header && (
-              <div
-                className={cn(
-                  "flex items-center justify-between",
-                  MODAL_THEME.HEADER.BORDER,
-                  MODAL_LAYOUT.PADDING.HEADER,
-                  headerClassName
-                )}
-              >
-                <div className={cn("text-lg font-semibold leading-6", MODAL_THEME.HEADER.TEXT)}>{header}</div>
-                {showCloseButton && !loading && (
+              <div className={headerClasses}>
+                <div id={`${modalId}-title`} className={cn("text-lg font-semibold leading-6", THEME.header.text)}>
+                  {header}
+                </div>
+                {showCloseButton && !hasLoading && (
                   <button
                     type="button"
-                    className={cn(
-                      "ml-auto inline-flex items-center justify-center rounded-md",
-                      MODAL_LAYOUT.BUTTON.SIZE,
-                      MODAL_LAYOUT.BUTTON.MARGIN_HEADER,
-                      MODAL_THEME.CLOSE_BUTTON
-                    )}
+                    className={cn(closeButtonClasses, LAYOUT.button.marginHeader)}
                     onClick={onClose}
+                    aria-label="Close modal"
                   >
-                    <XMarkIcon className={MODAL_LAYOUT.BUTTON.ICON_SIZE} />
+                    <XMarkIcon className={LAYOUT.button.iconSize} />
                   </button>
                 )}
               </div>
             )}
 
-            {!header && showCloseButton && !loading && (
-              <button
-                type="button"
-                className={cn(
-                  "absolute z-10 inline-flex items-center justify-center rounded-md",
-                  MODAL_LAYOUT.BUTTON.POSITION_ABSOLUTE,
-                  MODAL_LAYOUT.BUTTON.SIZE,
-                  MODAL_THEME.CLOSE_BUTTON
-                )}
-                onClick={onClose}
-              >
-                <XMarkIcon className={MODAL_LAYOUT.BUTTON.ICON_SIZE} />
+            {!header && showCloseButton && !hasLoading && (
+              <button type="button" className={closeButtonAbsoluteClasses} onClick={onClose} aria-label="Close modal">
+                <XMarkIcon className={LAYOUT.button.iconSize} />
               </button>
             )}
 
-            <div className={cn(MODAL_LAYOUT.PADDING.BODY, bodyClassName)}>
+            <div className={bodyClasses}>
               {stepKey !== undefined ? (
                 <AnimatePresence mode="wait">
                   <motion.div key={stepKey} variants={contentVariants} initial="initial" animate="animate" exit="exit">
@@ -348,23 +416,21 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
               ) : (
                 children
               )}
+
+              {(error || helpText) && (
+                <ZHelperText
+                  error={error}
+                  helpText={helpText}
+                  errorId={errorId}
+                  helpId={helpId}
+                  textSize="sm"
+                  defaultErrorMessage="Please review the form"
+                  className={cn("mt-4", helperClassName)}
+                />
+              )}
             </div>
 
-            {footer && (
-              <div
-                className={cn(
-                  "flex items-center justify-end",
-                  MODAL_LAYOUT.GAP,
-                  MODAL_THEME.FOOTER.BORDER,
-                  MODAL_THEME.FOOTER.BG,
-                  MODAL_LAYOUT.PADDING.FOOTER,
-                  MODAL_LAYOUT.ROUNDED.FOOTER,
-                  footerClassName
-                )}
-              >
-                {footer}
-              </div>
-            )}
+            {footer && <div className={footerClasses}>{footer}</div>}
           </motion.div>
         </div>
       )}
