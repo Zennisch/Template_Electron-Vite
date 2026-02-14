@@ -101,7 +101,8 @@ const SCALE_DURATIONS: Record<PressAnimationDuration, number> = {
   long: 0.3
 }
 
-interface ZButtonProps extends HTMLMotionProps<"button"> {
+type P = Omit<HTMLMotionProps<"button">, "onClick">
+interface ZButtonProps extends P {
   as?: ElementType
   href?: string
   target?: string
@@ -126,6 +127,8 @@ interface ZButtonProps extends HTMLMotionProps<"button"> {
   pressAnimationStyle?: PressAnimationStyle
   pressAnimationDuration?: PressAnimationDuration
   pressAnimationStrength?: PressAnimationStrength
+
+  onClick?: (e: MouseEvent<HTMLElement>) => void
 }
 
 const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
@@ -167,7 +170,12 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
 
   const isDisabled = disabled || loading
 
-  const config = SIZES[size]
+  const { base: baseCls, padding: paddingCls, gap: gapCls, spinner: spinnerCls } = SIZES[size]
+  const variantCls = VARIANTS[variant]
+  const shapeCls = SHAPES[shape]
+  const shadowCls = SHADOWS[shadow]
+  const fullWidthCls = fullWidth ? "w-full" : ""
+  const pressAnimationCls = pressAnimationStyle === "ripple" ? "overflow-hidden transform-gpu" : ""
 
   const baseClasses = `
       relative inline-flex items-center justify-center
@@ -181,13 +189,13 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
 
   const classes = cn(
     baseClasses,
-    config.base,
-    config.padding,
-    VARIANTS[variant],
-    SHAPES[shape],
-    SHADOWS[shadow],
-    fullWidth ? "w-full" : "",
-    pressAnimationStyle === "ripple" && "overflow-hidden transform-gpu",
+    baseCls,
+    paddingCls,
+    variantCls,
+    shapeCls,
+    shadowCls,
+    fullWidthCls,
+    pressAnimationCls,
     className
   )
 
@@ -201,20 +209,7 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
         }
       : {}
 
-  const handlePointerDown = (e: MouseEvent<HTMLButtonElement>) => {
-    if (pressAnimationStyle === "ripple" && !isDisabled) {
-      const button = e.currentTarget
-      const rect = button.getBoundingClientRect()
-      const size = Math.max(rect.width, rect.height)
-      const x = e.clientX - rect.left - size / 2
-      const y = e.clientY - rect.top - size / 2
-
-      setRipples((prev) => [...prev, { x, y, size, id: Date.now() }])
-    }
-    onPointerDown?.(e as any)
-  }
-
-  const Spinner = loadingComponent || <DefaultSpinnerIcon className={cn("animate-spin", config.spinner)} />
+  const Spinner = loadingComponent || <DefaultSpinnerIcon className={cn("animate-spin", spinnerCls)} />
 
   const content =
     loading && loadingText ? (
@@ -230,6 +225,31 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
       </>
     )
 
+  const handlePointerDown = (e: MouseEvent<HTMLButtonElement>) => {
+    if (pressAnimationStyle === "ripple" && !isDisabled) {
+      const button = e.currentTarget
+      const rect = button.getBoundingClientRect()
+      const size = Math.max(rect.width, rect.height)
+      const x = e.clientX - rect.left - size / 2
+      const y = e.clientY - rect.top - size / 2
+
+      setRipples((prev) => [...prev, { x, y, size, id: Date.now() }])
+    }
+    onPointerDown?.(e as any)
+  }
+
+  const handleClick = (e: MouseEvent<HTMLElement>) => {
+    if (isDisabled) {
+      e.preventDefault()
+      return
+    }
+    onClick?.(e)
+  }
+
+  const handleRippleClear = (id: number) => {
+    setRipples((prev) => prev.filter((r) => r.id !== id))
+  }
+
   return (
     <MotionComponent
       ref={ref}
@@ -239,7 +259,7 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
       aria-disabled={isDisabled}
       aria-busy={loading}
       className={classes}
-      onClick={isDisabled ? (e: MouseEvent<HTMLElement>) => e.preventDefault() : onClick}
+      onClick={handleClick}
       onPointerDown={handlePointerDown}
       {...motionProps}
       {...rest}
@@ -249,11 +269,11 @@ const ZButton = forwardRef<HTMLElement, ZButtonProps>((props, ref) => {
           ripples={ripples}
           duration={pressAnimationDuration}
           strength={pressAnimationStrength}
-          onClear={(id) => setRipples((prev) => prev.filter((r) => r.id !== id))}
+          onClear={handleRippleClear}
         />
       )}
 
-      <span className={cn("flex items-center relative z-10", config.gap)}>{content}</span>
+      <span className={cn("flex items-center relative z-10", gapCls)}>{content}</span>
     </MotionComponent>
   )
 })
