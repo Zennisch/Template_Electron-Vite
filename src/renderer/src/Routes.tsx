@@ -1,6 +1,6 @@
 import { AnimatePresence } from "framer-motion"
 import { Route, Routes, useLocation } from "react-router-dom"
-import HorizontalSlideWrapper from "./components/animation/HorizontalSlideWrapper"
+import AnimationWrapper from "./components/animation/AnimationWrapper"
 import ComponentsPage from "./pages/ComponentsPage"
 import ElectronPage from "./pages/ElectronPage"
 
@@ -8,17 +8,17 @@ const routes = [
   {
     path: "/",
     element: (
-      <HorizontalSlideWrapper>
+      <AnimationWrapper type="slideHorizontal">
         <ElectronPage />
-      </HorizontalSlideWrapper>
+      </AnimationWrapper>
     )
   },
   {
     path: "/components",
     element: (
-      <HorizontalSlideWrapper>
+      <AnimationWrapper type="slideHorizontal">
         <ComponentsPage />
-      </HorizontalSlideWrapper>
+      </AnimationWrapper>
     )
   }
 ]
