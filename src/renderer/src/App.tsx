@@ -1,7 +1,7 @@
-import ElectronPage from "./pages/ElectronPage"
+import AnimatedRoutes from "./Routes"
 
 function App(): React.JSX.Element {
-  return <ElectronPage />
+  return <AnimatedRoutes />
 }
 
 export default App
