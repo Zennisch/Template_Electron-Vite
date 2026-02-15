@@ -294,9 +294,12 @@ const ZText = forwardRef<HTMLElement, ZTextProps>((props, ref) => {
 
   const truncateCls = (() => {
     if (truncate === true) return "truncate"
-    if (typeof truncate === "number" && truncate > 0) {
-      return `overflow-hidden [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:${truncate}]`
-    }
+    if (truncate === 1) return "line-clamp-1"
+    if (truncate === 2) return "line-clamp-2"
+    if (truncate === 3) return "line-clamp-3"
+    if (truncate === 4) return "line-clamp-4"
+    if (truncate === 5) return "line-clamp-5"
+    if (truncate === 6) return "line-clamp-6"
     return ""
   })()
 
