@@ -1,5 +1,6 @@
 import { useState } from "react"
 import electronLogo from "../assets/electron.svg"
+import ZButton from "../components/primary/ZButton"
 
 const ElectronPage = () => {
   const [versions] = useState(window.electron.process.versions)
@@ -9,7 +10,6 @@ const ElectronPage = () => {
     <div className="relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden bg-[#0a0a0a] font-sans text-slate-200 selection:bg-cyan-500/30">
       <div className="absolute -left-20 -top-20 h-96 w-96 rounded-full bg-cyan-500/20 blur-[120px] mix-blend-screen opacity-50"></div>
       <div className="absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px] mix-blend-screen opacity-50"></div>
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZmlsdGVyIGlkPSJub2lzZUZpbHRlciI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNjUiIG51bW9jdGF2ZXM9IjMiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjbm9pc2VGaWx0ZXIpIiBvcGFjaXR5PSIwLjAzIi8+PC9zdmc+')] opacity-40 pointer-events-none z-0"></div>
 
       <div className="z-10 flex flex-col items-center gap-8 px-4 text-center">
         <div className="relative group">
@@ -45,22 +45,30 @@ const ElectronPage = () => {
         </p>
 
         <div className="flex flex-wrap justify-center gap-4 pt-2">
-          <a
+          <ZButton
+            as="a"
             href="https://electron-vite.org/"
             target="_blank"
-            rel="noreferrer"
-            className="group relative flex items-center justify-center gap-2 rounded-full bg-slate-100 px-6 py-2.5 text-sm font-bold text-slate-900 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)] transition-all hover:scale-105 hover:bg-white hover:shadow-[0_0_25px_-5px_rgba(255,255,255,0.5)]"
+            shape="pill"
+            size="sm"
+            pressAnimationStyle="scale"
+            pressAnimationStrength="light"
+            className="group bg-slate-100 text-slate-900 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)] hover:bg-white hover:shadow-[0_0_25px_-5px_rgba(255,255,255,0.5)] py-2.5"
+            iconEnd={<i className="fa-solid fa-up-right-from-square opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />}
           >
             Documentation
-            <i className="fa-solid fa-up-right-from-square opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-          </a>
+          </ZButton>
 
-          <button
+          <ZButton
             onClick={ipcHandle}
-            className="group relative flex items-center justify-center rounded-full border border-slate-700/50 bg-slate-900/40 px-6 py-2.5 text-sm font-bold text-slate-200 backdrop-blur-md transition-all hover:bg-slate-800/60 hover:border-slate-600 hover:text-white cursor-pointer"
+            shape="pill"
+            size="sm"
+            pressAnimationStyle="scale"
+            pressAnimationStrength="light"
+            className="group border border-slate-700/50 bg-slate-900/40 text-slate-200 backdrop-blur-md hover:bg-slate-800/60 hover:border-slate-600 hover:text-white py-2.5"
           >
             Send IPC
-          </button>
+          </ZButton>
         </div>
       </div>
 
