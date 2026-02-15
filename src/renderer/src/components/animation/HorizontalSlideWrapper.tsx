@@ -1,14 +1,9 @@
-import { Easing, motion } from "framer-motion"
+import { motion, Transition } from "framer-motion"
 import { cn } from "../primary/utils"
-
-interface TransitionProps {
-  duration: number
-  ease: Easing | Easing[] | undefined
-}
 
 interface HorizontalSlideWrapperProps {
   children: React.ReactNode
-  transition?: TransitionProps
+  transition?: Transition
   className?: string
 }
 
