@@ -1,7 +1,19 @@
 import { motion, MotionNodeAnimationOptions } from "framer-motion"
 import { cn } from "../primary/utils"
 
-type AnimationType = "fade" | "scale" | "slideHorizontal" | "slideVertical" | "custom"
+type AnimationType =
+  | "fade"
+  | "scale"
+  | "slideLeft"
+  | "slideRight"
+  | "slideUp"
+  | "slideDown"
+  | "zoom"
+  | "blur"
+  | "rotate"
+  | "flip"
+  | "bounce"
+  | "custom"
 
 interface AnimationWrapperProps {
   children: React.ReactNode
@@ -14,7 +26,13 @@ interface AnimationWrapperProps {
   className?: string
 }
 
-const animationPresets = {
+interface AnimationPresets {
+  initial: MotionNodeAnimationOptions["initial"]
+  animate: MotionNodeAnimationOptions["animate"]
+  exit: MotionNodeAnimationOptions["exit"]
+}
+
+const animationPresets: Record<Exclude<AnimationType, "custom">, AnimationPresets> = {
   fade: {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
@@ -25,15 +43,54 @@ const animationPresets = {
     animate: { scale: 1, opacity: 1 },
     exit: { scale: 0.9, opacity: 0 }
   },
-  slideHorizontal: {
+  slideLeft: {
+    initial: { x: "-100%" },
+    animate: { x: 0 },
+    exit: { x: "100%" }
+  },
+  slideRight: {
     initial: { x: "100%" },
     animate: { x: 0 },
     exit: { x: "-100%" }
   },
-  slideVertical: {
+  slideUp: {
     initial: { y: "100%" },
     animate: { y: 0 },
     exit: { y: "-100%" }
+  },
+  slideDown: {
+    initial: { y: "-100%" },
+    animate: { y: 0 },
+    exit: { y: "100%" }
+  },
+  zoom: {
+    initial: { scale: 0, opacity: 0 },
+    animate: { scale: 1, opacity: 1 },
+    exit: { scale: 0, opacity: 0 }
+  },
+  blur: {
+    initial: { filter: "blur(10px)", opacity: 0 },
+    animate: { filter: "blur(0px)", opacity: 1 },
+    exit: { filter: "blur(10px)", opacity: 0 }
+  },
+  rotate: {
+    initial: { rotate: -180, opacity: 0 },
+    animate: { rotate: 0, opacity: 1 },
+    exit: { rotate: 180, opacity: 0 }
+  },
+  flip: {
+    initial: { rotateY: -90, opacity: 0 },
+    animate: { rotateY: 0, opacity: 1 },
+    exit: { rotateY: 90, opacity: 0 }
+  },
+  bounce: {
+    initial: { y: -100, opacity: 0 },
+    animate: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 300, damping: 20 }
+    },
+    exit: { y: -100, opacity: 0 }
   }
 }
 

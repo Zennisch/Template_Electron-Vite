@@ -8,7 +8,7 @@ const routes = [
   {
     path: "/",
     element: (
-      <AnimationWrapper type="slideHorizontal">
+      <AnimationWrapper type="rotate">
         <ElectronPage />
       </AnimationWrapper>
     )
@@ -16,7 +16,7 @@ const routes = [
   {
     path: "/components",
     element: (
-      <AnimationWrapper type="slideHorizontal">
+      <AnimationWrapper type="rotate">
         <ComponentsPage />
       </AnimationWrapper>
     )
