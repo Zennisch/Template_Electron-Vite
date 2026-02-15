@@ -22,31 +22,31 @@ interface SizeConfig {
 const SIZES: Record<Size, SizeConfig> = {
   xs: {
     base: "text-xs",
-    padding: "px-2 py-1.5",
+    padding: "px-4 py-1.5",
     gap: "gap-1.5",
     spinner: "h-2 w-2"
   },
   sm: {
     base: "text-sm",
-    padding: "px-2.5 py-1.75",
+    padding: "px-5 py-1.75",
     gap: "gap-1.75",
     spinner: "h-3 w-3"
   },
   md: {
     base: "text-base",
-    padding: "px-3 py-2",
+    padding: "px-6 py-2",
     gap: "gap-2",
     spinner: "h-4 w-4"
   },
   lg: {
     base: "text-lg",
-    padding: "px-3.5 py-2.25",
+    padding: "px-7 py-2.25",
     gap: "gap-2.25",
     spinner: "h-5 w-5"
   },
   xl: {
     base: "text-xl",
-    padding: "px-4 py-2.5",
+    padding: "px-8 py-2.5",
     gap: "gap-2.5",
     spinner: "h-6 w-6"
   }
