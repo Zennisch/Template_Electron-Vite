@@ -1,6 +1,6 @@
 import { AnimatePresence } from "framer-motion"
 import { Route, Routes, useLocation } from "react-router-dom"
-import FadeWrapper from "./components/animation/FadeWrapper"
+import HorizontalSlideWrapper from "./components/animation/HorizontalSlideWrapper"
 import ComponentsPage from "./pages/ComponentsPage"
 import ElectronPage from "./pages/ElectronPage"
 
@@ -8,17 +8,17 @@ const routes = [
   {
     path: "/",
     element: (
-      <FadeWrapper>
+      <HorizontalSlideWrapper>
         <ElectronPage />
-      </FadeWrapper>
+      </HorizontalSlideWrapper>
     )
   },
   {
     path: "/components",
     element: (
-      <FadeWrapper>
+      <HorizontalSlideWrapper>
         <ComponentsPage />
-      </FadeWrapper>
+      </HorizontalSlideWrapper>
     )
   }
 ]
@@ -28,7 +28,7 @@ const AnimatedRoutes = () => {
 
   return (
     <div className="relative overflow-hidden w-full h-full">
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         <Routes location={location} key={location.pathname}>
           {routes.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />

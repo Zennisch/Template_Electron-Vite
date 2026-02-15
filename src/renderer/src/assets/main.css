@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
+html, body, #root {
+  height: 100%;
+}
+
 :root{
   user-select: none;
 }
