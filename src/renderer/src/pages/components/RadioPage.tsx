@@ -20,7 +20,6 @@ const RadioPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xln:grid-cols-3 gap-8">
-        {/* Basic Group */}
         <ShowcaseSection title="Basic Group">
           <div className="flex flex-col gap-3">
             <ZText variant="label" className="text-slate-500 mb-1">
@@ -51,7 +50,6 @@ const RadioPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Sizes */}
         <ShowcaseSection title="Sizes">
           <div className="flex flex-col gap-4">
             <ZRadio name="size" value="sm" size="sm" label="Small Radio" />
@@ -60,7 +58,6 @@ const RadioPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Label Placement */}
         <ShowcaseSection title="Label Placement">
           <div className="flex flex-col gap-4">
             <ZRadio name="placement" value="right" labelPlacement="right" label="Label Right (Default)" defaultChecked />
@@ -70,7 +67,6 @@ const RadioPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* States & Validation */}
         <ShowcaseSection title="States & Validation">
           <div className="flex flex-col gap-4">
             <ZRadio name="state" value="1" label="Disabled Unchecked" disabled />
@@ -80,7 +76,6 @@ const RadioPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Custom Layout (Horizontal) */}
         <ShowcaseSection title="Horizontal Group" className="md:col-span-2">
           <div className="flex flex-col gap-2">
             <ZText variant="label" className="text-slate-500">
@@ -112,7 +107,6 @@ const RadioPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Shadows */}
         <ShowcaseSection title="Shadows">
           <div className="flex flex-col gap-4">
             <ZRadio name="shadow" value="none" shadow="none" label="No Shadow" />

@@ -19,7 +19,6 @@ const SwitchPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xln:grid-cols-3 gap-8">
-        {/* Basic Usage */}
         <ShowcaseSection title="Basic Usage">
           <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
@@ -33,7 +32,6 @@ const SwitchPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Controlled State */}
         <ShowcaseSection title="Controlled State">
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg">
@@ -47,7 +45,6 @@ const SwitchPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Sizes */}
         <ShowcaseSection title="Sizes">
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-4">
@@ -65,7 +62,6 @@ const SwitchPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* States & Validation */}
         <ShowcaseSection title="States & Validation">
           <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
@@ -85,7 +81,6 @@ const SwitchPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* With Label Prop */}
         <ShowcaseSection title="Label Prop">
           <div className="flex flex-col gap-4">
             <ZSwitch label="Label Right (Default)" />
@@ -95,7 +90,6 @@ const SwitchPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Shadows */}
         <ShowcaseSection title="Shadows (Thumb)">
           <div className="flex items-center justify-around bg-slate-100 p-4 rounded-lg">
             <ZSwitch shadow="none" />

@@ -34,7 +34,6 @@ const CheckboxPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xln:grid-cols-3 gap-8">
-        {/* Basic Usage */}
         <ShowcaseSection title="Basic Usage">
           <div className="flex flex-col gap-4">
             <ZCheckbox label="Accept terms and conditions" />
@@ -42,7 +41,6 @@ const CheckboxPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Controlled State */}
         <ShowcaseSection title="Controlled State">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg">
@@ -56,7 +54,6 @@ const CheckboxPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Sizes */}
         <ShowcaseSection title="Sizes">
           <div className="flex flex-col gap-4">
             <ZCheckbox size="sm" label="Small Checkbox" />
@@ -65,7 +62,6 @@ const CheckboxPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Label Placement */}
         <ShowcaseSection title="Label Placement">
           <div className="flex flex-col gap-4">
             <ZCheckbox labelPlacement="right" label="Label Right (Default)" />
@@ -75,7 +71,6 @@ const CheckboxPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* States & Validation */}
         <ShowcaseSection title="States & Validation">
           <div className="flex flex-col gap-4">
             <ZCheckbox label="Disabled Unchecked" disabled />
@@ -85,7 +80,6 @@ const CheckboxPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Indeterminate State (Visual Only if supported by component, otherwise mimics logic) */}
         <ShowcaseSection title="Indeterminate (Simulated)">
           <div className="flex flex-col gap-2">
             <ZCheckbox
@@ -101,7 +95,6 @@ const CheckboxPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Shadows */}
         <ShowcaseSection title="Shadows">
           <div className="flex flex-col gap-4">
             <ZCheckbox shadow="none" label="No Shadow" />

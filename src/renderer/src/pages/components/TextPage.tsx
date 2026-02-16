@@ -15,7 +15,6 @@ const TextPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        {/* Variants Section */}
         <ShowcaseSection title="Variants" className="row-span-2">
           <div className="flex flex-col gap-6">
             <div className="space-y-1">
@@ -69,7 +68,6 @@ const TextPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Colors Section */}
         <ShowcaseSection title="Colors">
           <div className="grid grid-cols-1 gap-3">
             {[
@@ -101,7 +99,6 @@ const TextPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Weights Section */}
         <ShowcaseSection title="Weights">
           <div className="flex flex-col gap-3">
             <div className="flex items-baseline justify-between border-b border-dashed border-slate-100 pb-2">
@@ -143,7 +140,6 @@ const TextPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Alignment Section */}
         <ShowcaseSection title="Alignment" className="md:col-span-2 xl:col-span-2">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-2">
@@ -185,7 +181,6 @@ const TextPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Decorators Section */}
         <ShowcaseSection title="Decorators & Transforms">
           <div className="grid grid-cols-2 gap-x-4 gap-y-6">
             <div className="flex flex-col gap-1">
@@ -229,7 +224,6 @@ const TextPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Truncation Section */}
         <ShowcaseSection title="Truncation & Wrapping" className="md:col-span-2 xl:col-span-3">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex flex-col gap-2">

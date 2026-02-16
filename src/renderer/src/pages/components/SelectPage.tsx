@@ -36,20 +36,18 @@ const SelectPage = () => {
   const [multiValue, setMultiValue] = useState<string | string[] | undefined>([])
   const [searchValue, setSearchValue] = useState<string | string[] | undefined>()
 
-  // Async Search State
   const [asyncValue, setAsyncValue] = useState<string | string[] | undefined>()
   const [asyncOptions, setAsyncOptions] = useState<ZSelectItem<string>[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 
-  // Simulate async search
   useEffect(() => {
     setIsLoading(true)
     const timer = setTimeout(() => {
       const filtered = ASYNC_DATA.filter((opt) => opt.label.toLowerCase().includes(searchQuery.toLowerCase()))
       setAsyncOptions(filtered)
       setIsLoading(false)
-    }, 800) // 800ms delay
+    }, 800)
 
     return () => clearTimeout(timer)
   }, [searchQuery])
@@ -68,7 +66,6 @@ const SelectPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xln:grid-cols-3 gap-8">
-        {/* Basic Usage */}
         <ShowcaseSection title="Basic Usage">
           <div className="flex flex-col gap-6">
             <ZSelect
@@ -89,7 +86,6 @@ const SelectPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Multiple Selection */}
         <ShowcaseSection title="Multiple Selection">
           <div className="flex flex-col gap-6">
             <ZSelect
@@ -107,7 +103,6 @@ const SelectPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Sizes */}
         <ShowcaseSection title="Sizes">
           <div className="flex flex-col gap-4">
             <ZSelect size="sm" label="Small" options={BASIC_OPTIONS} placeholder="Small Select" fullWidth />
@@ -116,7 +111,6 @@ const SelectPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* States & Validation */}
         <ShowcaseSection title="States & Validation">
           <div className="flex flex-col gap-6">
             <ZSelect label="Disabled Select" options={BASIC_OPTIONS} disabled placeholder="Cannot select" fullWidth />
@@ -130,7 +124,6 @@ const SelectPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* With Icons */}
         <ShowcaseSection title="With Icons">
           <div className="flex flex-col gap-6">
             <ZSelect
@@ -144,7 +137,6 @@ const SelectPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Searchable */}
         <ShowcaseSection title="Searchable (Local)">
           <div className="flex flex-col gap-6">
             <ZSelect
@@ -159,7 +151,6 @@ const SelectPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Async Search */}
         <ShowcaseSection title="Async Data & Search" className="md:col-span-2 xln:col-span-3">
           <div className="flex flex-col gap-6">
             <ZText variant="body" size="sm" color="secondary">
@@ -186,7 +177,6 @@ const SelectPage = () => {
         </ShowcaseSection>
       </div>
 
-      {/* Spacer for scrolling */}
       <div style={{ height: "300px", flexShrink: 0 }}></div>
     </div>
   )

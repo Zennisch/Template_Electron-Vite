@@ -22,7 +22,6 @@ const TextInputPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xln:grid-cols-3 gap-8">
-        {/* Basic Usage */}
         <ShowcaseSection title="Basic Usage">
           <div className="flex flex-col gap-6">
             <ZTextInput label="Username" placeholder="Enter your username" />
@@ -30,7 +29,6 @@ const TextInputPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Controlled State */}
         <ShowcaseSection title="Controlled State">
           <div className="flex flex-col gap-4">
             <ZTextInput
@@ -45,7 +43,6 @@ const TextInputPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Sizes */}
         <ShowcaseSection title="Sizes">
           <div className="flex flex-col gap-6">
             <ZTextInput size="sm" label="Small Input" placeholder="text-sm" />
@@ -55,7 +52,6 @@ const TextInputPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* States & Validation */}
         <ShowcaseSection title="States & Validation">
           <div className="flex flex-col gap-6">
             <ZTextInput label="Disabled Input" disabled value="Cannot edit this" />
@@ -65,7 +61,6 @@ const TextInputPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Icons */}
         <ShowcaseSection title="Icons">
           <div className="flex flex-col gap-6">
             <ZTextInput
@@ -93,7 +88,6 @@ const TextInputPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Multiline (Textarea) */}
         <ShowcaseSection title="Multiline (Textarea)">
           <div className="flex flex-col gap-6">
             <ZTextInput multiline label="Bio" placeholder="Tell us about yourself" rows={3} />
@@ -101,12 +95,10 @@ const TextInputPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Full Width */}
         <ShowcaseSection title="Full Width" className="md:col-span-2">
           <ZTextInput fullWidth label="Full Width Input" placeholder="Stretches to fill container" />
         </ShowcaseSection>
 
-        {/* Shadows */}
         <ShowcaseSection title="Shadows" className="md:col-span-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-slate-50 p-4 rounded-lg">
             <ZTextInput shadow="none" label="No Shadow" placeholder="shadow-none" />

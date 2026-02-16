@@ -24,7 +24,6 @@ const ButtonPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xln:grid-cols-3 gap-8">
-        {/* Variants Section */}
         <ShowcaseSection title="Variants">
           <div className="flex flex-wrap gap-4 items-center">
             <ZButton variant="primary">Primary</ZButton>
@@ -37,7 +36,6 @@ const ButtonPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Sizes Section */}
         <ShowcaseSection title="Sizes">
           <div className="flex flex-wrap gap-4 items-center">
             <ZButton size="xs">XS</ZButton>
@@ -48,7 +46,6 @@ const ButtonPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Shapes Section */}
         <ShowcaseSection title="Shapes">
           <div className="flex flex-wrap gap-4 items-center">
             <ZButton shape="rounded">Rounded (Default)</ZButton>
@@ -57,7 +54,6 @@ const ButtonPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* States Section */}
         <ShowcaseSection title="States">
           <div className="flex flex-wrap gap-4 items-center">
             <ZButton disabled>Disabled</ZButton>
@@ -71,7 +67,6 @@ const ButtonPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Shadows Section */}
         <ShowcaseSection title="Shadows">
           <div className="flex flex-wrap gap-4 items-center bg-slate-50 p-4 rounded-lg">
             <ZButton shadow="none" variant="secondary">
@@ -92,7 +87,6 @@ const ButtonPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Icons Section */}
         <ShowcaseSection title="Icons">
           <div className="flex flex-wrap gap-4 items-center">
             <ZButton iconStart={<i className="fa-solid fa-cloud-arrow-up" />}>Upload</ZButton>
@@ -109,7 +103,6 @@ const ButtonPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Animations Section */}
         <ShowcaseSection title="Press Animations">
           <div className="grid grid-cols-1 gap-4">
             <div className="flex items-center gap-4">
@@ -138,7 +131,6 @@ const ButtonPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Full Width Section */}
         <ShowcaseSection title="Full Width" className="md:col-span-2">
           <div className="flex flex-col gap-4">
             <ZButton fullWidth variant="primary">

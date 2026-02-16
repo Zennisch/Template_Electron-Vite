@@ -61,7 +61,6 @@ const ComponentsPage = () => {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-slate-50">
-      {/* Left Sidebar */}
       <aside className="flex w-1/4 min-w-62.5 flex-col gap-6 border-r border-slate-200 bg-white p-6 shadow-sm z-10">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-slate-800">Components</h2>
@@ -86,7 +85,6 @@ const ComponentsPage = () => {
         </div>
       </aside>
 
-      {/* Right Content Area */}
       <main className="flex-1 overflow-hidden bg-slate-50/50">{renderComponentPage()}</main>
     </div>
   )

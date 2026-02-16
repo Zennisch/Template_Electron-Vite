@@ -20,7 +20,6 @@ const SliderPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xln:grid-cols-3 gap-8">
-        {/* Basic Usage */}
         <ShowcaseSection title="Basic Usage">
           <div className="flex flex-col gap-6">
             <ZSlider label="Default Slider" defaultValue={30} fullWidth />
@@ -28,7 +27,6 @@ const SliderPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Controlled State */}
         <ShowcaseSection title="Controlled State">
           <div className="flex flex-col gap-6">
             <ZSlider label="Volume Control" value={volume} onChange={setVolume} showValue min={0} max={100} fullWidth />
@@ -44,7 +42,6 @@ const SliderPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Sizes */}
         <ShowcaseSection title="Sizes" className="md:row-span-2">
           <div className="flex flex-col gap-8">
             <ZSlider label="Small Size" size="sm" defaultValue={25} showValue fullWidth />
@@ -53,7 +50,6 @@ const SliderPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Custom Formatting */}
         <ShowcaseSection title="Custom Formatting">
           <div className="flex flex-col gap-6">
             <ZSlider
@@ -79,7 +75,6 @@ const SliderPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* States & Validation */}
         <ShowcaseSection title="States & Validation">
           <div className="flex flex-col gap-6">
             <ZSlider label="Disabled Slider" defaultValue={40} disabled showValue fullWidth />
@@ -88,7 +83,6 @@ const SliderPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Step & Range Config */}
         <ShowcaseSection title="Step & Range Config">
           <div className="flex flex-col gap-6">
             <ZSlider label="Step = 25" defaultValue={25} min={0} max={100} step={25} showValue fullWidth />
@@ -96,7 +90,6 @@ const SliderPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Label Placement */}
         <ShowcaseSection title="Label Placement">
           <div className="flex flex-col gap-6">
             <ZSlider label="Left Label" labelPlacement="left" defaultValue={40} fullWidth />
@@ -105,7 +98,6 @@ const SliderPage = () => {
         </ShowcaseSection>
       </div>
 
-      {/* Spacer for scrolling */}
       <div className="h-24"></div>
     </div>
   )

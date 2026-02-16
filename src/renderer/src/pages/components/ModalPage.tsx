@@ -22,7 +22,6 @@ const ModalPage = () => {
   const [alertOpen, setAlertOpen] = useState(false)
   const [loadingOpen, setLoadingOpen] = useState(false)
 
-  // Wizard State
   const [wizardOpen, setWizardOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const TOTAL_STEPS = 3
@@ -31,7 +30,7 @@ const ModalPage = () => {
     if (currentStep < TOTAL_STEPS) setCurrentStep((prev) => prev + 1)
     else {
       setWizardOpen(false)
-      setCurrentStep(1) // Reset for next time
+      setCurrentStep(1)
     }
   }
 
@@ -39,7 +38,6 @@ const ModalPage = () => {
     if (currentStep > 1) setCurrentStep((prev) => prev - 1)
   }
 
-  // Simulate loading in modal
   const handleLoadingOpen = () => {
     setLoadingOpen(true)
     setTimeout(() => setLoadingOpen(false), 2000)
@@ -58,7 +56,6 @@ const ModalPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xln:grid-cols-3 gap-8">
-        {/* Basic Usage */}
         <ShowcaseSection title="Basic Usage">
           <div className="flex flex-col gap-4">
             <ZText variant="body" size="sm" color="secondary">
@@ -87,7 +84,6 @@ const ModalPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Sizes */}
         <ShowcaseSection title="Sizes">
           <div className="flex flex-col gap-4">
             <ZText variant="body" size="sm" color="secondary">
@@ -119,7 +115,6 @@ const ModalPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Scrollable Content */}
         <ShowcaseSection title="Scrollable Content">
           <div className="flex flex-col gap-4">
             <ZText variant="body" size="sm" color="secondary">
@@ -155,7 +150,6 @@ const ModalPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Alert / Danger */}
         <ShowcaseSection title="Alert State">
           <div className="flex flex-col gap-4">
             <ZText variant="body" size="sm" color="secondary">
@@ -194,7 +188,6 @@ const ModalPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Loading State */}
         <ShowcaseSection title="Loading State">
           <div className="flex flex-col gap-4">
             <ZText variant="body" size="sm" color="secondary">
@@ -208,7 +201,6 @@ const ModalPage = () => {
           </div>
         </ShowcaseSection>
 
-        {/* Wizard Modal */}
         <ShowcaseSection title="Wizard / Multi-step">
           <div className="flex flex-col gap-4">
             <ZText variant="body" size="sm" color="secondary">
@@ -220,7 +212,7 @@ const ModalPage = () => {
               isOpen={wizardOpen}
               onClose={() => setWizardOpen(false)}
               header={`Step ${currentStep} of ${TOTAL_STEPS}`}
-              stepKey={currentStep} // Important for animation
+              stepKey={currentStep}
               footer={
                 <div className="flex justify-between w-full">
                   <ZButton variant="ghost" disabled={currentStep === 1} onClick={handlePrevStep}>
@@ -235,7 +227,6 @@ const ModalPage = () => {
                   <div className="space-y-4">
                     <ZText weight="bold">Account Setup</ZText>
                     <ZText color="secondary">Let's start by setting up your account details.</ZText>
-                    {/* Input placeholders */}
                     <div className="h-8 bg-slate-100 rounded w-full"></div>
                     <div className="h-8 bg-slate-100 rounded w-3/4"></div>
                   </div>
@@ -265,7 +256,6 @@ const ModalPage = () => {
         </ShowcaseSection>
       </div>
 
-      {/* Spacer for scrolling */}
       <div className="h-24"></div>
     </div>
   )
