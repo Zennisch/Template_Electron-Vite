@@ -16,7 +16,7 @@ const THEME = {
     disabled: "#f1f1f1",
     textPrimary: "#001122",
     textDisabled: "#99aabb",
-    unchecked: "#eeeeff",
+    unchecked: "#eeeeff"
   }
 } as const
 

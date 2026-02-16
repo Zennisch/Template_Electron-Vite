@@ -128,9 +128,7 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
   const renderTriggerContent = () => {
     if (multiple) {
       return (
-        <div
-          className={cn("flex flex-wrap w-full", LAYOUT.tag.marginLeft, LAYOUT.trigger.gap)}
-        >
+        <div className={cn("flex flex-wrap w-full", LAYOUT.tag.marginLeft, LAYOUT.trigger.gap)}>
           <AnimatePresence mode="popLayout">
             {selectedValues.map((val) => (
               <motion.span
@@ -188,10 +186,7 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
     >
       {iconStart && !multiple && (
         <span
-          className={cn(
-            "absolute inset-y-0 left-0 flex items-center pointer-events-none text-slate-500",
-            LAYOUT.icon.start
-          )}
+          className={cn("absolute inset-y-0 left-0 flex items-center pointer-events-none text-slate-500", LAYOUT.icon.start)}
         >
           {iconStart}
         </span>
@@ -199,12 +194,7 @@ const ZSelectTriggerInner = <T extends string | number>(props: ZSelectTriggerPro
 
       {renderTriggerContent()}
 
-      <span
-        className={cn(
-          "absolute inset-y-0 right-0 flex items-center pointer-events-none",
-          LAYOUT.trigger.padding.chevron
-        )}
-      >
+      <span className={cn("absolute inset-y-0 right-0 flex items-center pointer-events-none", LAYOUT.trigger.padding.chevron)}>
         <ChevronDownIcon
           className={cn(
             "text-slate-400 transition-transform",

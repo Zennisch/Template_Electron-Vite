@@ -1,14 +1,6 @@
 import { HTMLMotionProps, motion } from "framer-motion"
 import { ElementType, forwardRef, ReactNode, useMemo } from "react"
-import {
-  TextAlign,
-  TextColor,
-  TextElement,
-  TextSize,
-  TextTransform,
-  TextVariant,
-  TextWeight
-} from "./types/text"
+import { TextAlign, TextColor, TextElement, TextSize, TextTransform, TextVariant, TextWeight } from "./types/text"
 import { cn } from "./utils"
 
 const THEME = {

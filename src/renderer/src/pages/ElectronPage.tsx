@@ -74,7 +74,7 @@ const ElectronPage = () => {
           >
             Send IPC
           </ZButton>
-          
+
           <ZButton
             onClick={() => navigation("/components")}
             shape="pill"
