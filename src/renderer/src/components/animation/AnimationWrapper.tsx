@@ -112,6 +112,7 @@ const AnimationWrapper = ({
   return (
     <motion.div
       className={combinedClass}
+      style={{ willChange: "transform, opacity" }}
       initial={animationProps.initial}
       animate={animationProps.animate}
       exit={animationProps.exit}

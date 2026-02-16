@@ -1,14 +1,14 @@
 import { AnimatePresence } from "framer-motion"
 import { Route, Routes, useLocation } from "react-router-dom"
+import { Components } from "./Components"
 import AnimationWrapper from "./components/animation/AnimationWrapper"
-import ComponentsPage from "./pages/ComponentsPage"
 import ElectronPage from "./pages/ElectronPage"
 
 const routes = [
   {
     path: "/",
     element: (
-      <AnimationWrapper type="rotate">
+      <AnimationWrapper type="slideLeft">
         <ElectronPage />
       </AnimationWrapper>
     )
@@ -16,8 +16,8 @@ const routes = [
   {
     path: "/components",
     element: (
-      <AnimationWrapper type="rotate">
-        <ComponentsPage />
+      <AnimationWrapper type="slideLeft">
+        <Components />
       </AnimationWrapper>
     )
   }
@@ -28,7 +28,7 @@ const AnimatedRoutes = () => {
 
   return (
     <div className="relative overflow-hidden w-full h-full">
-      <AnimatePresence mode="sync">
+      <AnimatePresence mode="sync" initial={false}>
         <Routes location={location} key={location.pathname}>
           {routes.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />

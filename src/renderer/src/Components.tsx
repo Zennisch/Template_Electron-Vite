@@ -7,6 +7,7 @@ import Slider from "./components/primary/ZSlider"
 import Switch from "./components/primary/ZSwitch"
 import TextInput from "./components/primary/ZTextInput"
 import Modal from "./components/primary/ZModal"
+import Text from "./components/primary/ZText"
 
 // Simple icon placeholder
 const Icon = () => <span className="text-current">★</span>
@@ -901,6 +902,264 @@ export const Components = () => {
         <div className="flex flex-col gap-4 items-start">
           <Switch label="Label on Right (Default)" />
           <Switch label="Label on Left" labelPlacement="left" />
+        </div>
+      </section>
+
+      <div className="border-t my-8"></div>
+
+      <div className="space-y-2 unreset">
+        <h1 className="text-3xl font-bold border-b pb-2">Text Component</h1>
+        <p className="text-gray-500">Comprehensive display of all Text props and typography variants.</p>
+      </div>
+
+      {/* Variants */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Variants</h2>
+        <div className="flex flex-col gap-4">
+          <Text variant="heading" size="lg">Heading Variant</Text>
+          <Text variant="subheading" size="md">Subheading Variant</Text>
+          <Text variant="body" size="md">Body Variant - The default variant for regular text content</Text>
+          <Text variant="caption" size="sm">Caption Variant - Typically used for small descriptive text</Text>
+          <Text variant="label" size="sm">Label Variant - Used for form labels</Text>
+          <Text variant="overline" size="xs" transform="uppercase">Overline Variant</Text>
+        </div>
+      </section>
+
+      {/* Sizes */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Sizes</h2>
+        <div className="flex flex-col gap-3">
+          <Text size="xs">Extra Small (xs)</Text>
+          <Text size="sm">Small (sm)</Text>
+          <Text size="md">Medium (md)</Text>
+          <Text size="lg">Large (lg)</Text>
+          <Text size="xl">Extra Large (xl)</Text>
+          <Text size="2xl">2X Large (2xl)</Text>
+          <Text size="3xl">3X Large (3xl)</Text>
+        </div>
+      </section>
+
+      {/* Heading Sizes */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Heading Scale</h2>
+        <div className="flex flex-col gap-4">
+          <Text variant="heading" size="3xl" as="h1">H1 - Hero Heading</Text>
+          <Text variant="heading" size="2xl" as="h2">H2 - Main Section Heading</Text>
+          <Text variant="heading" size="xl" as="h3">H3 - Subsection Heading</Text>
+          <Text variant="heading" size="lg" as="h4">H4 - Component Heading</Text>
+          <Text variant="heading" size="md" as="h5">H5 - Small Component Heading</Text>
+          <Text variant="heading" size="sm" as="h6">H6 - Smallest Heading</Text>
+        </div>
+      </section>
+
+      {/* Weights */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Font Weights</h2>
+        <div className="flex flex-col gap-2">
+          <Text weight="light">Light Weight (300)</Text>
+          <Text weight="regular">Regular Weight (400)</Text>
+          <Text weight="medium">Medium Weight (500)</Text>
+          <Text weight="semibold">Semibold Weight (600)</Text>
+          <Text weight="bold">Bold Weight (700)</Text>
+          <Text weight="extrabold">Extra Bold Weight (800)</Text>
+        </div>
+      </section>
+
+      {/* Colors */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Colors</h2>
+        <div className="flex flex-col gap-2">
+          <Text color="default">Default Text Color</Text>
+          <Text color="primary">Primary Color (Indigo)</Text>
+          <Text color="secondary">Secondary Color (Slate)</Text>
+          <Text color="success">Success Color (Green)</Text>
+          <Text color="warning">Warning Color (Amber)</Text>
+          <Text color="error">Error Color (Red)</Text>
+          <Text color="muted">Muted Color (Light Slate)</Text>
+        </div>
+      </section>
+
+      {/* Alignment */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Text Alignment</h2>
+        <div className="flex flex-col gap-4 border rounded-lg p-4 bg-slate-50">
+          <Text align="left" className="bg-white p-2 rounded border">Left Aligned Text (Default)</Text>
+          <Text align="center" className="bg-white p-2 rounded border">Center Aligned Text</Text>
+          <Text align="right" className="bg-white p-2 rounded border">Right Aligned Text</Text>
+          <Text align="justify" className="bg-white p-2 rounded border">
+            Justified text aligns to both left and right margins, adding extra space between words as necessary.
+            This creates a clean, formal appearance often used in print media and professional documents.
+          </Text>
+        </div>
+      </section>
+
+      {/* Text Transform */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Text Transform</h2>
+        <div className="flex flex-col gap-2">
+          <Text transform="none">No Transform Applied</Text>
+          <Text transform="uppercase">uppercase transform</Text>
+          <Text transform="lowercase">LOWERCASE TRANSFORM</Text>
+          <Text transform="capitalize">capitalize each word transform</Text>
+        </div>
+      </section>
+
+      {/* Text Styles */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Text Styles</h2>
+        <div className="flex flex-col gap-2">
+          <Text italic>Italic Text Style</Text>
+          <Text underline>Underlined Text Style</Text>
+          <Text strikethrough>Strikethrough Text Style</Text>
+          <Text italic underline weight="semibold">Combined: Italic + Underline + Semibold</Text>
+        </div>
+      </section>
+
+      {/* Truncation */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Truncation & Wrapping</h2>
+        <div className="flex flex-col gap-4 max-w-md">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-600">Single Line Truncate</label>
+            <div className="border rounded p-2 bg-white">
+              <Text truncate>
+                This is a very long text that will be truncated with an ellipsis when it exceeds the container width
+              </Text>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-600">Multi-line Truncate (2 lines)</label>
+            <div className="border rounded p-2 bg-white">
+              <Text truncate={2}>
+                This is a longer text that will be truncated after two lines. The text will show an ellipsis after the second line,
+                helping to maintain a clean layout while giving users a preview of the content.
+              </Text>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-600">Multi-line Truncate (3 lines)</label>
+            <div className="border rounded p-2 bg-white">
+              <Text truncate={3}>
+                This text demonstrates three-line truncation. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              </Text>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-600">No Wrap</label>
+            <div className="border rounded p-2 bg-white overflow-x-auto">
+              <Text noWrap>
+                This text will not wrap to the next line, creating a horizontal scroll instead if the content is too long
+              </Text>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Polymorphic Rendering */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Polymorphic Rendering (Semantic HTML)</h2>
+        <div className="flex flex-col gap-2">
+          <Text as="h1" variant="heading" size="2xl">Rendered as &lt;h1&gt;</Text>
+          <Text as="h2" variant="heading" size="xl">Rendered as &lt;h2&gt;</Text>
+          <Text as="p" variant="body">Rendered as &lt;p&gt; (paragraph)</Text>
+          <Text as="span" variant="caption" size="sm">Rendered as &lt;span&gt; (inline)</Text>
+          <Text as="label" htmlFor="demo-input" variant="label" size="sm" weight="medium">
+            Rendered as &lt;label&gt; with htmlFor
+          </Text>
+          <Text as="div" className="bg-blue-50 p-3 rounded border border-blue-200">
+            Rendered as &lt;div&gt; with custom styling
+          </Text>
+        </div>
+      </section>
+
+      {/* Real World Examples */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Real World Examples</h2>
+        
+        <div className="space-y-6">
+          {/* Article Layout */}
+          <div className="p-6 border rounded-lg bg-white shadow-sm space-y-3">
+            <Text variant="overline" size="xs" color="primary" transform="uppercase" weight="semibold">
+              Technology
+            </Text>
+            <Text variant="heading" size="xl" as="h3">
+              Building Modern Web Applications
+            </Text>
+            <Text variant="body" size="sm" color="secondary">
+              By John Doe • Published on Dec 25, 2023 • 5 min read
+            </Text>
+            <Text variant="body" size="md" color="default">
+              Learn how to create scalable and performant web applications using the latest frameworks and best practices.
+              This comprehensive guide covers everything from initial setup to deployment.
+            </Text>
+            <Text variant="caption" size="sm" color="muted" italic>
+              Last updated: January 15, 2024
+            </Text>
+          </div>
+
+          {/* Card Layout */}
+          <div className="p-6 border rounded-lg bg-linear-to-br from-indigo-50 to-purple-50">
+            <Text variant="heading" size="lg" color="primary" weight="bold">
+              Premium Plan
+            </Text>
+            <Text variant="body" size="md" className="mt-2 mb-4">
+              Everything you need to grow your business
+            </Text>
+            <Text variant="heading" size="3xl" weight="extrabold" color="default">
+              $99
+              <Text as="span" variant="body" size="md" color="secondary" weight="regular">/month</Text>
+            </Text>
+            <ul className="mt-4 space-y-2">
+              <Text as="li" variant="body" size="sm">✓ Unlimited projects</Text>
+              <Text as="li" variant="body" size="sm">✓ Advanced analytics</Text>
+              <Text as="li" variant="body" size="sm">✓ Priority support</Text>
+            </ul>
+          </div>
+
+          {/* Alert Box */}
+          <div className="p-4 bg-amber-50 border-l-4 border-amber-500 rounded">
+            <Text variant="label" size="sm" color="warning" weight="semibold">
+              ⚠ Warning
+            </Text>
+            <Text variant="body" size="sm" color="warning" className="mt-1">
+              Your subscription will expire in 3 days. Please update your payment information to avoid service interruption.
+            </Text>
+          </div>
+        </div>
+      </section>
+
+      {/* Animation Support */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Animation Support (Framer Motion)</h2>
+        <div className="flex flex-col gap-4">
+          <Text
+            variant="heading"
+            size="lg"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Animated Heading (Fade In from Top)
+          </Text>
+          <Text
+            variant="body"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Animated Body Text (Slide In from Left)
+          </Text>
+          <Text
+            variant="caption"
+            size="sm"
+            color="primary"
+            whileHover={{ scale: 1.05 }}
+            className="cursor-pointer inline-block w-fit"
+          >
+            Hover me for scale animation
+          </Text>
         </div>
       </section>
 
