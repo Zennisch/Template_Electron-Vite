@@ -2,6 +2,10 @@ import ZButton from "@renderer/components/primary/ZButton"
 import ZSelect, { ZSelectItem } from "@renderer/components/primary/ZSelect"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import ButtonPage from "./components/ButtonPage"
+import CheckboxPage from "./components/CheckboxPage"
+import RadioPage from "./components/RadioPage"
+import SwitchPage from "./components/SwitchPage"
 import TextPage from "./components/TextPage"
 
 type ComponentType = "text" | "button" | "checkbox" | "radio" | "switch" | "text-input" | "select" | "slider" | "modal"
@@ -26,6 +30,14 @@ const ComponentsPage = () => {
     switch (selectedComponent) {
       case "text":
         return <TextPage />
+      case "button":
+        return <ButtonPage />
+      case "checkbox":
+        return <CheckboxPage />
+      case "radio":
+        return <RadioPage />
+      case "switch":
+        return <SwitchPage />
       default:
         return (
           <div className="flex h-full items-center justify-center text-slate-500">
