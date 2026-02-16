@@ -298,7 +298,7 @@ const ZTextInput = forwardRef<HTMLInputElement | HTMLTextAreaElement, ZTextInput
   )
 
   const iconClasses = cn(
-    "shrink-0 flex items-center justify-center pointer-events-none",
+    "shrink-0 flex items-center justify-center relative z-20",
     disabled ? "text-slate-400" : "text-slate-500"
   )
 
