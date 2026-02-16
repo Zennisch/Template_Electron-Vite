@@ -15,7 +15,21 @@ const ShowcaseSection = ({ title, children, className = "" }: { title: string; c
 
 const CheckboxPage = () => {
   const [isChecked, setIsChecked] = useState(false)
-  const [indeterminate, setIndeterminate] = useState(true)
+  const [child1, setChild1] = useState(true)
+  const [child2, setChild2] = useState(false)
+
+  const allChecked = child1 && child2
+  const isIndeterminate = (child1 || child2) && !allChecked
+
+  const handleParentChange = () => {
+    if (allChecked || isIndeterminate) {
+      setChild1(false)
+      setChild2(false)
+    } else {
+      setChild1(true)
+      setChild2(true)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-10 p-10 h-full overflow-y-auto bg-slate-50/50">
@@ -83,20 +97,25 @@ const CheckboxPage = () => {
         </ShowcaseSection>
 
          {/* Indeterminate State (Visual Only if supported by component, otherwise mimics logic) */}
-         <ShowcaseSection title="Indeterminate (Simulated)">
+        <ShowcaseSection title="Indeterminate (Simulated)">
            <div className="flex flex-col gap-2">
              <ZCheckbox 
                label="Parent Checkbox" 
-               // Note: Native react checkbox indeterminate is usually set via ref. 
-               // Assuming ZCheckbox might handle this or we just show checked/unchecked for now.
-               // If ZCheckbox supports 'indeterminate' prop directly:
-               // indeterminate={indeterminate}
-               checked={true}
-               onChange={() => setIndeterminate(!indeterminate)}
+               indeterminate={isIndeterminate}
+               checked={allChecked}
+               onChange={handleParentChange}
              />
              <div className="ml-6 flex flex-col gap-2 border-l-2 border-slate-100 pl-4">
-               <ZCheckbox label="Child Option 1" defaultChecked />
-               <ZCheckbox label="Child Option 2" />
+               <ZCheckbox 
+                 label="Child Option 1" 
+                 checked={child1} 
+                 onChange={(checked) => setChild1(checked)}
+               />
+               <ZCheckbox 
+                 label="Child Option 2" 
+                 checked={child2}
+                 onChange={(checked) => setChild2(checked)} 
+               />
              </div>
            </div>
         </ShowcaseSection>
