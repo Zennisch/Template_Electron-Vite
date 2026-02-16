@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import ButtonPage from "./components/ButtonPage"
 import CheckboxPage from "./components/CheckboxPage"
+import ModalPage from "./components/ModalPage"
 import RadioPage from "./components/RadioPage"
 import SelectPage from "./components/SelectPage"
 import SliderPage from "./components/SliderPage"
@@ -47,6 +48,8 @@ const ComponentsPage = () => {
         return <SelectPage />
       case "slider":
         return <SliderPage />
+      case "modal":
+        return <ModalPage />
       default:
         return (
           <div className="flex h-full items-center justify-center text-slate-500">
