@@ -233,7 +233,7 @@ const ZCheckbox = forwardRef<HTMLInputElement, ZCheckboxProps>((props, ref) => {
             whileTap={!disabled ? "tap" : undefined}
             transition={{ duration: 0.15 }}
             onClick={handleBoxClick}
-            style={{ boxShadow: focusRingStyle }}
+            style={focusRingStyle ? { boxShadow: focusRingStyle } : undefined}
           >
             <AnimatePresence mode="wait">
               {indeterminate ? (

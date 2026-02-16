@@ -244,7 +244,7 @@ const ZRadio = forwardRef<HTMLInputElement, ZRadioProps>((props, ref) => {
             whileTap={!disabled ? "tap" : undefined}
             transition={{ duration: 0.15 }}
             onClick={handleRadioClick}
-            style={{ boxShadow: focusRingStyle }}
+            style={focusRingStyle ? { boxShadow: focusRingStyle } : undefined}
           >
             <motion.div
               className={cn("bg-white rounded-full pointer-events-none", dotCls)}
