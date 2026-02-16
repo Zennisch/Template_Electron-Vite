@@ -6,6 +6,7 @@ import ButtonPage from "./components/ButtonPage"
 import CheckboxPage from "./components/CheckboxPage"
 import RadioPage from "./components/RadioPage"
 import SelectPage from "./components/SelectPage"
+import SliderPage from "./components/SliderPage"
 import SwitchPage from "./components/SwitchPage"
 import TextInputPage from "./components/TextInputPage"
 import TextPage from "./components/TextPage"
@@ -44,6 +45,8 @@ const ComponentsPage = () => {
         return <TextInputPage />
       case "select":
         return <SelectPage />
+      case "slider":
+        return <SliderPage />
       default:
         return (
           <div className="flex h-full items-center justify-center text-slate-500">
