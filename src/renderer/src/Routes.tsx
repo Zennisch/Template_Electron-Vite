@@ -1,7 +1,7 @@
 import { AnimatePresence } from "framer-motion"
 import { Route, Routes, useLocation } from "react-router-dom"
-import { Components } from "./Components"
 import AnimationWrapper from "./components/animation/AnimationWrapper"
+import ComponentsPage from "./pages/ComponentsPage"
 import ElectronPage from "./pages/ElectronPage"
 
 const routes = [
@@ -17,7 +17,7 @@ const routes = [
     path: "/components",
     element: (
       <AnimationWrapper type="slideLeft">
-        <Components />
+        <ComponentsPage />
       </AnimationWrapper>
     )
   }
