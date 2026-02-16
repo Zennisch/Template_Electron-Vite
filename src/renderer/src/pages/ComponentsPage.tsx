@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import ButtonPage from "./components/ButtonPage"
 import CheckboxPage from "./components/CheckboxPage"
 import RadioPage from "./components/RadioPage"
+import SelectPage from "./components/SelectPage"
 import SwitchPage from "./components/SwitchPage"
 import TextInputPage from "./components/TextInputPage"
 import TextPage from "./components/TextPage"
@@ -41,6 +42,8 @@ const ComponentsPage = () => {
         return <SwitchPage />
       case "text-input":
         return <TextInputPage />
+      case "select":
+        return <SelectPage />
       default:
         return (
           <div className="flex h-full items-center justify-center text-slate-500">

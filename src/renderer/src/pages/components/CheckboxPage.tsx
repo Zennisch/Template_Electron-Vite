@@ -1,9 +1,11 @@
-import ZCheckbox from "@renderer/components/primary/ZCheckbox"
-import ZText from "@renderer/components/primary/ZText"
-import { ReactNode, useState } from "react"
+import ZCheckbox from "@renderer/components/primary/ZCheckbox";
+import ZText from "@renderer/components/primary/ZText";
+import { ReactNode, useState } from "react";
 
 const ShowcaseSection = ({ title, children, className = "" }: { title: string; children: ReactNode; className?: string }) => (
-  <section className={`flex flex-col gap-4 p-6 border border-slate-200 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 ${className}`}>
+  <section
+    className={`flex flex-col gap-4 p-6 border border-slate-200 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 ${className}`}
+  >
     <div className="pb-2 border-b border-slate-100 mb-2">
       <ZText variant="subheading" size="md" weight="semibold" className="text-slate-800">
         {title}
@@ -38,7 +40,8 @@ const CheckboxPage = () => {
           Checkbox
         </ZText>
         <ZText variant="body" size="lg" color="secondary" className="max-w-2xl">
-          The <code className="text-sm font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">ZCheckbox</code> component allows users to select one or more items from a set.
+          The <code className="text-sm font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">ZCheckbox</code> component
+          allows users to select one or more items from a set.
         </ZText>
       </div>
 
@@ -53,16 +56,14 @@ const CheckboxPage = () => {
 
         {/* Controlled State */}
         <ShowcaseSection title="Controlled State">
-           <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg">
-               <ZCheckbox 
-                checked={isChecked} 
-                onChange={(checked) => setIsChecked(checked)} 
-                label={isChecked ? "Checked" : "Unchecked"} 
+              <ZCheckbox
+                checked={isChecked}
+                onChange={(checked) => setIsChecked(checked)}
+                label={isChecked ? "Checked" : "Unchecked"}
               />
-              <span className="text-xs text-slate-500 font-mono">
-                State: {String(isChecked)}
-              </span>
+              <span className="text-xs text-slate-500 font-mono">State: {String(isChecked)}</span>
             </div>
           </div>
         </ShowcaseSection>
@@ -81,43 +82,35 @@ const CheckboxPage = () => {
           <div className="flex flex-col gap-4">
             <ZCheckbox labelPlacement="right" label="Label Right (Default)" />
             <div className="flex justify-end border border-dashed border-slate-200 p-2 rounded">
-               <ZCheckbox labelPlacement="left" label="Label Left" />
+              <ZCheckbox labelPlacement="left" label="Label Left" />
             </div>
           </div>
         </ShowcaseSection>
-        
+
         {/* States & Validation */}
         <ShowcaseSection title="States & Validation">
           <div className="flex flex-col gap-4">
             <ZCheckbox label="Disabled Unchecked" disabled />
             <ZCheckbox label="Disabled Checked" disabled defaultChecked />
             <ZCheckbox label="With Error" error="This field is required" />
-             <ZCheckbox label="With Helper Text"  helpText="This is some helpful information." />
+            <ZCheckbox label="With Helper Text" helpText="This is some helpful information." />
           </div>
         </ShowcaseSection>
 
-         {/* Indeterminate State (Visual Only if supported by component, otherwise mimics logic) */}
+        {/* Indeterminate State (Visual Only if supported by component, otherwise mimics logic) */}
         <ShowcaseSection title="Indeterminate (Simulated)">
-           <div className="flex flex-col gap-2">
-             <ZCheckbox 
-               label="Parent Checkbox" 
-               indeterminate={isIndeterminate}
-               checked={allChecked}
-               onChange={handleParentChange}
-             />
-             <div className="ml-6 flex flex-col gap-2 border-l-2 border-slate-100 pl-4">
-               <ZCheckbox 
-                 label="Child Option 1" 
-                 checked={child1} 
-                 onChange={(checked) => setChild1(checked)}
-               />
-               <ZCheckbox 
-                 label="Child Option 2" 
-                 checked={child2}
-                 onChange={(checked) => setChild2(checked)} 
-               />
-             </div>
-           </div>
+          <div className="flex flex-col gap-2">
+            <ZCheckbox
+              label="Parent Checkbox"
+              indeterminate={isIndeterminate}
+              checked={allChecked}
+              onChange={handleParentChange}
+            />
+            <div className="ml-6 flex flex-col gap-2 border-l-2 border-slate-100 pl-4">
+              <ZCheckbox label="Child Option 1" checked={child1} onChange={(checked) => setChild1(checked)} />
+              <ZCheckbox label="Child Option 2" checked={child2} onChange={(checked) => setChild2(checked)} />
+            </div>
+          </div>
         </ShowcaseSection>
 
         {/* Shadows */}

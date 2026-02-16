@@ -1,9 +1,11 @@
-import ZButton from "@renderer/components/primary/ZButton"
-import ZText from "@renderer/components/primary/ZText"
-import { ReactNode, useState } from "react"
+import ZButton from "@renderer/components/primary/ZButton";
+import ZText from "@renderer/components/primary/ZText";
+import { ReactNode, useState } from "react";
 
 const ShowcaseSection = ({ title, children, className = "" }: { title: string; children: ReactNode; className?: string }) => (
-  <section className={`flex flex-col gap-4 p-6 border border-slate-200 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 ${className}`}>
+  <section
+    className={`flex flex-col gap-4 p-6 border border-slate-200 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 ${className}`}
+  >
     <div className="pb-2 border-b border-slate-100 mb-2">
       <ZText variant="subheading" size="md" weight="semibold" className="text-slate-800">
         {title}
@@ -28,7 +30,8 @@ const ButtonPage = () => {
           Button
         </ZText>
         <ZText variant="body" size="lg" color="secondary" className="max-w-2xl">
-          The <code className="text-sm font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">ZButton</code> component is used to trigger actions or navigation. It supports various styles, sizes, and states.
+          The <code className="text-sm font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">ZButton</code> component is
+          used to trigger actions or navigation. It supports various styles, sizes, and states.
         </ZText>
       </div>
 
@@ -71,7 +74,9 @@ const ButtonPage = () => {
           <div className="flex flex-wrap gap-4 items-center">
             <ZButton disabled>Disabled</ZButton>
             <ZButton loading>Loading</ZButton>
-            <ZButton loading loadingText="Processing...">Loading Text</ZButton>
+            <ZButton loading loadingText="Processing...">
+              Loading Text
+            </ZButton>
             <ZButton onClick={toggleLoading} loading={isLoading}>
               Click to Load
             </ZButton>
@@ -81,52 +86,79 @@ const ButtonPage = () => {
         {/* Shadows Section */}
         <ShowcaseSection title="Shadows">
           <div className="flex flex-wrap gap-4 items-center bg-slate-50 p-4 rounded-lg">
-            <ZButton shadow="none" variant="secondary">None</ZButton>
-            <ZButton shadow="sm" variant="secondary">Small</ZButton>
-            <ZButton shadow="md" variant="secondary">Medium</ZButton>
-            <ZButton shadow="lg" variant="secondary">Large</ZButton>
-            <ZButton shadow="xl" variant="secondary">X-Large</ZButton>
+            <ZButton shadow="none" variant="secondary">
+              None
+            </ZButton>
+            <ZButton shadow="sm" variant="secondary">
+              Small
+            </ZButton>
+            <ZButton shadow="md" variant="secondary">
+              Medium
+            </ZButton>
+            <ZButton shadow="lg" variant="secondary">
+              Large
+            </ZButton>
+            <ZButton shadow="xl" variant="secondary">
+              X-Large
+            </ZButton>
           </div>
         </ShowcaseSection>
 
         {/* Icons Section */}
         <ShowcaseSection title="Icons">
           <div className="flex flex-wrap gap-4 items-center">
-            <ZButton iconStart={<i className="fa-solid fa-cloud-arrow-up" />}>
-              Upload
-            </ZButton>
+            <ZButton iconStart={<i className="fa-solid fa-cloud-arrow-up" />}>Upload</ZButton>
             <ZButton iconEnd={<i className="fa-solid fa-arrow-right" />} variant="secondary">
               Next Step
             </ZButton>
-            <ZButton iconOnly iconStart={<i className="fa-solid fa-trash" />} variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50" />
+            <ZButton
+              iconOnly
+              iconStart={<i className="fa-solid fa-trash" />}
+              variant="ghost"
+              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            />
             <ZButton iconOnly shape="pill" iconStart={<i className="fa-solid fa-magnifying-glass" />} variant="secondary" />
           </div>
         </ShowcaseSection>
-        
+
         {/* Animations Section */}
         <ShowcaseSection title="Press Animations">
-           <div className="grid grid-cols-1 gap-4">
-             <div className="flex items-center gap-4">
-               <ZText variant="label" className="w-20">Scale:</ZText>
-               <ZButton pressAnimationStyle="scale">Scale Default</ZButton>
-               <ZButton pressAnimationStyle="scale" pressAnimationStrength="strong">Scale Strong</ZButton>
-             </div>
-             <div className="flex items-center gap-4">
-               <ZText variant="label" className="w-20">Ripple:</ZText>
-               <ZButton pressAnimationStyle="ripple" className="overflow-hidden">Ripple Effect</ZButton>
-             </div>
-              <div className="flex items-center gap-4">
-               <ZText variant="label" className="w-20">None:</ZText>
-               <ZButton pressAnimationStyle="none">No Animation</ZButton>
-             </div>
-           </div>
+          <div className="grid grid-cols-1 gap-4">
+            <div className="flex items-center gap-4">
+              <ZText variant="label" className="w-20">
+                Scale:
+              </ZText>
+              <ZButton pressAnimationStyle="scale">Scale Default</ZButton>
+              <ZButton pressAnimationStyle="scale" pressAnimationStrength="strong">
+                Scale Strong
+              </ZButton>
+            </div>
+            <div className="flex items-center gap-4">
+              <ZText variant="label" className="w-20">
+                Ripple:
+              </ZText>
+              <ZButton pressAnimationStyle="ripple" className="overflow-hidden">
+                Ripple Effect
+              </ZButton>
+            </div>
+            <div className="flex items-center gap-4">
+              <ZText variant="label" className="w-20">
+                None:
+              </ZText>
+              <ZButton pressAnimationStyle="none">No Animation</ZButton>
+            </div>
+          </div>
         </ShowcaseSection>
 
         {/* Full Width Section */}
         <ShowcaseSection title="Full Width" className="md:col-span-2">
           <div className="flex flex-col gap-4">
-            <ZButton fullWidth variant="primary">Full Width Primary</ZButton>
-            <ZButton fullWidth variant="secondary">Full Width Secondary</ZButton>
+            <ZButton fullWidth variant="primary">
+              Full Width Primary
+            </ZButton>
+            <ZButton fullWidth variant="secondary">
+              Full Width Secondary
+            </ZButton>
           </div>
         </ShowcaseSection>
       </div>
