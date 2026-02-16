@@ -41,11 +41,6 @@ const SIZES: Record<Size, string> = {
   full: "w-full max-w-[calc(100vw-2rem)]"
 }
 
-const POSITIONS: Record<Position, string> = {
-  center: "items-center",
-  top: "items-start pt-16"
-}
-
 const SHADOWS: Record<Shadow, string> = {
   none: "shadow-none",
   sm: "shadow-sm",
@@ -247,7 +242,6 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
   const hasError = !!error
   const hasLoading = !!loading
   const sizeCls = SIZES[size]
-  const positionCls = POSITIONS[position]
   const shadowCls = SHADOWS[shadow]
 
   useEffect(() => {
@@ -303,9 +297,9 @@ const ZModal = forwardRef<HTMLDivElement, ZModalProps>((props, ref) => {
   const loadingIsCustom = typeof loading !== "boolean"
 
   const overlayClasses = cn(
-    "fixed inset-0 z-50 flex justify-center overflow-y-auto overflow-x-hidden",
+    "fixed inset-0 z-50 grid place-items-center overflow-y-auto overflow-x-hidden",
     LAYOUT.padding.overlay,
-    positionCls,
+    position === "top" ? "items-start pt-16" : "",
     overlayClassName
   )
 

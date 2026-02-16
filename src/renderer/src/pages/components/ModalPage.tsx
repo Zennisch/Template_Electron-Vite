@@ -29,7 +29,6 @@ const ModalPage = () => {
   const [sizeOpen, setSizeOpen] = useState(false)
   const [selectedSize, setSelectedSize] = useState<string>("md")
   const [scrollOpen, setScrollOpen] = useState(false)
-  const [formOpen, setFormOpen] = useState(false)
   const [alertOpen, setAlertOpen] = useState(false)
   const [loadingOpen, setLoadingOpen] = useState(false)
   
